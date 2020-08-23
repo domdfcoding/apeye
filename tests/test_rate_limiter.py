@@ -67,11 +67,11 @@ def test_cache_canary():
 
 	response = session.get(target_url)
 	assert response.status_code == 200
-	original_time = datetime.fromisoformat(response.json()["datetime"])
+	original_time = datetime.fromisoformat(response.json()["datetime"])  # type: ignore
 
 	response = session.get(target_url)
 	assert response.status_code == 200
-	current_time = datetime.fromisoformat(response.json()["datetime"])
+	current_time = datetime.fromisoformat(response.json()["datetime"])  # type: ignore
 
 	assert current_time > original_time
 
@@ -85,12 +85,12 @@ def test_http_cache(testing_http_cache, capsys, run_number):
 	response = session.get(target_url)
 	assert response.status_code == 200
 	assert not response.from_cache
-	original_time = datetime.fromisoformat(response.json()["datetime"])
+	original_time = datetime.fromisoformat(response.json()["datetime"])  # type: ignore
 
 	response = session.get(target_url)
 	assert response.status_code == 200
 	assert response.from_cache
-	current_time = datetime.fromisoformat(response.json()["datetime"])
+	current_time = datetime.fromisoformat(response.json()["datetime"])  # type: ignore
 
 	# If the times have changed the cache has failed.
 	assert current_time == original_time
@@ -103,7 +103,7 @@ def test_http_cache(testing_http_cache, capsys, run_number):
 	response = session.get(target_url)
 	assert response.status_code == 200
 	assert not response.from_cache
-	current_time = datetime.fromisoformat(response.json()["datetime"])
+	current_time = datetime.fromisoformat(response.json()["datetime"])  # type: ignore
 
 	assert current_time > original_time
 
