@@ -1,0 +1,7 @@
+appdirs
+cachecontrol[filecache]>=0.12.6
+domdf_python_tools>=0.4.10
+lockfile
+requests>=2.24.0
+slumber==0.7.1
+tldextract>=2.2.3
