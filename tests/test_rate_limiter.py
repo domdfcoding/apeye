@@ -3,7 +3,6 @@ import logging
 import re
 import sys
 import time
-import warnings
 from datetime import datetime
 
 # 3rd party
