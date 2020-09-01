@@ -36,6 +36,8 @@ import appdirs
 from domdf_python_tools.paths import PathPlus
 from domdf_python_tools.utils import posargs2kwargs
 
+__all__ = ["Cache"]
+
 
 class Cache:
 	"""
