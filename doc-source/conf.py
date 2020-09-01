@@ -7,9 +7,6 @@ import os
 import re
 import sys
 
-# 3rd party
-from sphinx.locale import _
-
 sys.path.append(os.path.abspath('.'))
 sys.path.append(os.path.abspath('..'))
 
@@ -18,7 +15,10 @@ from __pkginfo__ import __version__
 # User-configurable lines
 # End of user-configurable lines
 
-github_url = "https://github.com/domdfcoding/apeye"
+github_username = "domdfcoding"
+github_repository = "apeye"
+github_url = f"https://github.com/{github_username}/{github_repository}"
+
 
 rst_prolog = f""".. |pkgname| replace:: apeye
 .. |pkgname2| replace:: ``apeye``
@@ -34,25 +34,27 @@ language = 'en'
 package_root = "apeye"
 
 extensions = [
-	'sphinx.ext.intersphinx',
-	'sphinx.ext.autodoc',
-	'sphinx.ext.mathjax',
-	'sphinx.ext.viewcode',
-	'sphinxcontrib.httpdomain',
-	'sphinxcontrib.extras_require',
-	'sphinx.ext.todo',
-	'sphinxemoji.sphinxemoji',
-	'notfound.extension',
-	'sphinx_tabs.tabs',
-	'sphinx-prompt',
-	'sphinx.ext.autosummary',
 	'autodocsumm',
-	'sphinx_copybutton',
-	'sphinxcontrib.default_values',
-	'sphinxcontrib.toctree_plus',
+	'notfound.extension',
 	'seed_intersphinx_mapping',
+	'sphinx-prompt',
+	'sphinx.ext.autodoc',
+	'sphinx.ext.autosectionlabel',
+	'sphinx.ext.autosummary',
+	'sphinx.ext.intersphinx',
+	'sphinx.ext.mathjax',
+	'sphinx.ext.todo',
+	'sphinx.ext.viewcode',
 	'sphinx_autodoc_typehints',
-	"autodoc_augment_defaults",
+	'sphinx_copybutton',
+	'sphinx_tabs.tabs',
+	'sphinx_toolbox',
+	'sphinx_toolbox.autodoc_augment_defaults',
+	'sphinxcontrib.default_values',
+	'sphinxcontrib.extras_require',
+	'sphinxcontrib.httpdomain',
+	'sphinxcontrib.toctree_plus',
+	'sphinxemoji.sphinxemoji',
 	]
 
 sphinxemoji_style = 'twemoji'
@@ -97,6 +99,8 @@ latex_documents = [('index', f'{slug}.tex', project, author, 'manual')]
 man_pages = [('index', slug, project, [author], 1)]
 texinfo_documents = [('index', slug, project, author, slug, project, 'Miscellaneous')]
 
+toctree_plus_types = {"class", "function", "method", "data"}
+
 
 autodoc_default_options = {
 		'members': None,  # Include all members (methods).
@@ -104,6 +108,7 @@ autodoc_default_options = {
 		"autosummary": None,
 		'exclude-members': ','.join([   # Exclude "standard" methods.
 				"__dict__",
+				"__class__",
 				"__dir__",
 				"__weakref__",
 				"__module__",
@@ -118,33 +123,5 @@ autodoc_default_options = {
 				"__getnewargs__",
 				"__abstractmethods__",
 				"__hash__",
-				])
+				]),
 		}
-
-
-# Extensions to theme docs
-def setup(app):
-	from sphinx.domains.python import PyField
-	from sphinx.util.docfields import Field
-
-	app.add_object_type(
-			'confval',
-			'confval',
-			objname='configuration value',
-			indextemplate='pair: %s; configuration value',
-			doc_field_types=[
-					PyField(
-							'type',
-							label=_('Type'),
-							has_arg=False,
-							names=('type', ),
-							bodyrolename='class',
-							),
-					Field(
-							'default',
-							label=_('Default'),
-							has_arg=False,
-							names=('default', ),
-							),
-					]
-			)
