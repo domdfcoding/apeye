@@ -157,13 +157,14 @@ class HTTPCache:
 	Cache HTTP requests for up to 28 days and limit the rate of requests to no more than 5/second.
 
 	:param app_name: The name of the app. This dictates the name of the cache directory.
+	:param expires_after: The maximum time to cache responses for.
 	"""
 
 	app_name: str  #: The name of the app. This dictates the name of the cache directory.
 	cache_dir: PathPlus  #: The location of the cache directory on disk.
 	caches: Dict[str, Dict[str, Any]]  #: Mapping of function names to their caches.
 
-	def __init__(self, app_name: str):
+	def __init__(self, app_name: str, expires_after: datetime.timedelta = datetime.timedelta(days=28)):
 		self.app_name: str = str(app_name)
 		self.cache_dir = PathPlus(appdirs.user_cache_dir(self.app_name))
 		self.cache_dir.maybe_make(parents=True)
@@ -171,7 +172,11 @@ class HTTPCache:
 		self.session: requests.Session = CacheControl(
 				sess=requests.Session(),
 				cache=FileCache(self.cache_dir),
-				heuristic=ExpiresAfter(days=28),
+				heuristic=ExpiresAfter(
+						days=expires_after.days,
+						seconds=expires_after.seconds,
+						microseconds=expires_after.microseconds,
+						),
 				adapter_class=RateLimitAdapter
 				)
 
