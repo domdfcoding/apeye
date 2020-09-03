@@ -25,74 +25,75 @@ apeye
 	* - Other
 	  - |license| |language| |requires| |pre_commit|
 
-.. |docs| image:: https://img.shields.io/readthedocs/apeye/latest?logo=read-the-docs
-	:target: https://apeye.readthedocs.io/en/latest/?badge=latest
-	:alt: Documentation Status
+.. |docs| rtfd-shield::
+	:project: apeye
+	:alt: Documentation Build Status
 
-.. |docs_check| image:: https://github.com/domdfcoding/apeye/workflows/Docs%20Check/badge.svg
-	:target: https://github.com/domdfcoding/apeye/actions?query=workflow%3A%22Docs+Check%22
+.. |docs_check| actions-shield::
+	:workflow: Docs Check
 	:alt: Docs Check Status
 
-.. |travis| image:: https://img.shields.io/travis/com/domdfcoding/apeye/master?logo=travis
-	:target: https://travis-ci.com/domdfcoding/apeye
+.. |travis| travis-shield::
+	:travis-site: com
 	:alt: Travis Build Status
 
-.. |actions_windows| image:: https://github.com/domdfcoding/apeye/workflows/Windows%20Tests/badge.svg
-	:target: https://github.com/domdfcoding/apeye/actions?query=workflow%3A%22Windows+Tests%22
+.. |actions_windows| actions-shield::
+	:workflow: Windows Tests
 	:alt: Windows Tests Status
 
-.. |actions_macos| image:: https://github.com/domdfcoding/apeye/workflows/macOS%20Tests/badge.svg
-	:target: https://github.com/domdfcoding/apeye/actions?query=workflow%3A%22macOS+Tests%22
+.. |actions_macos| actions-shield::
+	:workflow: macOS Tests
 	:alt: macOS Tests Status
 
-.. |requires| image:: https://requires.io/github/domdfcoding/apeye/requirements.svg?branch=master
-	:target: https://requires.io/github/domdfcoding/apeye/requirements/?branch=master
+.. |requires| requires-io-shield::
 	:alt: Requirements Status
 
-.. |coveralls| image:: https://img.shields.io/coveralls/github/domdfcoding/apeye/master?logo=coveralls
-	:target: https://coveralls.io/github/domdfcoding/apeye?branch=master
+.. |coveralls| coveralls-shield::
 	:alt: Coverage
 
-.. |codefactor| image:: https://img.shields.io/codefactor/grade/github/domdfcoding/apeye?logo=codefactor
-	:target: https://www.codefactor.io/repository/github/domdfcoding/apeye
+.. |codefactor| codefactor-shield::
 	:alt: CodeFactor Grade
 
-.. |pypi-version| image:: https://img.shields.io/pypi/v/apeye
-	:target: https://pypi.org/project/apeye/
+.. |pypi-version| pypi-shield::
+	:project: apeye
+	:version:
 	:alt: PyPI - Package Version
 
-.. |supported-versions| image:: https://img.shields.io/pypi/pyversions/apeye?logo=python&logoColor=white
-	:target: https://pypi.org/project/apeye/
+.. |supported-versions| pypi-shield::
+	:project: apeye
+	:py-versions:
 	:alt: PyPI - Supported Python Versions
 
-.. |supported-implementations| image:: https://img.shields.io/pypi/implementation/apeye
-	:target: https://pypi.org/project/apeye/
+.. |supported-implementations| pypi-shield::
+	:project: apeye
+	:implementations:
 	:alt: PyPI - Supported Implementations
 
-.. |wheel| image:: https://img.shields.io/pypi/wheel/apeye
-	:target: https://pypi.org/project/apeye/
+.. |wheel| pypi-shield::
+	:project: apeye
+	:wheel:
 	:alt: PyPI - Wheel
 
-.. |license| image:: https://img.shields.io/github/license/domdfcoding/apeye
-	:target: https://github.com/domdfcoding/apeye/blob/master/LICENSE
+.. |license| github-shield::
+	:license:
 	:alt: License
 
-.. |language| image:: https://img.shields.io/github/languages/top/domdfcoding/apeye
+.. |language| github-shield::
+	:top-language:
 	:alt: GitHub top language
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/domdfcoding/apeye/v0.0.3
-	:target: https://github.com/domdfcoding/apeye/pulse
+.. |commits-since| github-shield::
+	:commits-since: v0.0.3
 	:alt: GitHub commits since tagged version
 
-.. |commits-latest| image:: https://img.shields.io/github/last-commit/domdfcoding/apeye
-	:target: https://github.com/domdfcoding/apeye/commit/master
+.. |commits-latest| github-shield::
+	:last-commit:
 	:alt: GitHub last commit
 
-.. |maintained| image:: https://img.shields.io/maintenance/yes/2020
+.. |maintained| maintained-shield:: 2020
 	:alt: Maintenance
 
-.. |pre_commit| image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
-	:target: https://github.com/pre-commit/pre-commit
+.. |pre_commit| pre-commit-shield::
 	:alt: pre-commit
 
 .. end shields
@@ -102,20 +103,9 @@ Installation
 
 .. start installation
 
-.. tabs::
-
-	.. tab:: from PyPI
-
-		.. prompt:: bash
-
-			python3 -m pip install apeye --user
-
-
-	.. tab:: from GitHub
-
-		.. prompt:: bash
-
-			python3 -m pip install git+https://github.com/domdfcoding/apeye@master --user
+.. installation:: apeye
+	:pypi:
+	:github:
 
 .. end installation
 

@@ -2,7 +2,7 @@
 #
 #  cache.py
 """
-Caching functions.
+Caching functions for functions.
 """
 #
 #  Copyright (c) 2020 Dominic Davis-Foster <dominic@davis-foster.co.uk>

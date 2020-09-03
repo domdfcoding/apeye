@@ -329,7 +329,7 @@ _ParamsType = Optional[Union[Mapping[Union[str, bytes, int, float], "_ParamsMapp
 class RequestsURL(URL):
 	"""
 	Extension of :class:`~apeye.url.URL` with support for interacting with the website using the
-	`Requests <requests.readthedocs.io>`_ library.
+	`Requests <https://requests.readthedocs.io>`__ library.
 
 	The :class:`requests.Session` used for this object, and all objects created using the
 	``/`` or ``.parent`` operations, can be accessed using the ``.session`` attribute.
@@ -344,7 +344,7 @@ class RequestsURL(URL):
 
 	def get(self, params: _ParamsType = None, **kwargs) -> requests.Response:
 		"""
-		Perform a GET request using `Requests <requests.readthedocs.io>`_.
+		Perform a GET request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
 
@@ -357,7 +357,7 @@ class RequestsURL(URL):
 
 	def options(self, **kwargs) -> requests.Response:
 		"""
-		Send an OPTIONS request using `Requests <requests.readthedocs.io>`_.
+		Send an OPTIONS request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
 
@@ -368,7 +368,7 @@ class RequestsURL(URL):
 
 	def head(self, **kwargs) -> requests.Response:
 		"""
-		Send a HEAD request using `Requests <requests.readthedocs.io>`_.
+		Send a HEAD request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD
 
@@ -381,7 +381,7 @@ class RequestsURL(URL):
 
 	def post(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
 		"""
-		Send a POST request using `Requests <requests.readthedocs.io>`_.
+		Send a POST request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
 
@@ -395,7 +395,7 @@ class RequestsURL(URL):
 
 	def put(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
 		"""
-		Send a PUT request using `Requests <requests.readthedocs.io>`_.
+		Send a PUT request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
 
@@ -409,7 +409,7 @@ class RequestsURL(URL):
 
 	def patch(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
 		"""
-		Send a PATCH request using `Requests <requests.readthedocs.io>`_.
+		Send a PATCH request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH
 
@@ -423,7 +423,7 @@ class RequestsURL(URL):
 
 	def delete(self, **kwargs) -> requests.Response:
 		"""
-		Send a DELETE request using `Requests <requests.readthedocs.io>`_.
+		Send a DELETE request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 
@@ -470,7 +470,7 @@ class Domain(tldextract.tldextract.ExtractResult):
 class SlumberURL(URL):
 	"""
 	Subclass of :class:`~apeye.url.URL` with support for interacting with
-	REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and `Requests <requests.readthedocs.io>`__.
+	REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and `Requests <https://requests.readthedocs.io>`__.
 
 	:param url: The url to construct the :class:`~.SlumberURL` object from.
 	:param auth:
@@ -597,7 +597,7 @@ class SlumberURL(URL):
 
 		:param params: Parameters to send in the query string of the :class:`requests.Request`.
 
-		:returns: :py:obj:`True` if the DELETE request succeeded. :py:obj;`False` otherwise.
+		:returns: :py:obj:`True` if the DELETE request succeeded. :py:obj:`False` otherwise.
 		"""
 
 		resp = self._request("DELETE", params=params)
@@ -614,7 +614,7 @@ class SlumberURL(URL):
 
 	def options(self, **kwargs) -> str:
 		"""
-		Send an OPTIONS request using `Requests <requests.readthedocs.io>`_.
+		Send an OPTIONS request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
 
@@ -625,12 +625,12 @@ class SlumberURL(URL):
 
 	def head(self, **kwargs) -> CaseInsensitiveDict:
 		"""
-		Send a HEAD request using `Requests <requests.readthedocs.io>`_.
+		Send a HEAD request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD
 
 		:param kwargs: Optional arguments that :func:`requests.request` takes.
-			If `allow_redirects` is not provided, it will be set to `False`
+			If `allow_redirects` is not provided, it will be set to :py:obj:`False`
 			(as opposed to the default :func:`requests.request` behavior).
 		"""
 
