@@ -80,4 +80,4 @@ def pytest_unconfigure(config):
 	try:
 		cherrypy.server.stop()
 	except:
-		pass
+		pass  # nosec: B110  # pylint: disable=bare-except

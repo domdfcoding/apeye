@@ -51,9 +51,9 @@ class TestUrlPath:
 
 	def test_notimplemented_properties(self):
 		with pytest.raises(NotImplementedError):
-			URLPath().anchor
+			URLPath().anchor  # pylint: disable=expression-not-assigned
 		with pytest.raises(NotImplementedError):
-			URLPath().drive
+			URLPath().drive  # pylint: disable=expression-not-assigned
 
 	def test_division(self):
 		assert URLPath() / "news" == URLPath("news")
@@ -65,14 +65,14 @@ class TestUrlPath:
 	def test_division_errors_number(self, count: int):
 		if sys.version_info < (3, 8):
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not int"):
-				URLPath() / count  # type: ignore
+				URLPath() / count  # type: ignore  # pylint: disable=expression-not-assigned
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not float"):
-				URLPath() / float(count)  # type: ignore
+				URLPath() / float(count)  # type: ignore  # pylint: disable=expression-not-assigned
 		else:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and 'int'"):
-				URLPath() / count  # type: ignore
+				URLPath() / count  # type: ignore  # pylint: disable=expression-not-assigned
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and 'float'"):
-				URLPath() / float(count)  # type: ignore
+				URLPath() / float(count)  # type: ignore  # pylint: disable=expression-not-assigned
 
 	@pytest.mark.parametrize("obj", [
 			[],
@@ -85,10 +85,10 @@ class TestUrlPath:
 	def test_division_errors(self, obj):
 		if sys.version_info < (3, 8):
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not .*"):
-				URLPath() / obj
+				URLPath() / obj  # pylint: disable=expression-not-assigned
 		else:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and .*"):
-				URLPath() / obj
+				URLPath() / obj  # pylint: disable=expression-not-assigned
 
 	@pytest.mark.parametrize("obj", [
 			1234,
@@ -103,10 +103,10 @@ class TestUrlPath:
 	def test_rtruediv_typerror(self, obj):
 		if sys.version_info < (3, 8):
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not .*"):
-				obj / URLPath()
+				obj / URLPath()  # pylint: disable=expression-not-assigned
 		else:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: .* and 'URLPath'"):
-				obj / URLPath()
+				obj / URLPath()  # pylint: disable=expression-not-assigned
 
 
 class _TestURL(ABC):
@@ -190,9 +190,9 @@ class _TestURL(ABC):
 	@count(100)
 	def test_division_errors_number(self, count: int):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: '.*' and 'int'"):
-			self._class() / count
+			self._class() / count  # pylint: disable=expression-not-assigned
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: '.*' and 'float'"):
-			self._class() / float(count)
+			self._class() / float(count)  # pylint: disable=expression-not-assigned
 
 	@pytest.mark.parametrize("obj", [
 			[],
@@ -204,7 +204,7 @@ class _TestURL(ABC):
 			])
 	def test_division_errors(self, obj):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: '.*' and .*"):
-			self._class() / obj
+			self._class() / obj  # pylint: disable=expression-not-assigned
 
 	@pytest.mark.parametrize("obj", [
 			1234,
@@ -219,7 +219,7 @@ class _TestURL(ABC):
 			])
 	def test_rtruediv_typerror(self, obj):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: .* and '.*'"):
-			obj / self._class()
+			obj / self._class()  # pylint: disable=expression-not-assigned
 
 	def test_empty_url_operations(self):
 		assert self._class().name == ''
