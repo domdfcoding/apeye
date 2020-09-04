@@ -8,7 +8,7 @@ from typing import Type
 
 # 3rd party
 import pytest
-import pytest_httpserver.pytest_plugin
+import pytest_httpserver.pytest_plugin  # type: ignore
 from domdf_python_tools.testing import count
 
 # this package

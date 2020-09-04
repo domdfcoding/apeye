@@ -32,7 +32,7 @@ from functools import wraps
 from typing import Any, Callable, Dict, Iterable, Optional
 
 # 3rd party
-import appdirs
+import appdirs  # type: ignore
 from domdf_python_tools.paths import PathPlus
 from domdf_python_tools.utils import posargs2kwargs
 

@@ -6,7 +6,7 @@
 
 # 3rd party
 import pytest
-from cachecontrol.wrapper import CacheControl
+from cachecontrol.wrapper import CacheControl  # type: ignore
 from requests import Session
 
 # this package

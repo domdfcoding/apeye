@@ -54,12 +54,12 @@ from urllib.parse import urlparse
 
 # 3rd party
 import requests
-import slumber
-import tldextract
+import slumber  # type: ignore
+import tldextract  # type: ignore
 from domdf_python_tools.typing import PathLike
 from requests.structures import CaseInsensitiveDict
 from slumber import Serializer
-from tldextract.remote import IP_RE
+from tldextract.remote import IP_RE  # type: ignore
 
 __all__ = ["URL", "URLPath", "Domain", "RequestsURL", "SlumberURL"]
 

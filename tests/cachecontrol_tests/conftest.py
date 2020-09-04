@@ -10,7 +10,7 @@ import socket
 from pprint import pformat
 
 # 3rd party
-import cherrypy
+import cherrypy  # type: ignore
 import pytest
 
 
