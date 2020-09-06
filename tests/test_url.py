@@ -9,6 +9,7 @@ from typing import Type
 # 3rd party
 import pytest
 import pytest_httpserver.pytest_plugin  # type: ignore
+import requests
 from domdf_python_tools.testing import count
 
 # this package
@@ -549,6 +550,22 @@ class TestSlumberURL(_TestURL):
 		assert SlumberURL("bbc.co.uk") != SlumberURL("http://bbc.co.uk/news")
 		assert SlumberURL("bbc.co.uk") != SlumberURL("http://bbc.co.uk")
 
+	def test_division__store(self):
+		sess = requests.Session()
+		l_url = SlumberURL(
+				"http://bbc.co.uk",
+				format="XML",
+				auth=("username", "password"),
+				append_slash=False,
+				session=sess,
+				)
+		new_url = l_url / "news"
+		assert new_url._store == l_url._store
+		assert new_url._store["session"] is l_url._store["session"]
+		assert new_url._store["session"] is sess
+		assert new_url._store["session"].auth == l_url._store["session"].auth == ("username", "password")
+		assert new_url._store["format"] == l_url._store["format"] == "XML"
+
 
 class TestRequestsURL(_TestURL):
 
@@ -642,6 +659,18 @@ class TestRequestsURL(_TestURL):
 		assert RequestsURL("bbc.co.uk") != RequestsURL("bbc.co.uk/news")
 		assert RequestsURL("bbc.co.uk") != RequestsURL("http://bbc.co.uk/news")
 		assert RequestsURL("bbc.co.uk") != RequestsURL("http://bbc.co.uk")
+
+	def test_division_session(self):
+		sess = requests.Session()
+		l_url = RequestsURL("http://bbc.co.uk")
+		l_url.session = sess
+		new_url = l_url / "news"
+		assert new_url.session is sess
+
+		sess = requests.Session()
+		l_url = RequestsURL("http://bbc.co.uk")
+		new_url = l_url / "news"
+		assert new_url.session is not sess
 
 
 def test_subclass__eq__():

@@ -31,6 +31,7 @@ Pathlib-like approach to URLs.
 #
 
 # stdlib
+import copy
 import ipaddress
 import os
 import pathlib
@@ -439,6 +440,18 @@ class RequestsURL(URL):
 
 		self.session.close()
 
+	def __truediv__(self, other):
+		"""
+		Construct a new :class:`~apeye.url.URL` object for the given child of this :class:`~apeye.url.URL`.
+		"""
+
+		new_obj = super().__truediv__(other)
+
+		if new_obj is not NotImplemented:
+			new_obj.session = self.session
+
+		return new_obj
+
 
 _ParamsMappingValueType = Union[str, bytes, int, float, Iterable[Union[str, bytes, int, float]]]
 _Data = Union[None, str, bytes, MutableMapping[str, Any], Iterable[Tuple[str, Optional[str]]], IO]
@@ -635,3 +648,15 @@ class SlumberURL(URL):
 		"""
 
 		return self._store["session"].head(str(self), **kwargs).headers
+
+	def __truediv__(self, other):
+		"""
+		Construct a new :class:`~apeye.url.URL` object for the given child of this :class:`~apeye.url.URL`.
+		"""
+
+		new_obj = super().__truediv__(other)
+
+		if new_obj is not NotImplemented:
+			new_obj._store = copy.copy(self._store)
+
+		return new_obj
