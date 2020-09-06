@@ -39,7 +39,7 @@ __copyright__ = """
 2020 Dominic Davis-Foster <dominic@davis-foster.co.uk>
 """
 
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 modname = "apeye"
 pypi_name = "apeye"
 import_name = "apeye"
