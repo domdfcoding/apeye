@@ -9,7 +9,9 @@ version: '0.0.5'
 license: 'LGPLv3+'
 short_desc: 'Handy tools for working with URls and APIs.'
 
-enable_conda: False
+conda_channels:
+  - domdfcoding
+  - conda-forge
 
 python_versions:
   - 3.6
