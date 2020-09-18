@@ -559,12 +559,22 @@ class TestSlumberURL(_TestURL):
 				append_slash=False,
 				session=sess,
 				)
+		l_url.timeout = 42
+		l_url.cert = "cert"
+		l_url.proxies = "proxies"
+		l_url.allow_redirects = False
+		l_url.verify = "verify"
 		new_url = l_url / "news"
 		assert new_url._store == l_url._store
 		assert new_url._store["session"] is l_url._store["session"]
 		assert new_url._store["session"] is sess
 		assert new_url._store["session"].auth == l_url._store["session"].auth == ("username", "password")
 		assert new_url._store["format"] == l_url._store["format"] == "XML"
+		assert new_url.timeout == 42
+		assert new_url.cert == "cert"
+		assert new_url.proxies == "proxies"
+		assert new_url.allow_redirects == False
+		assert new_url.verify == "verify"
 
 
 class TestRequestsURL(_TestURL):
