@@ -41,6 +41,6 @@ Pathlib-like approach to URLs.
 # this package
 from apeye._requests_url import RequestsURL
 from apeye._slumber_url import SlumberURL
-from apeye._url import URL, Domain, URLPath
+from apeye._url import URL, Domain, URLPath, URLType
 
-__all__ = ["URL", "URLPath", "Domain", "RequestsURL", "SlumberURL"]
+__all__ = ["URL", "URLPath", "Domain", "RequestsURL", "SlumberURL", "URLType"]

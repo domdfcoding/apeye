@@ -6,8 +6,10 @@
 	:no-members:
 	:autosummary-members:
 
-.. autodata:: URLType
+.. data:: apeye.url.URLType
 	:annotation: = TypeVar("URLType", bound="URL")
+
+	Type variable bound to :class:`~apeye.url.URL`.
 
 .. autoclass:: apeye.url.URL
 	:inherited-members:
