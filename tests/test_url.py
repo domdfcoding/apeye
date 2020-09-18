@@ -561,7 +561,7 @@ class TestSlumberURL(_TestURL):
 				)
 		l_url.timeout = 42
 		l_url.cert = "cert"
-		l_url.proxies = "proxies"
+		l_url.proxies = "proxies"  # type: ignore
 		l_url.allow_redirects = False
 		l_url.verify = "verify"
 		new_url = l_url / "news"
@@ -573,7 +573,7 @@ class TestSlumberURL(_TestURL):
 		assert new_url.timeout == 42
 		assert new_url.cert == "cert"
 		assert new_url.proxies == "proxies"
-		assert new_url.allow_redirects == False
+		assert new_url.allow_redirects is False
 		assert new_url.verify == "verify"
 
 

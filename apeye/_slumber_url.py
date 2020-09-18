@@ -39,29 +39,21 @@ Pathlib-like approach to URLs.
 
 # stdlib
 import copy
-from typing import (
-	Callable,
-	Dict,
-	MutableMapping,
-	Optional,
-	Tuple,
-	Union,
-	)
+from typing import Callable, Dict, MutableMapping, Optional, Tuple, Union
 
 # 3rd party
 import requests
 import slumber  # type: ignore
-from requests.structures import CaseInsensitiveDict
-from slumber import Serializer
 from requests import Request
 from requests.auth import AuthBase
-from slumber import exceptions
-from apeye._url import URL
-from apeye._requests_url import _Data
+from requests.structures import CaseInsensitiveDict
+from slumber import Serializer, exceptions
 
+# this package
+from apeye._requests_url import _Data
+from apeye._url import URL
 
 __all__ = ["SlumberURL"]
-
 
 
 class SlumberURL(URL):
@@ -127,7 +119,7 @@ class SlumberURL(URL):
 			proxies: Optional[MutableMapping[str, str]] = None,
 			verify: Union[None, bool, str] = None,
 			cert: Union[str, Tuple[str, str], None] = None,
-		):
+			):
 		super().__init__(url)
 
 		if serializer is None:

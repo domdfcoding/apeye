@@ -26,24 +26,15 @@
 #  Licensed under the Apache License, Version 2.0
 
 # stdlib
-from typing import (
-	IO,
-	Any,
-	Iterable,
-	Mapping,
-	MutableMapping,
-	Optional,
-	Tuple,
-	Union,
-	)
+from typing import IO, Any, Iterable, Mapping, MutableMapping, Optional, Tuple, Union
 
 # 3rd party
 import requests
+
+# this package
 from apeye._url import URL
 
-
 __all__ = ["RequestsURL"]
-
 
 _ParamsMappingValueType = Union[str, bytes, int, float, Iterable[Union[str, bytes, int, float]]]
 _Data = Union[None, str, bytes, MutableMapping[str, Any], Iterable[Tuple[str, Optional[str]]], IO]

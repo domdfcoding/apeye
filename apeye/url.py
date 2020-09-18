@@ -38,11 +38,9 @@ Pathlib-like approach to URLs.
 #  Licensed under the Apache License, Version 2.0
 #
 
-# 3rd party
+# this package
 from apeye._requests_url import RequestsURL
 from apeye._slumber_url import SlumberURL
-from apeye._url import Domain, URL, URLPath
-
+from apeye._url import URL, Domain, URLPath
 
 __all__ = ["URL", "URLPath", "Domain", "RequestsURL", "SlumberURL"]
-
