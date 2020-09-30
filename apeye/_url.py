@@ -50,7 +50,7 @@ import tldextract  # type: ignore
 from domdf_python_tools.typing import PathLike
 from tldextract.remote import IP_RE  # type: ignore
 
-__all__ = ["URL", "URLPath", "Domain"]
+__all__ = ["URL", "URLPath", "Domain", "URLType"]
 
 #: Type variable bound to :class:`~apeye.url.URL`.
 URLType = TypeVar("URLType", bound="URL")

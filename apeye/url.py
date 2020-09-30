@@ -38,9 +38,22 @@ Pathlib-like approach to URLs.
 #  Licensed under the Apache License, Version 2.0
 #
 
+# stdlib
+import sys
+
 # this package
 from apeye._requests_url import RequestsURL
 from apeye._slumber_url import SlumberURL
 from apeye._url import URL, Domain, URLPath, URLType
 
 __all__ = ["URL", "URLPath", "Domain", "RequestsURL", "SlumberURL", "URLType"]
+
+#: Fiddle __module__ so these *look* like they were defined in this file.
+RequestsURL.__module__ = "apeye.url"
+SlumberURL.__module__ = "apeye.url"
+URL.__module__ = "apeye.url"
+Domain.__module__ = "apeye.url"
+URLPath.__module__ = "apeye.url"
+
+if sys.version_info >= (3, 7):
+	URLType.__module__ = "apeye.url"
