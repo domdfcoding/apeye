@@ -5,11 +5,9 @@
 .. automodule:: apeye.url
 	:no-members:
 	:autosummary-members:
+	:autosummary-exclude-members: RequestsURL,SlumberURL
 
-.. data:: apeye.url.URLType
-	:annotation: = TypeVar("URLType", bound="URL")
-
-	Type variable bound to :class:`~apeye.url.URL`.
+.. autotypevar:: apeye.url.URLType
 
 .. autoclass:: apeye.url.URL
 	:inherited-members:
@@ -19,11 +17,6 @@
 	:autosummary-exclude-members: match,is_absolute,joinpath,relative_to,anchor,drive,__lt__,__le__,__gt__,__ge__,as_uri
 	:inherited-members:
 
-.. autoclass:: apeye.url.Domain
-	:inherited-members:
-
-.. autoclass:: apeye.url.RequestsURL
-	:inherited-members:
-
-.. autoclass:: apeye.url.SlumberURL
-	:inherited-members:
+.. autonamedtuple:: apeye.url.Domain
+	:inherited-members: tuple
+	:special-members:

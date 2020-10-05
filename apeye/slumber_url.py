@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 #
-#  url.py
+#  slumber_url.py
 """
-Pathlib-like approach to URLs.
+Subclass of :class:`~apeye.url.URL` with support for interacting with
+REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and
+`Requests <https://requests.readthedocs.io>`__.
+
+.. versionadded:: 0.2.0
 """
 #
 #  Copyright © 2020 Dominic Davis-Foster <dominic@davis-foster.co.uk>
@@ -36,37 +40,235 @@ Pathlib-like approach to URLs.
 #  Some docstrings from Requests <https://requests.readthedocs.io>
 #  Copyright 2019 Kenneth Reitz
 #  Licensed under the Apache License, Version 2.0
+#
 
 # stdlib
 import copy
-from typing import Callable, Dict, MutableMapping, Optional, Tuple, Union
+import json
+from abc import ABC, abstractmethod
+from typing import Any, Callable, Dict, List, Mapping, MutableMapping, Optional, Tuple, Type, Union
+from urllib.parse import unquote
 
 # 3rd party
 import requests
-import slumber  # type: ignore
 from requests import Request
 from requests.auth import AuthBase
 from requests.structures import CaseInsensitiveDict
-from slumber import Serializer, exceptions
+from requests.utils import guess_json_utf
 
 # this package
-from apeye._requests_url import _Data
 from apeye._url import URL
+from apeye.requests_url import _Data
 
-__all__ = ["SlumberURL"]
+__all__ = [
+		"SlumberURL",
+		"SerializerRegistry",
+		"YamlSerializer",
+		"Serializer",
+		"JsonSerializer",
+		"SlumberBaseException",
+		"SlumberHttpBaseException",
+		"HttpClientError",
+		"HttpNotFoundError",
+		"HttpServerError",
+		"SerializerNotAvailable",
+		]
+
+
+class Serializer(ABC):
+	"""
+	Base class for serializers.
+	"""
+
+	@property
+	@abstractmethod
+	def content_types(self) -> List[str]:
+		"""
+		List of supported content types.
+		"""
+
+		return NotImplemented
+
+	@property
+	@abstractmethod
+	def key(self) -> str:
+		return NotImplemented
+
+	def get_content_type(self) -> str:
+		"""
+		Returns the first value from :attr:`~.Serializer.content_types`.
+		"""
+
+		return self.content_types[0]
+
+	@abstractmethod
+	def loads(self, data: str) -> MutableMapping[str, Any]:
+		"""
+		Deserialize data using this :class:`~.Serializer`.
+
+		:param data:
+		"""
+
+		raise NotImplementedError()
+
+	@abstractmethod
+	def dumps(self, data: Mapping[str, Any]) -> str:
+		"""
+		Serialize data using this :class:`~.Serializer`.
+
+		:param data:
+		"""
+
+		raise NotImplementedError()
+
+
+class JsonSerializer(Serializer):
+	"""
+	Serializer for JSON data.
+	"""
+
+	content_types = [
+			"application/json",
+			"application/x-javascript",
+			"text/javascript",
+			"text/x-javascript",
+			"text/x-json",
+			]
+	key = "json"
+
+	def loads(self, data: str) -> MutableMapping[str, Any]:
+		return json.loads(data)
+
+	def dumps(self, data: Mapping[str, Any]) -> str:
+		return json.dumps(data)
+
+
+_SERIALIZERS: List[Type[Serializer]] = [JsonSerializer]
+
+try:
+	# 3rd party
+	import yaml
+
+	class YamlSerializer(Serializer):
+		"""
+		Serializer for YAML data.
+		"""
+
+		content_types = ["text/yaml"]
+		key = "yaml"
+
+		def loads(self, data: str) -> MutableMapping[str, Any]:
+			return yaml.safe_load(str(data))
+
+		def dumps(self, data: Mapping[str, Any]) -> str:
+			return yaml.dump(data)
+
+	_SERIALIZERS.append(YamlSerializer)
+
+except ImportError:
+
+	class YamlSerializer(Serializer):  # type: ignore
+		"""
+		Serializer for YAML data.
+		"""
+
+		content_types = ["text/yaml"]
+		key = "yaml"
+
+		def __init__(self):
+			raise NotImplementedError("'yaml' package not available.")
+
+
+class SerializerRegistry:
+	"""
+	Serializes and deserializes data for transfer to and from a REST API.
+
+	:param default: The default serializer to use if none is specified.
+		Corresponds to the :attr:`~.Serializer.key` of a :class:`~.Serializer`.
+	:param serializers: List of :class:`~.Serializer` objects to use.
+	"""
+
+	def __init__(self, default: str = "json", serializers: Optional[List[Serializer]] = None):
+
+		#: Mapping of formats to :class:`~.Serializer` objects.
+		self.serializers: Dict[str, Serializer] = {}
+
+		for serializer in serializers or [x() for x in _SERIALIZERS]:
+			self.serializers[serializer.key] = serializer
+
+		#: The default serializer to use if none is specified.
+		self.default: str = default
+
+	def get_serializer(self, name: Optional[str] = None, content_type: Optional[str] = None):
+		"""
+		Returns the first :class:`~.Serializer` that supports either the given
+		format or the given content type.
+
+		:param name:
+		:param content_type:
+		"""
+
+		if name is None and content_type is None:
+			return self.serializers[self.default]
+
+		elif name is not None and content_type is None:
+			if name not in self.serializers:
+				raise SerializerNotAvailable(f"{name} is not an available serializer")
+			return self.serializers[name]
+
+		else:
+			for x in self.serializers.values():
+				for ctype in x.content_types:
+					if content_type == ctype:
+						return x
+
+			raise SerializerNotAvailable(f"{content_type} is not an available serializer")
+
+	def loads(self, data: str, format: Optional[str] = None) -> MutableMapping[str, Any]:
+		"""
+		Deserialize data of the given format.
+
+		:param data:
+		:param format: The serialization format to use.
+		"""
+
+		s = self.get_serializer(format)
+		return s.loads(data)
+
+	def dumps(self, data: Mapping[str, Any], format: Optional[str] = None) -> str:
+		"""
+		Serialize data of the given format.
+
+		:param data:
+		:param format: The serialization format to use.
+		"""
+
+		s = self.get_serializer(format)
+		return s.dumps(data)
+
+	def get_content_type(self, format: Optional[str] = None):
+		"""
+		Returns the content type for the serializer that supports the given format.
+
+		:param format: The desired serialization format.
+		"""
+
+		s = self.get_serializer(format)
+		return s.get_content_type()
 
 
 class SlumberURL(URL):
 	"""
 	Subclass of :class:`~apeye.url.URL` with support for interacting with
-	REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and `Requests <https://requests.readthedocs.io>`__.
+	REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and
+	`Requests <https://requests.readthedocs.io>`__.
 
 	:param url: The url to construct the :class:`~.SlumberURL` object from.
 	:param auth:
 	:param format:
 	:param append_slash:
 	:param session:
-	:param serializer:
+	:param serializer: (optional) An instance of :class:`apeye.url.SerializerRegistry`.
 	:param timeout: (optional) How long to wait for the server to send
 		data before giving up.
 	:param allow_redirects: Whether to allow redirects. .
@@ -83,7 +285,7 @@ class SlumberURL(URL):
 	created from this URL.
 	"""
 
-	serializer: Serializer
+	serializer: SerializerRegistry
 	session: requests.Session
 
 	#: How long to wait for the server to send data before giving up.
@@ -109,10 +311,10 @@ class SlumberURL(URL):
 			self,
 			url: str = '',
 			auth: Union[None, Tuple[str, str], AuthBase, Callable[[Request], Request]] = None,
-			format=None,
+			format: str = "json",
 			append_slash=True,
 			session=None,
-			serializer=None,
+			serializer: Optional[SerializerRegistry] = None,
 			*,
 			timeout: Union[None, float, Tuple[float, float], Tuple[float, None]] = None,
 			allow_redirects: Optional[bool] = True,
@@ -123,7 +325,7 @@ class SlumberURL(URL):
 		super().__init__(url)
 
 		if serializer is None:
-			serializer = Serializer(default=format)
+			serializer = SerializerRegistry(default=format)
 
 		if session is None:
 			session = requests.session()
@@ -178,12 +380,16 @@ class SlumberURL(URL):
 				)
 
 		if 400 <= resp.status_code <= 499:
-			exception_class = exceptions.HttpNotFoundError if resp.status_code == 404 else exceptions.HttpClientError
-			raise exception_class(f"Client Error {resp.status_code}: {url}", response=resp, content=resp.content)
+			exception_class = HttpNotFoundError if resp.status_code == 404 else HttpClientError
+			raise exception_class(
+					f"Client Error {resp.status_code}: {unquote(resp.url)}",
+					response=resp,
+					content=resp.content,
+					)
 
 		elif 500 <= resp.status_code <= 599:
-			raise exceptions.HttpServerError(
-					f"Server Error {resp.status_code}: {url}",
+			raise HttpServerError(
+					f"Server Error {resp.status_code}: {unquote(resp.url)}",
 					response=resp,
 					content=resp.content,
 					)
@@ -192,8 +398,36 @@ class SlumberURL(URL):
 
 		return resp
 
-	_try_to_serialize_response = slumber.Resource._try_to_serialize_response
-	_process_response = slumber.Resource._process_response
+	def _try_to_serialize_response(self, resp):
+		s = self._store["serializer"]
+		if resp.status_code in [204, 205]:
+			return
+
+		if resp.headers.get("content-type", None) and resp.content:
+			content_type = resp.headers.get("content-type").split(";")[0].strip()
+
+			try:
+				stype = s.get_serializer(content_type=content_type)
+			except SerializerNotAvailable:
+				return resp.content
+
+			if type(resp.content) == bytes:
+				try:
+					encoding = guess_json_utf(resp.content)
+					return stype.loads(resp.content.decode(encoding))
+				except:
+					return resp.content
+			return stype.loads(resp.content)
+		else:
+			return resp.content
+
+	def _process_response(self, resp):
+		# TODO: something to expose headers and status
+
+		if 200 <= resp.status_code <= 299:
+			return self._try_to_serialize_response(resp)
+		else:
+			return  # @@@ We should probably do some sort of error here? (Is this even possible?)
 
 	def get(self, **params) -> Dict:
 		"""
@@ -336,3 +570,44 @@ class SlumberURL(URL):
 			new_obj.cert = self.cert
 
 		return new_obj
+
+
+class SlumberBaseException(Exception):
+	"""
+	All Slumber exceptions inherit from this exception.
+	"""
+
+
+class SlumberHttpBaseException(SlumberBaseException):
+	"""
+	All Slumber HTTP Exceptions inherit from this exception.
+	"""
+
+	def __init__(self, *args, **kwargs):
+		for key, value in kwargs.items():
+			setattr(self, key, value)
+		super().__init__(*args)
+
+
+class HttpClientError(SlumberHttpBaseException):
+	"""
+	Called when the server tells us there was a client error (4xx).
+	"""
+
+
+class HttpNotFoundError(HttpClientError):
+	"""
+	Called when the server sends a 404 error.
+	"""
+
+
+class HttpServerError(SlumberHttpBaseException):
+	"""
+	Called when the server tells us there was a server error (5xx).
+	"""
+
+
+class SerializerNotAvailable(SlumberBaseException):
+	"""
+	The chosen Serializer is not available.
+	"""

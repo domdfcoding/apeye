@@ -47,6 +47,7 @@ from urllib.parse import urlparse
 
 # 3rd party
 import tldextract  # type: ignore
+from domdf_python_tools.doctools import prettify_docstrings
 from domdf_python_tools.typing import PathLike
 from tldextract.remote import IP_RE  # type: ignore
 
@@ -310,6 +311,7 @@ class URL(os.PathLike):
 		return Domain(extract.subdomain, extract.domain, extract.suffix)
 
 
+@prettify_docstrings
 class Domain(tldextract.tldextract.ExtractResult):
 	subdomain: str
 	domain: str

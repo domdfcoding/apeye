@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 #
-#  _requests_url.py
+#  requests_url.py
 """
+Extension of :class:`~apeye.url.URL` with support for interacting with the website using the
+`Requests <https://requests.readthedocs.io>`__ library.
+
+.. versionadded:: 0.2.0
 """
 #
 #  Copyright © 2020 Dominic Davis-Foster <dominic@davis-foster.co.uk>

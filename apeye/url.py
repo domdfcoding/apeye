@@ -3,6 +3,12 @@
 #  url.py
 """
 Pathlib-like approach to URLs.
+
+.. versionchanged:: 0.2.0
+
+	:class:`~apeye.slumber_url.SlumberURL` and :class:`~apeye.requests_url.RequestsURL`
+	moved to :mod:`apeye.slumber_url` and :mod:`apeye.requests_url` respectively,
+	but can still be imported from this module.
 """
 #
 #  Copyright © 2020 Dominic Davis-Foster <dominic@davis-foster.co.uk>
@@ -42,15 +48,13 @@ Pathlib-like approach to URLs.
 import sys
 
 # this package
-from apeye._requests_url import RequestsURL
-from apeye._slumber_url import SlumberURL
 from apeye._url import URL, Domain, URLPath, URLType
+from apeye.requests_url import RequestsURL
+from apeye.slumber_url import SlumberURL
 
 __all__ = ["URL", "URLPath", "Domain", "RequestsURL", "SlumberURL", "URLType"]
 
 #: Fiddle __module__ so these *look* like they were defined in this file.
-RequestsURL.__module__ = "apeye.url"
-SlumberURL.__module__ = "apeye.url"
 URL.__module__ = "apeye.url"
 Domain.__module__ = "apeye.url"
 URLPath.__module__ = "apeye.url"
