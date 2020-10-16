@@ -23,9 +23,24 @@ Handy tools for working with URls and APIs.
 #  MA 02110-1301, USA.
 #
 
+# this package
+from apeye import cache, rate_limiter
+from apeye.requests_url import RequestsURL
+from apeye.slumber_url import SlumberURL
+from apeye.url import URL, Domain, URLPath
+
 __author__: str = "Dominic Davis-Foster"
 __copyright__: str = "2020 Dominic Davis-Foster"
-
 __license__: str = "GNU Lesser General Public License v3 or later (LGPLv3+)"
 __version__: str = "0.2.0"
 __email__: str = "dominic@davis-foster.co.uk"
+
+__all__ = [
+		"URL",
+		"Domain",
+		"URLPath",
+		"RequestsURL",
+		"SlumberURL",
+		"cache",
+		"rate_limiter",
+		]
