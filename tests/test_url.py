@@ -458,7 +458,7 @@ class TestUrl(_TestURL):
 
 	def test_isinstance(self):
 		assert isinstance(URL(), URL)
-		assert isinstance(URL(), os.PathLike)
+		assert isinstance(URL(), os.PathLike)  # type: ignore
 
 	def test___eq__(self):
 		assert URL() == URL()
@@ -478,7 +478,7 @@ class TestSlumberURL(_TestURL):
 	def test_isinstance(self):
 		assert isinstance(SlumberURL(), SlumberURL)
 		assert isinstance(SlumberURL(), URL)
-		assert isinstance(SlumberURL(), os.PathLike)
+		assert isinstance(SlumberURL(), os.PathLike)  # type: ignore
 
 	base = SlumberURL("https://jsonplaceholder.typicode.com")
 
@@ -584,7 +584,7 @@ class TestRequestsURL(_TestURL):
 	def test_isinstance(self):
 		assert isinstance(RequestsURL(), RequestsURL)
 		assert isinstance(RequestsURL(), URL)
-		assert isinstance(RequestsURL(), os.PathLike)
+		assert isinstance(RequestsURL(), os.PathLike)  # type: ignore
 
 	base = RequestsURL("https://raw.githubusercontent.com")
 
