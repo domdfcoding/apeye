@@ -309,7 +309,7 @@ class SlumberURL(URL):
 
 	def __init__(
 			self,
-			url: str = '',
+			url: Union[str, URL] = '',
 			auth: Union[None, Tuple[str, str], AuthBase, Callable[[Request], Request]] = None,
 			format: str = "json",
 			append_slash=True,

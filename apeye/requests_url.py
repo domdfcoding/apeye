@@ -59,7 +59,7 @@ class RequestsURL(URL):
 	:param url: The url to construct the :class:`~apeye.url.URL` object from.
 	"""
 
-	def __init__(self, url: str = ''):
+	def __init__(self, url: Union[str, URL] = ''):
 		super().__init__(url)
 		self.session = requests.Session()
 

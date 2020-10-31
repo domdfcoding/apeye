@@ -42,7 +42,7 @@ Pathlib-like approach to URLs.
 import ipaddress
 import os
 import pathlib
-from typing import List, NoReturn, Optional, Tuple, Type, TypeVar
+from typing import List, NoReturn, Optional, Tuple, Type, TypeVar, Union
 from urllib.parse import urlparse
 
 # 3rd party
@@ -125,7 +125,9 @@ class URL(os.PathLike):
 	:param url: The url to construct the :class:`~apeye.url.URL` object from.
 	"""
 
-	def __init__(self, url: str = ''):
+	def __init__(self, url: Union[str, "URL"] = ''):
+		if isinstance(url, URL):
+			url = str(url)
 		scheme, netloc, parts, *_ = urlparse(url)
 
 		if not scheme and not str(url).startswith("//"):
