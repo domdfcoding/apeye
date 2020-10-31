@@ -286,7 +286,7 @@ class SlumberURL(URL):
 
 	.. versionchanged:: 0.3.0
 
-		The ``url`` paramter can now be a string or a :class:`~.URL`.
+		The ``url`` parameter can now be a string or a :class:`~.URL`.
 	"""
 
 	serializer: SerializerRegistry

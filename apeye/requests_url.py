@@ -63,7 +63,7 @@ class RequestsURL(URL):
 
 	.. versionchanged:: 0.3.0
 
-		The ``url`` paramter can now be a string or a :class:`~.URL`.
+		The ``url`` parameter can now be a string or a :class:`~.URL`.
 	"""
 
 	def __init__(self, url: Union[str, URL] = ''):
