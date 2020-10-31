@@ -46,7 +46,7 @@ _ParamsType = Union[
 	Mapping[Union[str, bytes, int, float], _ParamsMappingValueType],
 	Union[str, bytes],
 	Tuple[Union[str, bytes, int, float], _ParamsMappingValueType],
-	None,
+	None
 	]
 
 
