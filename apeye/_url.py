@@ -73,7 +73,7 @@ class URLPath(pathlib.PurePosixPath):
 			return self._str  # type: ignore
 		except AttributeError:
 			self._str = self._format_parsed_parts(self._drv, self._root, self._parts) or ''  # type: ignore
-			return self._str  # type: ignore
+			return self._str
 
 	@classmethod
 	def _format_parsed_parts(cls, drv, root, parts):

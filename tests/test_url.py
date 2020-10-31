@@ -71,9 +71,9 @@ class TestUrlPath:
 				URLPath() / float(count)  # type: ignore  # pylint: disable=expression-not-assigned
 		else:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and 'int'"):
-				URLPath() / count  # type: ignore  # pylint: disable=expression-not-assigned
+				URLPath() / count  # pylint: disable=expression-not-assigned
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and 'float'"):
-				URLPath() / float(count)  # type: ignore  # pylint: disable=expression-not-assigned
+				URLPath() / float(count)  # pylint: disable=expression-not-assigned
 
 	@pytest.mark.parametrize("obj", [
 			[],
