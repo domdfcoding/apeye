@@ -283,6 +283,10 @@ class SlumberURL(URL):
 	``timeout``, ``allow_redirects``, ``proxies``, ``verify`` and ``cert`` are
 	passed to Requests when making any HTTP requests, and are inherited by all children
 	created from this URL.
+
+	.. versionchanged:: 0.3.0
+
+		The ``url`` paramter can now be a string or a :class:`~.URL`.
 	"""
 
 	serializer: SerializerRegistry

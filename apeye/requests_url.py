@@ -60,6 +60,10 @@ class RequestsURL(URL):
 	If desired, this can be replaced with a different session object, such as one using caching.
 
 	:param url: The url to construct the :class:`~apeye.url.URL` object from.
+
+	.. versionchanged:: 0.3.0
+
+		The ``url`` paramter can now be a string or a :class:`~.URL`.
 	"""
 
 	def __init__(self, url: Union[str, URL] = ''):
