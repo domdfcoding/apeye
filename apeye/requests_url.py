@@ -42,12 +42,11 @@ __all__ = ["RequestsURL"]
 
 _ParamsMappingValueType = Union[str, bytes, int, float, Iterable[Union[str, bytes, int, float]]]
 _Data = Union[None, str, bytes, MutableMapping[str, Any], Iterable[Tuple[str, Optional[str]]], IO]
-_ParamsType = Optional[
-	Union[
-		Mapping[Union[str, bytes, int, float], _ParamsMappingValueType],
-		Union[str, bytes],
-		Tuple[Union[str, bytes, int, float], _ParamsMappingValueType],
-		],
+_ParamsType = Union[
+	Mapping[Union[str, bytes, int, float], _ParamsMappingValueType],
+	Union[str, bytes],
+	Tuple[Union[str, bytes, int, float], _ParamsMappingValueType],
+	None,
 	]
 
 
