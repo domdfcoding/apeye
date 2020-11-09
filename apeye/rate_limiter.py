@@ -46,15 +46,13 @@ from cachecontrol import CacheControl, CacheControlAdapter  # type: ignore
 from cachecontrol.caches.file_cache import FileCache  # type: ignore
 from cachecontrol.heuristics import ExpiresAfter  # type: ignore
 from domdf_python_tools.paths import PathPlus
+from requests import PreparedRequest
 
 __all__ = [
 		"rate_limit",
 		"RateLimitAdapter",
 		"HTTPCache",
 		]
-
-# 3rd party
-from requests import PreparedRequest
 
 
 def rate_limit(min_time: float = 0.2, logger: Optional[logging.Logger] = None) -> Callable[[Callable], Any]:
