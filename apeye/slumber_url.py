@@ -353,8 +353,8 @@ class SlumberURL(URL):
 	def url(self):
 		url = str(self)
 
-		if self._store["append_slash"] and not url.endswith("/"):
-			url = url + "/"
+		if self._store["append_slash"] and not url.endswith('/'):
+			url = url + '/'
 
 		return url
 
@@ -408,7 +408,7 @@ class SlumberURL(URL):
 			return
 
 		if resp.headers.get("content-type", None) and resp.content:
-			content_type = resp.headers.get("content-type").split(";")[0].strip()
+			content_type = resp.headers.get("content-type").split(';')[0].strip()
 
 			try:
 				stype = s.get_serializer(content_type=content_type)
