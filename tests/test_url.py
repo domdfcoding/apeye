@@ -21,13 +21,13 @@ class TestUrlPath:
 	def test_str(self):
 		assert str(URLPath("/watch?v=NG21KWZSiok")) == "/watch?v=NG21KWZSiok"
 		assert str(URLPath("watch?v=NG21KWZSiok")) == "watch?v=NG21KWZSiok"
-		assert str(URLPath("")) == ""
+		assert str(URLPath('')) == ''
 		assert str(URLPath("/programmes/b006qtlx/episodes/player")) == "/programmes/b006qtlx/episodes/player"
 
 	def test_repr(self):
 		assert repr(URLPath("/watch?v=NG21KWZSiok")) == "URLPath('/watch?v=NG21KWZSiok')"
 		assert repr(URLPath("watch?v=NG21KWZSiok")) == "URLPath('watch?v=NG21KWZSiok')"
-		assert repr(URLPath("")) == "URLPath('')"
+		assert repr(URLPath('')) == "URLPath('')"
 		assert repr(
 				URLPath("/programmes/b006qtlx/episodes/player")
 				) == "URLPath('/programmes/b006qtlx/episodes/player')"
@@ -58,7 +58,7 @@ class TestUrlPath:
 
 	def test_division(self):
 		assert URLPath() / "news" == URLPath("news")
-		assert URLPath("/") / "news" == URLPath("/news")
+		assert URLPath('/') / "news" == URLPath("/news")
 		assert URLPath("/programmes") / "b006qtlx" == URLPath("/programmes/b006qtlx")
 		assert "/programmes" / URLPath("b006qtlx") == URLPath("/programmes/b006qtlx")
 
@@ -128,19 +128,19 @@ class _TestURL(ABC):
 							),
 					(
 							"www.bbc.co.uk/programmes/b006qtlx/episodes/player",
-							"",
+							'',
 							"www.bbc.co.uk",
 							URLPath("/programmes/b006qtlx/episodes/player"),
 							),
 					(
 							"/programmes/b006qtlx/episodes/player",
-							"",
-							"",
+							'',
+							'',
 							URLPath("/programmes/b006qtlx/episodes/player"),
 							),
 					(
 							"//www.bbc.co.uk/programmes/b006qtlx/episodes/player",
-							"",
+							'',
 							"www.bbc.co.uk",
 							URLPath("/programmes/b006qtlx/episodes/player"),
 							),
@@ -243,10 +243,10 @@ class _TestURL(ABC):
 	@pytest.mark.parametrize(
 			"url, suffix",
 			[
-					("https://www.bbc.co.uk/programmes/b006qtlx/episodes", ""),
+					("https://www.bbc.co.uk/programmes/b006qtlx/episodes", ''),
 					("www.bbc.co.uk", ''),
-					("/programmes/b006qtlx/episodes", ""),
-					("https://imgs.xkcd.com/comics/workflow.png", '.png'),
+					("/programmes/b006qtlx/episodes", ''),
+					("https://imgs.xkcd.com/comics/workflow.png", ".png"),
 					]
 			)
 	def test_suffix(self, url, suffix):
@@ -258,7 +258,7 @@ class _TestURL(ABC):
 					("https://www.bbc.co.uk/programmes/b006qtlx/episodes", []),
 					("www.bbc.co.uk", []),
 					("/programmes/b006qtlx/episodes", []),
-					("https://imgs.xkcd.com/comics/workflow.png", ['.png']),
+					("https://imgs.xkcd.com/comics/workflow.png", [".png"]),
 					(
 							"https://github.com/domdfcoding/domdf_python_tools/releases/download/v0.4.8/domdf_python_tools-0.4.8.tar.gz",
 							[".4", ".8", ".tar", ".gz"]
@@ -273,11 +273,11 @@ class _TestURL(ABC):
 			[
 					("https://www.bbc.co.uk/programmes/b006qtlx/episodes", "episodes"),
 					("www.bbc.co.uk", ''),
-					("/programmes/b006qtlx/episodes", 'episodes'),
-					("https://imgs.xkcd.com/comics/workflow.png", 'workflow'),
+					("/programmes/b006qtlx/episodes", "episodes"),
+					("https://imgs.xkcd.com/comics/workflow.png", "workflow"),
 					(
 							"https://github.com/domdfcoding/domdf_python_tools/releases/download/v0.4.8/domdf_python_tools-0.4.8.tar.gz",
-							'domdf_python_tools-0.4.8.tar'
+							"domdf_python_tools-0.4.8.tar"
 							),
 					]
 			)
@@ -337,9 +337,9 @@ class _TestURL(ABC):
 			"url, subdomain, domain, suffix, ipv4",
 			[
 					("https://www.bbc.co.uk/programmes/b006qtlx/episodes", "www", "bbc", "co.uk", None),
-					("/programmes/b006qtlx/episodes", "", "", "", None),
+					("/programmes/b006qtlx/episodes", '', '', '', None),
 					("https://www.bbc.co.uk", "www", "bbc", "co.uk", None),
-					("ftp://127.0.0.1/download.zip", "", "127.0.0.1", "", IPv4Address("127.0.0.1")),
+					("ftp://127.0.0.1/download.zip", '', "127.0.0.1", '', IPv4Address("127.0.0.1")),
 					]
 			)
 	def test_domain(self, url, subdomain, domain, suffix, ipv4):
@@ -400,7 +400,7 @@ class _TestURL(ABC):
 			[
 					(
 							"https://hub.docker.com/r/tobix/pywine/dockerfile",
-							("https", "hub", "docker", "com", "r", "tobix", "pywine", "dockerfile")
+							("https", "hub", "docker", "com", 'r', "tobix", "pywine", "dockerfile")
 							),
 					]
 			)
@@ -418,11 +418,11 @@ class _TestURL(ABC):
 	def test_notimplemented_eq(self):
 		assert URL() != 7
 		assert URL() != 3.14142
-		assert URL() != "a"
-		assert URL() != [7, "a", 3.14142]
-		assert URL() != (7, "a", 3.14142)
-		assert URL() != {7, "a", 3.14142}
-		assert URL() != {"int": 7, "str": "a", "float": 3.14142}
+		assert URL() != 'a'
+		assert URL() != [7, 'a', 3.14142]
+		assert URL() != (7, 'a', 3.14142)
+		assert URL() != {7, 'a', 3.14142}
+		assert URL() != {"int": 7, "str": 'a', "float": 3.14142}
 
 
 class TestUrl(_TestURL):
@@ -483,8 +483,8 @@ class TestSlumberURL(_TestURL):
 	base = SlumberURL("https://jsonplaceholder.typicode.com")
 
 	def test_get(self):
-		assert self.base / "todos" / "1" == URL("https://jsonplaceholder.typicode.com/todos/1")
-		assert (self.base / "todos" / "1").get() == {
+		assert self.base / "todos" / '1' == URL("https://jsonplaceholder.typicode.com/todos/1")
+		assert (self.base / "todos" / '1').get() == {
 				"userId": 1,
 				"id": 1,
 				"title": "delectus aut autem",
@@ -493,11 +493,11 @@ class TestSlumberURL(_TestURL):
 		assert isinstance((self.base / "todos").get(userID=1), list)
 
 	def test_head(self):
-		assert self.base / "todos" / "1" == URL("https://jsonplaceholder.typicode.com/todos/1")
-		headers = (self.base / "todos" / "1").head()
+		assert self.base / "todos" / '1' == URL("https://jsonplaceholder.typicode.com/todos/1")
+		headers = (self.base / "todos" / '1').head()
 
 		assert "Date" in headers
-		assert headers["Content-Type"] == 'application/json; charset=utf-8'
+		assert headers["Content-Type"] == "application/json; charset=utf-8"
 		assert headers["Server"] == "cloudflare"
 		assert headers["Content-Encoding"] == "gzip"
 
@@ -507,19 +507,19 @@ class TestSlumberURL(_TestURL):
 
 	def test_post(self):
 		assert self.base / "posts" == URL("https://jsonplaceholder.typicode.com/posts")
-		assert (self.base / "posts").post({"title": 'foo', "body": 'bar', "userId": 1}, ) == {
-				"body": 'bar', "userId": 1, "id": 101, "title": "foo"
+		assert (self.base / "posts").post({"title": "foo", "body": "bar", "userId": 1}, ) == {
+				"body": "bar", "userId": 1, "id": 101, "title": "foo"
 				}
 
 	def test_put(self):
-		assert self.base / "posts" / "1" == URL("https://jsonplaceholder.typicode.com/posts/1")
-		assert (self.base / "posts" / "1").put({"title": 'foo', "body": 'bar', "userId": 1}, ) == {
-				"body": 'bar', "userId": 1, "id": 1, "title": "foo"
+		assert self.base / "posts" / '1' == URL("https://jsonplaceholder.typicode.com/posts/1")
+		assert (self.base / "posts" / '1').put({"title": "foo", "body": "bar", "userId": 1}, ) == {
+				"body": "bar", "userId": 1, "id": 1, "title": "foo"
 				}
 
 	def test_patch(self):
-		assert (self.base / "posts" / "1").patch({
-				"title": 'foo',
+		assert (self.base / "posts" / '1').patch({
+				"title": "foo",
 				}) == {
 						"body":
 								"quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae "
@@ -530,7 +530,7 @@ class TestSlumberURL(_TestURL):
 						}
 
 	def test_delete(self):
-		assert (self.base / "posts" / "1").delete()
+		assert (self.base / "posts" / '1').delete()
 
 	def test___eq__(self):
 
@@ -595,12 +595,12 @@ class TestRequestsURL(_TestURL):
 		assert target_url.get().text.splitlines()[:11] == [
 				"                   GNU LESSER GENERAL PUBLIC LICENSE",
 				"                       Version 3, 29 June 2007",
-				"",
+				'',
 				" Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>",
 				" Everyone is permitted to copy and distribute verbatim copies",
 				" of this license document, but changing it is not allowed.",
-				"",
-				"",
+				'',
+				'',
 				"  This version of the GNU Lesser General Public License incorporates",
 				"the terms and conditions of version 3 of the GNU General Public",
 				"License, supplemented by the additional permissions listed below.",

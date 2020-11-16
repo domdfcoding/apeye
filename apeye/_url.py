@@ -159,10 +159,10 @@ class URL(os.PathLike):
 
 		path = URLPath(path)
 
-		if path.root == "/":
+		if path.root == '/':
 			obj.path = path
 		else:
-			obj.path = URLPath("/" + str(path))
+			obj.path = URLPath('/' + str(path))
 
 		return obj
 

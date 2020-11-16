@@ -21,7 +21,7 @@ class SimpleApp:
 		self.update_etag_string()
 
 	def dispatch(self, env):
-		path = env["PATH_INFO"][1:].split("/")
+		path = env["PATH_INFO"][1:].split('/')
 		segment = path.pop(0)
 		if segment and hasattr(self, segment):
 			return getattr(self, segment)
@@ -55,7 +55,7 @@ def url(server):
 
 def get_free_port():
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.bind(("", 0))
+	s.bind(('', 0))
 	ip, port = s.getsockname()
 	s.close()
 	ip = os.environ.get("WEBTEST_SERVER_BIND", "127.0.0.1")
@@ -63,7 +63,7 @@ def get_free_port():
 
 
 def pytest_configure(config):
-	cherrypy.tree.graft(SimpleApp(), "/")
+	cherrypy.tree.graft(SimpleApp(), '/')
 
 	ip, port = get_free_port()
 

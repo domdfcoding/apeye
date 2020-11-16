@@ -23,13 +23,13 @@ def test_cache(testing_cache, capsys, run_number):
 
 	assert not (testing_cache.cache_dir / "cached_function.json").is_file()
 
-	assert cached_function(2, 5.5, "☃") == "☃" * 32
+	assert cached_function(2, 5.5, '☃') == '☃' * 32
 	assert (testing_cache.cache_dir / "cached_function.json").is_file()
 
 	for i in range(10):
-		assert cached_function(2, 5.5, "☃") == "☃" * 32
+		assert cached_function(2, 5.5, '☃') == '☃' * 32
 
-	assert cached_function(2, 5.8, "☃") == "☃" * 32
+	assert cached_function(2, 5.8, '☃') == '☃' * 32
 
 	captured = capsys.readouterr()
 	assert captured.out == "Running\nRunning\n"
@@ -38,7 +38,7 @@ def test_cache(testing_cache, capsys, run_number):
 	assert not (testing_cache.cache_dir / "cached_function.json").is_file()
 	assert testing_cache.cache_dir.is_dir()
 
-	assert cached_function(2, 5.5, "☃") == "☃" * 32
+	assert cached_function(2, 5.5, '☃') == '☃' * 32
 	capsys.readouterr()  # prevents the above call polluting stdout
 
 	old_id = id(cached_function)
@@ -50,10 +50,10 @@ def test_cache(testing_cache, capsys, run_number):
 
 	assert id(cached_function) != old_id
 
-	assert cached_function(2, 5.5, "☃") == "☃" * 32
+	assert cached_function(2, 5.5, '☃') == '☃' * 32
 	assert (testing_cache.cache_dir / "cached_function.json").is_file()
 	assert testing_cache.clear(cached_function)
 
 	captured = capsys.readouterr()
 	# if the cache wasn't working this would be "Running 2nd function\n"
-	assert captured.out == ""
+	assert captured.out == ''
