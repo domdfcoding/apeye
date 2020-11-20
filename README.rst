@@ -36,17 +36,17 @@ apeye
 	:target: https://github.com/domdfcoding/apeye/actions?query=workflow%3A%22Docs+Check%22
 	:alt: Docs Check Status
 
-.. |travis| image:: https://img.shields.io/travis/com/domdfcoding/apeye/master?logo=travis
-	:target: https://travis-ci.com/domdfcoding/apeye
-	:alt: Travis Build Status
+.. |travis| image:: https://github.com/domdfcoding/apeye/workflows/Linux%20Tests/badge.svg
+	:target: https://github.com/domdfcoding/apeye/actions?query=workflow%3A%Linux+Tests%22
+	:alt: Linux Test Status
 
 .. |actions_windows| image:: https://github.com/domdfcoding/apeye/workflows/Windows%20Tests/badge.svg
 	:target: https://github.com/domdfcoding/apeye/actions?query=workflow%3A%22Windows+Tests%22
-	:alt: Windows Tests Status
+	:alt: Windows Test Status
 
 .. |actions_macos| image:: https://github.com/domdfcoding/apeye/workflows/macOS%20Tests/badge.svg
 	:target: https://github.com/domdfcoding/apeye/actions?query=workflow%3A%22macOS+Tests%22
-	:alt: macOS Tests Status
+	:alt: macOS Test Status
 
 .. |requires| image:: https://requires.io/github/domdfcoding/apeye/requirements.svg?branch=master
 	:target: https://requires.io/github/domdfcoding/apeye/requirements/?branch=master
