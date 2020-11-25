@@ -165,7 +165,10 @@ class RequestsURL(URL):
 		Attempt to close session when garbage collected to avoid leaving connections open.
 		"""
 
-		self.session.close()
+		try:
+			self.session.close()
+		except Exception:
+			pass
 
 	def __truediv__(self, other):
 		"""

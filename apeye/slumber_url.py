@@ -532,7 +532,10 @@ class SlumberURL(URL):
 			return False
 
 	def __del__(self):
-		self._store["session"].close()
+		try:
+			self._store["session"].close()
+		except Exception:
+			pass
 
 	def options(self, **kwargs) -> str:
 		"""
