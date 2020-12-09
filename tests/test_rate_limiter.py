@@ -1,4 +1,5 @@
 # stdlib
+import json
 import logging
 import re
 import sys
@@ -8,6 +9,8 @@ from datetime import datetime
 # 3rd party
 import pytest
 import requests
+from pytest_httpserver import HTTPServer
+from werkzeug import Request, Response
 
 # this package
 from apeye.rate_limiter import HTTPCache, rate_limit
@@ -20,7 +23,7 @@ if sys.version_info < (3, 7):
 logging.basicConfig()
 
 
-@rate_limit(1)  # logger=logger
+@rate_limit(1)
 def rate_limited_function():
 	print("Inside function")
 	return 42
@@ -58,12 +61,38 @@ def testing_http_cache():
 	cache.clear()
 
 
-@pytest.mark.flaky(reruns=2, reruns_delay=20)
-def test_cache_canary():
+@pytest.fixture()
+def timeserver(httpserver: HTTPServer):
+
+	def time_handler(request: Request):
+		time.sleep(1)
+
+		now = datetime.utcnow()
+		headers = {
+				"Cache-Control": "max-age=0, private, must-revalidate",
+				"Date": now.strftime("%a, %d %B %Y %H:%M:%S GMT"),
+				}
+		response_json = {
+				"abbreviation": "GMT",
+				"client_ip": "127.0.0.1",
+				"datetime": now.strftime("%Y-%m-%dT%H:%M:%S%z"),
+				"day_of_week": now.strftime("%w"),
+				"day_of_year": now.strftime("%j"),
+				}
+
+		return Response(json.dumps(response_json, indent=4), 200, headers, None, None)
+
+	httpserver.expect_request("/time", method="GET").respond_with_handler(time_handler)
+
+	return httpserver
+
+
+def test_cache_canary(timeserver: HTTPServer):
 	# Proves that worldtimeapi.org returns a different time for two sequential requests.
 	session = requests.session()
 
-	target_url = "http://worldtimeapi.org/api/ip"
+	# target_url = "http://worldtimeapi.org/api/ip"
+	target_url = timeserver.url_for("/time")
 
 	response = session.get(target_url)
 	assert response.status_code == 200
@@ -76,12 +105,12 @@ def test_cache_canary():
 	assert current_time > original_time
 
 
-@pytest.mark.flaky(reruns=2, reruns_delay=20)
 @pytest.mark.parametrize("run_number", [1, 2])
-def test_http_cache(testing_http_cache, capsys, run_number):
+def test_http_cache(testing_http_cache, capsys, run_number: int, timeserver: HTTPServer):
 	session = testing_http_cache.session
 
-	target_url = "http://worldtimeapi.org/api/ip"
+	# target_url = "http://worldtimeapi.org/api/ip"
+	target_url = timeserver.url_for("/time")
 
 	response = session.get(target_url)
 	assert response.status_code == 200
