@@ -13,7 +13,7 @@ sys.path.append('.')
 from __pkginfo__ import *  # pylint: disable=wildcard-import
 
 setup(
-		description="Handy tools for working with URls and APIs.",
+		description="Handy tools for working with URLs and APIs.",
 		extras_require=extras_require,
 		install_requires=install_requires,
 		py_modules=[],

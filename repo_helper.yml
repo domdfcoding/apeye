@@ -7,20 +7,28 @@ email: 'dominic@davis-foster.co.uk'
 username: 'domdfcoding'
 version: '0.4.1'
 license: 'LGPLv3+'
-short_desc: 'Handy tools for working with URls and APIs.'
+short_desc: 'Handy tools for working with URLs and APIs.'
 
 conda_channels:
-  - domdfcoding
-  - conda-forge
+ - domdfcoding
+ - conda-forge
 
 python_versions:
-  - 3.6
-  - 3.7
-  - 3.8
-  - 3.9
-  - 3.10-dev
-
+ - 3.6
+ - 3.7
+ - 3.8
+ - 3.9
+ - 3.10-dev
 
 classifiers:
+ - 'Development Status :: 4 - Beta'
  - 'Intended Audience :: Developers'
  - 'Topic :: Software Development :: Libraries :: Python Modules'
+ - "Topic :: Internet :: WWW/HTTP"
+
+keywords:
+ - api
+ - url
+ - requests
+ - cache
+ - rest

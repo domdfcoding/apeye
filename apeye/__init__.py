@@ -2,7 +2,7 @@
 #
 #  __init__.py
 """
-Handy tools for working with URls and APIs.
+Handy tools for working with URLs and APIs.
 """
 #
 #  Copyright (c) 2020 Dominic Davis-Foster <dominic@davis-foster.co.uk>

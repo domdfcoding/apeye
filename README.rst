@@ -4,7 +4,7 @@ apeye
 
 .. start short_desc
 
-**Handy tools for working with URls and APIs.**
+**Handy tools for working with URLs and APIs.**
 
 .. end short_desc
 
