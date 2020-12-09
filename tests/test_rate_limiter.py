@@ -58,6 +58,7 @@ def testing_http_cache():
 	cache.clear()
 
 
+@pytest.mark.flaky(reruns=2, reruns_delay=20)
 def test_cache_canary():
 	# Proves that worldtimeapi.org returns a different time for two sequential requests.
 	session = requests.session()
@@ -75,6 +76,7 @@ def test_cache_canary():
 	assert current_time > original_time
 
 
+@pytest.mark.flaky(reruns=2, reruns_delay=20)
 @pytest.mark.parametrize("run_number", [1, 2])
 def test_http_cache(testing_http_cache, capsys, run_number):
 	session = testing_http_cache.session
