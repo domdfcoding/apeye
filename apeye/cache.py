@@ -94,7 +94,7 @@ class Cache:
 
 	def load_cache(self, func: Callable) -> None:
 		"""
-		Loads the cache for the given function
+		Loads the cache for the given function.
 
 		:param func:
 		"""

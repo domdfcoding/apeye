@@ -4,6 +4,7 @@ import pathlib
 import sys
 from abc import ABC, abstractmethod
 from ipaddress import IPv4Address
+from textwrap import dedent
 from typing import Type
 
 # 3rd party
@@ -288,9 +289,9 @@ class _TestURL(ABC):
 		assert self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes"
 							).with_name("foo") == self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo")
 
-		with pytest.raises(ValueError):
+		with pytest.raises(ValueError, match=r"URLPath\(''\) has an empty name"):
 			self._class("www.bbc.co.uk").with_name("bar")
-		with pytest.raises(ValueError):
+		with pytest.raises(ValueError, match=r"URLPath\(''\) has an empty name"):
 			self._class().with_name("bar")
 
 		assert self._class("/programmes/b006qtlx/episodes").with_name("foo"
@@ -518,12 +519,18 @@ class TestSlumberURL(_TestURL):
 				}
 
 	def test_patch(self):
+		body = dedent(
+				"""\
+		quia et suscipit
+		suscipit recusandae consequuntur expedita et cum
+		reprehenderit molestiae ut ut quas totam
+		nostrum rerum est autem sunt rem eveniet architecto"""
+				)
+
 		assert (self.base / "posts" / '1').patch({
 				"title": "foo",
 				}) == {
-						"body":
-								"quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae "
-								"ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto",
+						"body": body,
 						"userId": 1,
 						"id": 1,
 						"title": "foo",

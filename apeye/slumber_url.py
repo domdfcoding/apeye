@@ -7,7 +7,7 @@ REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and
 `Requests <https://requests.readthedocs.io>`__.
 
 .. versionadded:: 0.2.0
-"""
+"""  # noqa: D400
 #
 #  Copyright © 2020 Dominic Davis-Foster <dominic@davis-foster.co.uk>
 #
@@ -91,7 +91,7 @@ class Serializer(ABC):
 
 	@property
 	@abstractmethod
-	def key(self) -> str:
+	def key(self) -> str:  # noqa: D102
 		return NotImplemented
 
 	def get_content_type(self) -> str:
@@ -137,9 +137,21 @@ class JsonSerializer(Serializer):
 	key = "json"
 
 	def loads(self, data: str) -> MutableMapping[str, Any]:
+		"""
+		Deserialize data using this :class:`~.Serializer`.
+
+		:param data:
+		"""
+
 		return json.loads(data)
 
 	def dumps(self, data: Mapping[str, Any]) -> str:
+		"""
+		Serialize data using this :class:`~.Serializer`.
+
+		:param data:
+		"""
+
 		return json.dumps(data)
 
 
@@ -158,9 +170,21 @@ try:
 		key = "yaml"
 
 		def loads(self, data: str) -> MutableMapping[str, Any]:
+			"""
+			Deserialize data using this :class:`~.Serializer`.
+
+			:param data:
+			"""
+
 			return yaml.safe_load(str(data))
 
 		def dumps(self, data: Mapping[str, Any]) -> str:
+			"""
+			Serialize data using this :class:`~.Serializer`.
+
+			:param data:
+			"""
+
 			return yaml.dump(data)
 
 	_SERIALIZERS.append(YamlSerializer)
@@ -206,7 +230,7 @@ class SerializerRegistry:
 
 		:param name:
 		:param content_type:
-		"""
+		"""  # noqa: D400
 
 		if name is None and content_type is None:
 			return self.serializers[self.default]
@@ -224,7 +248,11 @@ class SerializerRegistry:
 
 			raise SerializerNotAvailable(f"{content_type} is not an available serializer")
 
-	def loads(self, data: str, format: Optional[str] = None) -> MutableMapping[str, Any]:
+	def loads(
+			self,
+			data: str,
+			format: Optional[str] = None,  # noqa: A002
+			) -> MutableMapping[str, Any]:
 		"""
 		Deserialize data of the given format.
 
@@ -235,7 +263,11 @@ class SerializerRegistry:
 		s = self.get_serializer(format)
 		return s.loads(data)
 
-	def dumps(self, data: Mapping[str, Any], format: Optional[str] = None) -> str:
+	def dumps(
+			self,
+			data: Mapping[str, Any],
+			format: Optional[str] = None,  # noqa: A002
+			) -> str:
 		"""
 		Serialize data of the given format.
 
@@ -246,7 +278,7 @@ class SerializerRegistry:
 		s = self.get_serializer(format)
 		return s.dumps(data)
 
-	def get_content_type(self, format: Optional[str] = None):
+	def get_content_type(self, format: Optional[str] = None):  # noqa: A002
 		"""
 		Returns the content type for the serializer that supports the given format.
 
@@ -287,7 +319,7 @@ class SlumberURL(URL):
 	.. versionchanged:: 0.3.0
 
 		The ``url`` parameter can now be a string or a :class:`~.URL`.
-	"""
+	"""  # noqa: D400
 
 	serializer: SerializerRegistry
 	session: requests.Session
@@ -315,7 +347,7 @@ class SlumberURL(URL):
 			self,
 			url: Union[str, URL] = '',
 			auth: Union[None, Tuple[str, str], AuthBase, Callable[[Request], Request]] = None,
-			format: str = "json",
+			format: str = "json",  # noqa: A002
 			append_slash=True,
 			session=None,
 			serializer: Optional[SerializerRegistry] = None,
@@ -351,6 +383,10 @@ class SlumberURL(URL):
 		self.cert = cert
 
 	def url(self):
+		"""
+		Returns the URL as a string.
+		"""
+
 		url = str(self)
 
 		if self._store["append_slash"] and not url.endswith('/'):

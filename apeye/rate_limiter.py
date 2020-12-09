@@ -103,8 +103,7 @@ def rate_limit(min_time: float = 0.2, logger: Optional[logging.Logger] = None) -
 
 class RateLimitAdapter(CacheControlAdapter):
 	"""
-	Custom :class:`CacheControl.CacheControlAdapter` to limit the rate of
-	requests to 5 per second.
+	Custom :class:`CacheControl.CacheControlAdapter` to limit the rate of requests to 5 per second.
 
 	:param cache:
 	:param cache_etags:
@@ -122,7 +121,7 @@ class RateLimitAdapter(CacheControlAdapter):
 		:param request: The :class:`requests.models.PreparedRequest` being sent.
 		:param cacheable_methods:
 		:param kwargs: Additional arguments take by :meth:`requests.adapters.HTTPAdapter.send`.
-		"""
+		"""  # noqa: D400
 
 		cacheable = cacheable_methods or self.cacheable_methods
 		if request.method in cacheable:
@@ -145,7 +144,7 @@ class RateLimitAdapter(CacheControlAdapter):
 		"""
 		Wrapper around :meth:`CacheControl.CacheControlAdapter.send` to limit the
 		rate of requests.
-		"""
+		"""  # noqa: D400
 
 		return super(CacheControlAdapter, self).send(*args, **kwargs)
 

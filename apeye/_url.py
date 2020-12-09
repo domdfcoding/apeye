@@ -42,7 +42,7 @@ Pathlib-like approach to URLs.
 import ipaddress
 import os
 import pathlib
-from typing import List, NoReturn, Optional, Tuple, Type, TypeVar, Union
+from typing import TYPE_CHECKING, List, Optional, Tuple, Type, TypeVar, Union
 from urllib.parse import urlparse
 
 # 3rd party
@@ -50,6 +50,10 @@ import tldextract  # type: ignore
 from domdf_python_tools.doctools import prettify_docstrings
 from domdf_python_tools.typing import PathLike
 from tldextract.remote import IP_RE  # type: ignore
+
+if TYPE_CHECKING:
+	# stdlib
+	from typing import NoReturn
 
 __all__ = ["URL", "URLPath", "Domain", "URLType"]
 
@@ -82,39 +86,39 @@ class URLPath(pathlib.PurePosixPath):
 		else:
 			return pathlib._posix_flavour.join(parts)  # type: ignore
 
-	def match(self, *args, **kwargs) -> NoReturn:
+	def match(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
 		raise NotImplementedError
 
-	def is_absolute(self, *args, **kwargs) -> NoReturn:
+	def is_absolute(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
 		raise NotImplementedError
 
-	def joinpath(self, *args, **kwargs) -> NoReturn:
+	def joinpath(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
 		raise NotImplementedError
 
-	def relative_to(self, *args, **kwargs) -> NoReturn:
-		raise NotImplementedError
-
-	@property
-	def anchor(self):
+	def relative_to(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
 		raise NotImplementedError
 
 	@property
-	def drive(self):
+	def anchor(self):  # noqa: D102
 		raise NotImplementedError
 
-	def __lt__(self, *args, **kwargs) -> NoReturn:
+	@property
+	def drive(self):  # noqa: D102
 		raise NotImplementedError
 
-	def __le__(self, *args, **kwargs) -> NoReturn:
+	def __lt__(self, *args, **kwargs) -> "NoReturn":
 		raise NotImplementedError
 
-	def __gt__(self, *args, **kwargs) -> NoReturn:
+	def __le__(self, *args, **kwargs) -> "NoReturn":
 		raise NotImplementedError
 
-	def __ge__(self, *args, **kwargs) -> NoReturn:
+	def __gt__(self, *args, **kwargs) -> "NoReturn":
 		raise NotImplementedError
 
-	def as_uri(self, *args, **kwargs) -> NoReturn:
+	def __ge__(self, *args, **kwargs) -> "NoReturn":
+		raise NotImplementedError
+
+	def as_uri(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
 		raise NotImplementedError
 
 
@@ -200,7 +204,7 @@ class URL(os.PathLike):
 
 	def __eq__(self, other) -> bool:
 		"""
-		Return ``self == other``
+		Return ``self == other``.
 		"""
 
 		if isinstance(other, URL):
@@ -294,7 +298,7 @@ class URL(os.PathLike):
 	@property
 	def parents(self) -> Tuple["URL", ...]:
 		"""
-		An immutable sequence providing access to the logical ancestors of the :class:`~apeye.url.URL` :
+		An immutable sequence providing access to the logical ancestors of the :class:`~apeye.url.URL`.
 		"""
 
 		return tuple(self.from_parts(self.scheme, self.netloc, path) for path in self.path.parents)
@@ -318,7 +322,7 @@ class URL(os.PathLike):
 
 
 @prettify_docstrings
-class Domain(tldextract.tldextract.ExtractResult):
+class Domain(tldextract.tldextract.ExtractResult):  # noqa: D101
 	subdomain: str
 	domain: str
 	suffix: str
@@ -326,7 +330,7 @@ class Domain(tldextract.tldextract.ExtractResult):
 	@property
 	def ipv4(self) -> Optional[ipaddress.IPv4Address]:
 		"""
-		Returns the ipv4 if that is what the presented domain/url is
+		Returns the ipv4 if that is what the presented domain/url is.
 
 		>>> URL('http://127.0.0.1/path/to/file').domain.ipv4
 		IPv4Address('127.0.0.1')

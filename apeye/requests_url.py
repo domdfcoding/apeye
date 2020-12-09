@@ -6,7 +6,7 @@ Extension of :class:`~apeye.url.URL` with support for interacting with the websi
 `Requests <https://requests.readthedocs.io>`__ library.
 
 .. versionadded:: 0.2.0
-"""
+"""  # noqa: D400
 #
 #  Copyright © 2020 Dominic Davis-Foster <dominic@davis-foster.co.uk>
 #
@@ -64,7 +64,7 @@ class RequestsURL(URL):
 	.. versionchanged:: 0.3.0
 
 		The ``url`` parameter can now be a string or a :class:`~.URL`.
-	"""
+	"""  # noqa: D400
 
 	def __init__(self, url: Union[str, URL] = ''):
 		super().__init__(url)
