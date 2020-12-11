@@ -55,8 +55,8 @@ class RequestsURL(URL):
 	Extension of :class:`~apeye.url.URL` with support for interacting with the website using the
 	`Requests <https://requests.readthedocs.io>`__ library.
 
-	The :class:`requests.Session` used for this object, and all objects created using the
-	``/`` or ``.parent`` operations, can be accessed using the ``.session`` attribute.
+	The :class:`requests.Session` used for this object -- and all objects created using the
+	``/`` or ``.parent`` operations -- can be accessed using the ``.session`` attribute.
 	If desired, this can be replaced with a different session object, such as one using caching.
 
 	:param url: The url to construct the :class:`~apeye.url.URL` object from.
@@ -71,36 +71,36 @@ class RequestsURL(URL):
 		self.session = requests.Session()
 
 	def get(self, params: _ParamsType = None, **kwargs) -> requests.Response:
-		"""
+		r"""
 		Perform a GET request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
 
 		:param params: (optional) Dictionary, list of tuples or bytes to send
 			in the query string for the :class:`requests.Request`.
-		:param kwargs: Optional arguments that :func:`requests.request` takes.
+		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
 		return self.session.get(str(self), params=params, **kwargs)
 
 	def options(self, **kwargs) -> requests.Response:
-		"""
+		r"""
 		Send an OPTIONS request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
 
-		:param kwargs: Optional arguments that :func:`requests.request` takes.
+		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
 		return self.session.options(str(self), **kwargs)
 
 	def head(self, **kwargs) -> requests.Response:
-		"""
+		r"""
 		Send a HEAD request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD
 
-		:param kwargs: Optional arguments that :func:`requests.request` takes.
+		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 			If `allow_redirects` is not provided, it will be set to `False`
 			(as opposed to the default :func:`requests.request` behavior).
 		"""
@@ -108,7 +108,7 @@ class RequestsURL(URL):
 		return self.session.head(str(self), **kwargs)
 
 	def post(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
-		"""
+		r"""
 		Send a POST request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
@@ -116,13 +116,13 @@ class RequestsURL(URL):
 		:param data: (optional) Dictionary, list of tuples, bytes, or file-like
 			object to send in the body of the :class:`requests.Request`.
 		:param json: (optional) json data to send in the body of the :class:`requests.Request`.
-		:param kwargs: Optional arguments that :func:`requests.request` takes.
+		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
 		return self.session.post(str(self), data=data, json=json, **kwargs)
 
 	def put(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
-		"""
+		r"""
 		Send a PUT request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
@@ -130,13 +130,13 @@ class RequestsURL(URL):
 		:param data: (optional) Dictionary, list of tuples, bytes, or file-like
 			object to send in the body of the :class:`requests.Request`.
 		:param json: (optional) json data to send in the body of the :class:`requests.Request`.
-		:param kwargs: Optional arguments that :func:`requests.request` takes.
+		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
 		return self.session.put(str(self), data=data, json=json, **kwargs)
 
 	def patch(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
-		"""
+		r"""
 		Send a PATCH request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH
@@ -144,18 +144,18 @@ class RequestsURL(URL):
 		:param data: (optional) Dictionary, list of tuples, bytes, or file-like
 			object to send in the body of the :class:`requests.Request`.
 		:param json: (optional) json data to send in the body of the :class:`requests.Request`.
-		:param kwargs: Optional arguments that :func:`requests.request` takes.
+		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
 		return self.session.patch(str(self), data=data, json=json, **kwargs)
 
 	def delete(self, **kwargs) -> requests.Response:
-		"""
+		r"""
 		Send a DELETE request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 
-		:param kwargs: Optional arguments that :func:`requests.request` takes.
+		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
 		return self.session.delete(str(self), **kwargs)
