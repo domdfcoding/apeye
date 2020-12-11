@@ -101,7 +101,7 @@ class TestUrlPath:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and .*"):
 				URLPath() / obj  # pylint: disable=expression-not-assigned
 
-	@pytest.mark.parametrize("obj", [1234, 12.34, [], (), {}, set(), pytest.raises, ABC, ])
+	@pytest.mark.parametrize("obj", [1234, 12.34, [], (), {}, set(), pytest.raises, ABC])
 	def test_rtruediv_typerror(self, obj):
 		if sys.version_info < (3, 8):
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not .*"):
