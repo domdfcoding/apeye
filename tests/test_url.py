@@ -14,6 +14,7 @@ import requests
 from domdf_python_tools.testing import count
 
 # this package
+from apeye.requests_url import TrailingRequestsURL
 from apeye.url import URL, Domain, RequestsURL, SlumberURL, URLPath
 
 
@@ -634,3 +635,35 @@ def test_subclass__eq__():
 	assert RequestsURL("bbc.co.uk") == SlumberURL("bbc.co.uk")
 	assert RequestsURL("https://bbc.co.uk") == SlumberURL("https://bbc.co.uk")
 	assert RequestsURL("bbc.co.uk/news") == SlumberURL("bbc.co.uk/news")
+
+
+class TestTrailingRequestsURL(TestRequestsURL):
+
+	_class = TrailingRequestsURL
+
+	@pytest.mark.parametrize(
+			"url, expects",
+			[
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes/player/",
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes/player/"
+							),
+					(
+							"www.bbc.co.uk/programmes/b006qtlx/episodes/player/",
+							"www.bbc.co.uk/programmes/b006qtlx/episodes/player/"
+							),
+					("www.bbc.co.uk", "www.bbc.co.uk/"),
+					("/programmes/b006qtlx/episodes/player", "/programmes/b006qtlx/episodes/player/"),
+					("programmes/b006qtlx/episodes/player", "programmes/b006qtlx/episodes/player/"),
+					(
+							"https://127.0.0.1/programmes/b006qtlx/episodes/player",
+							"https://127.0.0.1/programmes/b006qtlx/episodes/player/"
+							),
+					(
+							"ftp://127.0.0.1/programmes/b006qtlx/episodes/player",
+							"ftp://127.0.0.1/programmes/b006qtlx/episodes/player/"
+							),
+					]
+			)
+	def test_str(self, url, expects):
+		assert str(self._class(url)) == expects

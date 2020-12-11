@@ -38,7 +38,7 @@ import requests
 # this package
 from apeye._url import URL
 
-__all__ = ["RequestsURL"]
+__all__ = ["RequestsURL", "TrailingRequestsURL"]
 
 _ParamsMappingValueType = Union[str, bytes, int, float, Iterable[Union[str, bytes, int, float]]]
 _Data = Union[None, str, bytes, MutableMapping[str, Any], Iterable[Tuple[str, Optional[str]]], IO]
@@ -181,3 +181,20 @@ class RequestsURL(URL):
 			new_obj.session = self.session
 
 		return new_obj
+
+
+class TrailingRequestsURL(RequestsURL):
+	"""
+	Extension of :class:`~apeye.requests_url.RequestsURL` which adds a trailing slash to the end of the URL.
+
+	:param url: The url to construct the :class:`~apeye.url.URL` object from.
+
+	.. versionadded:: 0.5.0
+	"""
+
+	def __str__(self) -> str:
+		"""
+		Returns the :class:`~.TrailingRequestsURL` as a string.
+		"""
+
+		return super().__str__() + '/'
