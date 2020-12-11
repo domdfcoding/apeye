@@ -20,21 +20,26 @@ from apeye.url import URL, Domain, RequestsURL, SlumberURL, URLPath
 
 class TestUrlPath:
 
-	@pytest.mark.parametrize("value", [
-			"/watch?v=NG21KWZSiok",
-			"watch?v=NG21KWZSiok",
-			'',
-			"/programmes/b006qtlx/episodes/player",
-			])
+	@pytest.mark.parametrize(
+			"value", [
+					"/watch?v=NG21KWZSiok",
+					"watch?v=NG21KWZSiok",
+					'',
+					"/programmes/b006qtlx/episodes/player",
+					]
+			)
 	def test_str(self, value):
 		assert str(URLPath(value)) == value
 
-	@pytest.mark.parametrize("value, expects", [
-			("/watch?v=NG21KWZSiok", "URLPath('/watch?v=NG21KWZSiok')"),
-			("watch?v=NG21KWZSiok", "URLPath('watch?v=NG21KWZSiok')"),
-			('', "URLPath('')"),
-			("/programmes/b006qtlx/episodes/player", "URLPath('/programmes/b006qtlx/episodes/player')"),
-			])
+	@pytest.mark.parametrize(
+			"value, expects",
+			[
+					("/watch?v=NG21KWZSiok", "URLPath('/watch?v=NG21KWZSiok')"),
+					("watch?v=NG21KWZSiok", "URLPath('watch?v=NG21KWZSiok')"),
+					('', "URLPath('')"),
+					("/programmes/b006qtlx/episodes/player", "URLPath('/programmes/b006qtlx/episodes/player')"),
+					]
+			)
 	def test_repr(self, value, expects):
 		assert repr(URLPath(value)) == expects
 
@@ -62,12 +67,15 @@ class TestUrlPath:
 		with pytest.raises(NotImplementedError):
 			URLPath().drive  # pylint: disable=expression-not-assigned
 
-	@pytest.mark.parametrize("value, expects", [
-			(URLPath() / "news", URLPath("news")),
-			(URLPath('/') / "news", URLPath("/news")),
-			(URLPath("/programmes") / "b006qtlx", URLPath("/programmes/b006qtlx")),
-			("/programmes" / URLPath("b006qtlx"), URLPath("/programmes/b006qtlx")),
-			])
+	@pytest.mark.parametrize(
+			"value, expects",
+			[
+					(URLPath() / "news", URLPath("news")),
+					(URLPath('/') / "news", URLPath("/news")),
+					(URLPath("/programmes") / "b006qtlx", URLPath("/programmes/b006qtlx")),
+					("/programmes" / URLPath("b006qtlx"), URLPath("/programmes/b006qtlx")),
+					]
+			)
 	def test_division(self, value, expects):
 		assert value == expects
 
@@ -177,12 +185,12 @@ class _TestURL(ABC):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: '.*' and 'float'"):
 			self._class() / float(count)  # pylint: disable=expression-not-assigned
 
-	@pytest.mark.parametrize("obj", [[], (), {}, set(), pytest.raises, ABC, ])
+	@pytest.mark.parametrize("obj", [[], (), {}, set(), pytest.raises, ABC])
 	def test_division_errors(self, obj):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: '.*' and .*"):
 			self._class() / obj  # pylint: disable=expression-not-assigned
 
-	@pytest.mark.parametrize("obj", [1234, 12.34, "abcdefg", [], (), {}, set(), pytest.raises, ABC, ])
+	@pytest.mark.parametrize("obj", [1234, 12.34, "abcdefg", [], (), {}, set(), pytest.raises, ABC])
 	def test_rtruediv_typerror(self, obj):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: .* and '.*'"):
 			obj / self._class()  # pylint: disable=expression-not-assigned
@@ -226,8 +234,7 @@ class _TestURL(ABC):
 					("https://imgs.xkcd.com/comics/workflow.png", [".png"]),
 					(
 							"https://github.com/domdfcoding/domdf_python_tools/releases/download/"
-							"v0.4.8/domdf_python_tools-0.4.8.tar.gz",
-							[".4", ".8", ".tar", ".gz"]
+							"v0.4.8/domdf_python_tools-0.4.8.tar.gz", [".4", ".8", ".tar", ".gz"]
 							),
 					]
 			)
@@ -458,12 +465,12 @@ class TestSlumberURL(_TestURL):
 	def test_post(self):
 		assert self.base / "posts" == URL("https://jsonplaceholder.typicode.com/posts")
 		expected = {"body": "bar", "userId": 1, "id": 101, "title": "foo"}
-		assert (self.base / "posts").post({"title": "foo", "body": "bar", "userId": 1}, ) == expected
+		assert (self.base / "posts").post({"title": "foo", "body": "bar", "userId": 1}) == expected
 
 	def test_put(self):
 		assert self.base / "posts" / '1' == URL("https://jsonplaceholder.typicode.com/posts/1")
 		expected = {"body": "bar", "userId": 1, "id": 1, "title": "foo"}
-		assert (self.base / "posts" / '1').put({"title": "foo", "body": "bar", "userId": 1}, ) == expected
+		assert (self.base / "posts" / '1').put({"title": "foo", "body": "bar", "userId": 1}) == expected
 
 	def test_patch(self):
 		body = dedent(
@@ -474,7 +481,7 @@ class TestSlumberURL(_TestURL):
 		nostrum rerum est autem sunt rem eveniet architecto"""
 				)
 
-		expected = {"body": body, "userId": 1, "id": 1, "title": "foo",}
+		expected = {"body": body, "userId": 1, "id": 1, "title": "foo"}
 		assert (self.base / "posts" / '1').patch({"title": "foo"}) == expected
 
 	def test_delete(self):
