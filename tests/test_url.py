@@ -19,19 +19,23 @@ from apeye.url import URL, Domain, RequestsURL, SlumberURL, URLPath
 
 class TestUrlPath:
 
-	def test_str(self):
-		assert str(URLPath("/watch?v=NG21KWZSiok")) == "/watch?v=NG21KWZSiok"
-		assert str(URLPath("watch?v=NG21KWZSiok")) == "watch?v=NG21KWZSiok"
-		assert str(URLPath('')) == ''
-		assert str(URLPath("/programmes/b006qtlx/episodes/player")) == "/programmes/b006qtlx/episodes/player"
+	@pytest.mark.parametrize("value", [
+			"/watch?v=NG21KWZSiok",
+			"watch?v=NG21KWZSiok",
+			'',
+			"/programmes/b006qtlx/episodes/player",
+			])
+	def test_str(self, value):
+		assert str(URLPath(value)) == value
 
-	def test_repr(self):
-		assert repr(URLPath("/watch?v=NG21KWZSiok")) == "URLPath('/watch?v=NG21KWZSiok')"
-		assert repr(URLPath("watch?v=NG21KWZSiok")) == "URLPath('watch?v=NG21KWZSiok')"
-		assert repr(URLPath('')) == "URLPath('')"
-		assert repr(
-				URLPath("/programmes/b006qtlx/episodes/player")
-				) == "URLPath('/programmes/b006qtlx/episodes/player')"
+	@pytest.mark.parametrize("value, expects", [
+			("/watch?v=NG21KWZSiok", "URLPath('/watch?v=NG21KWZSiok')"),
+			("watch?v=NG21KWZSiok", "URLPath('watch?v=NG21KWZSiok')"),
+			('', "URLPath('')"),
+			("/programmes/b006qtlx/episodes/player", "URLPath('/programmes/b006qtlx/episodes/player')"),
+			])
+	def test_repr(self, value, expects):
+		assert repr(URLPath(value)) == expects
 
 	@pytest.mark.parametrize(
 			"method",
@@ -57,11 +61,14 @@ class TestUrlPath:
 		with pytest.raises(NotImplementedError):
 			URLPath().drive  # pylint: disable=expression-not-assigned
 
-	def test_division(self):
-		assert URLPath() / "news" == URLPath("news")
-		assert URLPath('/') / "news" == URLPath("/news")
-		assert URLPath("/programmes") / "b006qtlx" == URLPath("/programmes/b006qtlx")
-		assert "/programmes" / URLPath("b006qtlx") == URLPath("/programmes/b006qtlx")
+	@pytest.mark.parametrize("value, expects", [
+			(URLPath() / "news", URLPath("news")),
+			(URLPath('/') / "news", URLPath("/news")),
+			(URLPath("/programmes") / "b006qtlx", URLPath("/programmes/b006qtlx")),
+			("/programmes" / URLPath("b006qtlx"), URLPath("/programmes/b006qtlx")),
+			])
+	def test_division(self, value, expects):
+		assert value == expects
 
 	@count(100)
 	def test_division_errors_number(self, count: int):
@@ -76,14 +83,7 @@ class TestUrlPath:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and 'float'"):
 				URLPath() / float(count)  # pylint: disable=expression-not-assigned
 
-	@pytest.mark.parametrize("obj", [
-			[],
-			(),
-			{},
-			set(),
-			pytest.raises,
-			ABC,
-			])
+	@pytest.mark.parametrize("obj", [[], (), {}, set(), pytest.raises, ABC])
 	def test_division_errors(self, obj):
 		if sys.version_info < (3, 8):
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not .*"):
@@ -92,16 +92,7 @@ class TestUrlPath:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and .*"):
 				URLPath() / obj  # pylint: disable=expression-not-assigned
 
-	@pytest.mark.parametrize("obj", [
-			1234,
-			12.34,
-			[],
-			(),
-			{},
-			set(),
-			pytest.raises,
-			ABC,
-			])
+	@pytest.mark.parametrize("obj", [1234, 12.34, [], (), {}, set(), pytest.raises, ABC, ])
 	def test_rtruediv_typerror(self, obj):
 		if sys.version_info < (3, 8):
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not .*"):
@@ -154,39 +145,28 @@ class _TestURL(ABC):
 		assert url.path == path
 
 	@pytest.mark.parametrize(
-			"url, expects",
+			"url",
 			[
-					(
-							"https://www.bbc.co.uk/programmes/b006qtlx/episodes/player",
-							"https://www.bbc.co.uk/programmes/b006qtlx/episodes/player"
-							),
-					(
-							"www.bbc.co.uk/programmes/b006qtlx/episodes/player",
-							"www.bbc.co.uk/programmes/b006qtlx/episodes/player"
-							),
-					("www.bbc.co.uk", "www.bbc.co.uk"),
-					("/programmes/b006qtlx/episodes/player", "/programmes/b006qtlx/episodes/player"),
-					("programmes/b006qtlx/episodes/player", "programmes/b006qtlx/episodes/player"),
-					(
-							"https://127.0.0.1/programmes/b006qtlx/episodes/player",
-							"https://127.0.0.1/programmes/b006qtlx/episodes/player"
-							),
-					(
-							"ftp://127.0.0.1/programmes/b006qtlx/episodes/player",
-							"ftp://127.0.0.1/programmes/b006qtlx/episodes/player"
-							),
+					"https://www.bbc.co.uk/programmes/b006qtlx/episodes/player",
+					"www.bbc.co.uk/programmes/b006qtlx/episodes/player",
+					"www.bbc.co.uk",
+					"/programmes/b006qtlx/episodes/player",
+					"programmes/b006qtlx/episodes/player",
+					"https://127.0.0.1/programmes/b006qtlx/episodes/player",
+					"ftp://127.0.0.1/programmes/b006qtlx/episodes/player",
 					]
 			)
-	def test_str(self, url, expects):
-		assert str(self._class(url)) == expects
+	def test_str(self, url):
+		assert str(self._class(url)) == url
 
 	def test_division(self):
-		assert self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes") / "player" == self._class(
-				"https://www.bbc.co.uk/programmes/b006qtlx/episodes/player"
-				)
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes") / "player"
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes/player")
+
+		value = self._class("/programmes/b006qtlx/episodes") / "player"
+		assert value == self._class("/programmes/b006qtlx/episodes/player")
+
 		assert self._class("www.bbc.co.uk") / "news" == self._class("www.bbc.co.uk/news")
-		assert self._class("/programmes/b006qtlx/episodes"
-							) / "player" == self._class("/programmes/b006qtlx/episodes/player")
 		assert self._class() / "news" == self._class("/news")
 
 	@count(100)
@@ -196,29 +176,12 @@ class _TestURL(ABC):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: '.*' and 'float'"):
 			self._class() / float(count)  # pylint: disable=expression-not-assigned
 
-	@pytest.mark.parametrize("obj", [
-			[],
-			(),
-			{},
-			set(),
-			pytest.raises,
-			ABC,
-			])
+	@pytest.mark.parametrize("obj", [[], (), {}, set(), pytest.raises, ABC, ])
 	def test_division_errors(self, obj):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: '.*' and .*"):
 			self._class() / obj  # pylint: disable=expression-not-assigned
 
-	@pytest.mark.parametrize("obj", [
-			1234,
-			12.34,
-			"abcdefg",
-			[],
-			(),
-			{},
-			set(),
-			pytest.raises,
-			ABC,
-			])
+	@pytest.mark.parametrize("obj", [1234, 12.34, "abcdefg", [], (), {}, set(), pytest.raises, ABC, ])
 	def test_rtruediv_typerror(self, obj):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: .* and '.*'"):
 			obj / self._class()  # pylint: disable=expression-not-assigned
@@ -261,7 +224,8 @@ class _TestURL(ABC):
 					("/programmes/b006qtlx/episodes", []),
 					("https://imgs.xkcd.com/comics/workflow.png", [".png"]),
 					(
-							"https://github.com/domdfcoding/domdf_python_tools/releases/download/v0.4.8/domdf_python_tools-0.4.8.tar.gz",
+							"https://github.com/domdfcoding/domdf_python_tools/releases/download/"
+							"v0.4.8/domdf_python_tools-0.4.8.tar.gz",
 							[".4", ".8", ".tar", ".gz"]
 							),
 					]
@@ -286,27 +250,29 @@ class _TestURL(ABC):
 		assert self._class(url).stem == stem
 
 	def test_with_name(self):
-		assert self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes"
-							).with_name("foo") == self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo")
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").with_name("foo")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo")
+
+		value = self._class("/programmes/b006qtlx/episodes").with_name("foo")
+		assert value == self._class("/programmes/b006qtlx/foo")
+
+		value = self._class("https://imgs.xkcd.com/comics/workflow.png").with_name("baz")
+		assert value == self._class("https://imgs.xkcd.com/comics/baz")
 
 		with pytest.raises(ValueError, match=r"URLPath\(''\) has an empty name"):
 			self._class("www.bbc.co.uk").with_name("bar")
 		with pytest.raises(ValueError, match=r"URLPath\(''\) has an empty name"):
 			self._class().with_name("bar")
 
-		assert self._class("/programmes/b006qtlx/episodes").with_name("foo"
-																		) == self._class("/programmes/b006qtlx/foo")
-		assert self._class("https://imgs.xkcd.com/comics/workflow.png"
-							).with_name("baz") == self._class("https://imgs.xkcd.com/comics/baz")
-
 	def test_with_suffix(self):
-		assert self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").with_suffix(
-				".foo"
-				) == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo")
-		assert self._class("/programmes/b006qtlx/episodes"
-							).with_suffix(".foo") == self._class("/programmes/b006qtlx/episodes.foo")
-		assert self._class("https://imgs.xkcd.com/comics/workflow.png"
-							).with_suffix(".baz") == self._class("https://imgs.xkcd.com/comics/workflow.baz")
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").with_suffix(".foo")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo")
+
+		value = self._class("/programmes/b006qtlx/episodes").with_suffix(".foo")
+		assert value == self._class("/programmes/b006qtlx/episodes.foo")
+
+		value = self._class("https://imgs.xkcd.com/comics/workflow.png").with_suffix(".baz")
+		assert value == self._class("https://imgs.xkcd.com/comics/workflow.baz")
 
 	@pytest.mark.parametrize(
 			"url, parent",
@@ -353,18 +319,9 @@ class _TestURL(ABC):
 	@pytest.mark.parametrize(
 			"url, expects",
 			[
-					(
-							"bbc.co.uk/news",
-							"bbc.co.uk/news",
-							),
-					(
-							"https://bbc.co.uk/news",
-							"bbc.co.uk/news",
-							),
-					(
-							"https://www.bbc.co.uk/news",
-							"www.bbc.co.uk/news",
-							),
+					("bbc.co.uk/news", "bbc.co.uk/news"),
+					("https://bbc.co.uk/news", "bbc.co.uk/news"),
+					("https://www.bbc.co.uk/news", "www.bbc.co.uk/news"),
 					]
 			)
 	def test_cast_to_pathlib(self, url, expects):
@@ -373,18 +330,9 @@ class _TestURL(ABC):
 	@pytest.mark.parametrize(
 			"url, expects",
 			[
-					(
-							"bbc.co.uk/news",
-							"bbc.co.uk/news",
-							),
-					(
-							"https://bbc.co.uk/news",
-							"bbc.co.uk/news",
-							),
-					(
-							"https://www.bbc.co.uk/news",
-							"www.bbc.co.uk/news",
-							),
+					("bbc.co.uk/news", "bbc.co.uk/news"),
+					("https://bbc.co.uk/news", "bbc.co.uk/news"),
+					("https://www.bbc.co.uk/news", "www.bbc.co.uk/news"),
 					]
 			)
 	def test_fspath(self, url, expects):
@@ -461,7 +409,7 @@ class TestUrl(_TestURL):
 		assert isinstance(URL(), URL)
 		assert isinstance(URL(), os.PathLike)  # type: ignore
 
-	def test___eq__(self):
+	def test_equality(self):
 		assert URL() == URL()
 		assert URL("bbc.co.uk") == URL("bbc.co.uk")
 		assert URL("https://bbc.co.uk") == URL("https://bbc.co.uk")
@@ -508,15 +456,13 @@ class TestSlumberURL(_TestURL):
 
 	def test_post(self):
 		assert self.base / "posts" == URL("https://jsonplaceholder.typicode.com/posts")
-		assert (self.base / "posts").post({"title": "foo", "body": "bar", "userId": 1}, ) == {
-				"body": "bar", "userId": 1, "id": 101, "title": "foo"
-				}
+		expected = {"body": "bar", "userId": 1, "id": 101, "title": "foo"}
+		assert (self.base / "posts").post({"title": "foo", "body": "bar", "userId": 1}, ) == expected
 
 	def test_put(self):
 		assert self.base / "posts" / '1' == URL("https://jsonplaceholder.typicode.com/posts/1")
-		assert (self.base / "posts" / '1').put({"title": "foo", "body": "bar", "userId": 1}, ) == {
-				"body": "bar", "userId": 1, "id": 1, "title": "foo"
-				}
+		expected = {"body": "bar", "userId": 1, "id": 1, "title": "foo"}
+		assert (self.base / "posts" / '1').put({"title": "foo", "body": "bar", "userId": 1}, ) == expected
 
 	def test_patch(self):
 		body = dedent(
@@ -527,20 +473,13 @@ class TestSlumberURL(_TestURL):
 		nostrum rerum est autem sunt rem eveniet architecto"""
 				)
 
-		assert (self.base / "posts" / '1').patch({
-				"title": "foo",
-				}) == {
-						"body": body,
-						"userId": 1,
-						"id": 1,
-						"title": "foo",
-						}
+		expected = {"body": body, "userId": 1, "id": 1, "title": "foo",}
+		assert (self.base / "posts" / '1').patch({"title": "foo"}) == expected
 
 	def test_delete(self):
 		assert (self.base / "posts" / '1').delete()
 
-	def test___eq__(self):
-
+	def test_equality(self):
 		assert SlumberURL() == SlumberURL()
 		assert URL() == SlumberURL()
 
@@ -619,47 +558,46 @@ class TestRequestsURL(_TestURL):
 		httpserver.expect_request("/testing_get", method="GET").respond_with_json("GET request succeeded")
 		assert RequestsURL(httpserver.url_for("/testing_get")).get().json() == "GET request succeeded"
 
-		httpserver.expect_request(
-				"/testing_post", method="POST", data="This is a POST request"
-				).respond_with_json("POST request succeeded")
-		assert RequestsURL(httpserver.url_for("/testing_post")).post(data="This is a POST request"
-																		).json() == "POST request succeeded"
+		def setup_response(method):
+			route = f"/testing_{method.lower()}"
+			data = f"This is a {method} request"
+			response = f"{method} request succeeded"
+			expect_request = httpserver.expect_request(route, method=method, data=data)
+			expect_request.respond_with_json(response)
+			return httpserver.url_for(route), data, response
 
-		httpserver.expect_request(
-				"/testing_put", method="PUT", data="This is a PUT request"
-				).respond_with_json("PUT request succeeded")
-		assert RequestsURL(httpserver.url_for("/testing_put")).put(data="This is a PUT request"
-																	).json() == "PUT request succeeded"
+		route, data, response = setup_response("POST")
+		assert RequestsURL(route).post(data=data).json() == response
 
-		httpserver.expect_request(
-				"/testing_patch", method="PATCH", data="This is a PATCH request"
-				).respond_with_json("PATCH request succeeded")
-		assert RequestsURL(httpserver.url_for("/testing_patch")).patch(data="This is a PATCH request"
-																		).json() == "PATCH request succeeded"
+		route, data, response = setup_response("PUT")
+		assert RequestsURL(route).put(data=data).json() == response
 
-		httpserver.expect_request(
-				"/testing_delete", method="DELETE", data="This is a DELETE request"
-				).respond_with_json("DELETE failed successfully")
-		assert RequestsURL(httpserver.url_for("/testing_delete")).delete(data="This is a DELETE request"
-																			).json() == "DELETE failed successfully"
+		route, data, response = setup_response("PATCH")
+		assert RequestsURL(route).patch(data=data).json() == response
 
-		httpserver.expect_request(
-				"/testing_options", method="OPTIONS", data="This is a OPTIONS request"
-				).respond_with_json("OPTIONS request succeeded")
-		headers = RequestsURL(httpserver.url_for("/testing_options")
-								).options(data="This is a OPTIONS request").json() == "OPTIONS request succeeded"
+		route, data, response = setup_response("OPTIONS")
+		assert RequestsURL(route).options(data=data).json() == response
 
+		method = "DELETE"
+		route = f"/testing_{method.lower()}"
+		data = f"This is a {method} request"
+		response = f"{method} failed successfully"
+		expect_request = httpserver.expect_request(route, method=method, data=data)
+		expect_request.respond_with_json(response)
+		assert RequestsURL(httpserver.url_for(route)).delete(data=data).json() == response
+
+		method = "HEAD"
+		route = f"/testing_{method.lower()}"
+		data = f"This is a {method} request"
 		test_string = "HEAD request succeeded"
-		httpserver.expect_request(
-				"/testing_head", method="HEAD", data="This is a HEAD request"
-				).respond_with_json(test_string)
-		headers = RequestsURL(httpserver.url_for("/testing_head")).head(data="This is a HEAD request").headers
+		httpserver.expect_request(route, method=method, data=data).respond_with_json(test_string)
+		headers = RequestsURL(httpserver.url_for(route)).head(data=data).headers
 		assert headers["Content-Type"] == "application/json"
 		assert headers["Content-Length"] == str(len(repr(test_string)))
 		assert headers["Server"].startswith("Werkzeug")
 		assert "Date" in headers
 
-	def test___eq__(self):
+	def test_equality(self):
 
 		assert RequestsURL() == RequestsURL()
 		assert URL() == RequestsURL()
