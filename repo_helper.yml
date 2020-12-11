@@ -32,3 +32,5 @@ keywords:
  - requests
  - cache
  - rest
+
+sphinx_html_theme: furo
