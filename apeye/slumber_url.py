@@ -251,7 +251,7 @@ class SerializerRegistry:
 	def loads(
 			self,
 			data: str,
-			format: Optional[str] = None,  # noqa: A002
+			format: Optional[str] = None,  # noqa: A002  # pylint: disable=redefined-builtin
 			) -> MutableMapping[str, Any]:
 		"""
 		Deserialize data of the given format.
@@ -266,7 +266,7 @@ class SerializerRegistry:
 	def dumps(
 			self,
 			data: Mapping[str, Any],
-			format: Optional[str] = None,  # noqa: A002
+			format: Optional[str] = None,  # noqa: A002  # pylint: disable=redefined-builtin
 			) -> str:
 		"""
 		Serialize data of the given format.
@@ -278,7 +278,10 @@ class SerializerRegistry:
 		s = self.get_serializer(format)
 		return s.dumps(data)
 
-	def get_content_type(self, format: Optional[str] = None):  # noqa: A002
+	def get_content_type(
+			self,
+			format: Optional[str] = None,  # noqa: A002  # pylint: disable=redefined-builtin
+			):
 		"""
 		Returns the content type for the serializer that supports the given format.
 
@@ -347,8 +350,8 @@ class SlumberURL(URL):
 			self,
 			url: Union[str, URL] = '',
 			auth: Union[None, Tuple[str, str], AuthBase, Callable[[Request], Request]] = None,
-			format: str = "json",  # noqa: A002
-			append_slash=True,
+			format: str = "json",  # noqa: A002  # pylint: disable=redefined-builtin
+			append_slash: bool = True,
 			session=None,
 			serializer: Optional[SerializerRegistry] = None,
 			*,
@@ -451,11 +454,11 @@ class SlumberURL(URL):
 			except SerializerNotAvailable:
 				return resp.content
 
-			if type(resp.content) == bytes:
+			if isinstance(resp.content, bytes):
 				try:
 					encoding = guess_json_utf(resp.content)
 					return stype.loads(resp.content.decode(encoding))
-				except:
+				except Exception:
 					return resp.content
 			return stype.loads(resp.content)
 		else:
