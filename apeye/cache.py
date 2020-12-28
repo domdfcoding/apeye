@@ -74,7 +74,6 @@ class Cache:
 				shutil.rmtree(self.cache_dir)
 				self.cache_dir.maybe_make()
 				for function in self.caches:
-					del self.caches[function]
 					self.caches[function] = {}
 			else:
 				function_name = func.__name__
