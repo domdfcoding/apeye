@@ -3,6 +3,8 @@
 #  cache.py
 """
 Caching functions for functions.
+
+.. seealso:: The `cachier project <https://pypi.org/project/cachier/>`_
 """
 #
 #  Copyright (c) 2020 Dominic Davis-Foster <dominic@davis-foster.co.uk>
