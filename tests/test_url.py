@@ -520,9 +520,8 @@ class TestSlumberURL(_TestURL):
 		l_url.verify = "verify"
 		new_url = l_url / "news"
 		assert new_url._store == l_url._store
-		assert new_url._store["session"] is l_url._store["session"]
-		assert new_url._store["session"] is sess
-		assert new_url._store["session"].auth == l_url._store["session"].auth == ("username", "password")
+		assert new_url.session is sess is l_url.session is l_url._store["session"]
+		assert new_url.session.auth == l_url.session.auth == ("username", "password")
 		assert new_url._store["format"] == l_url._store["format"] == "XML"
 		assert new_url.timeout == 42
 		assert new_url.cert == "cert"

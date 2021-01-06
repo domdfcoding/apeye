@@ -66,6 +66,11 @@ class RequestsURL(URL):
 		The ``url`` parameter can now be a string or a :class:`~.URL`.
 	"""  # noqa: D400
 
+	session: requests.Session
+	"""
+	The underlying requests session.
+	"""
+
 	def __init__(self, url: Union[str, URL] = ''):
 		super().__init__(url)
 		self.session = requests.Session()

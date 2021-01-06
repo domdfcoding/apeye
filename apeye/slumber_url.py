@@ -325,7 +325,18 @@ class SlumberURL(URL):
 	"""  # noqa: D400
 
 	serializer: SerializerRegistry
+	"""
+	The serializer used to (de)serialize the data when interacting with the API.
+
+	.. versionadded:: 0.6.0
+	"""
+
 	session: requests.Session
+	"""
+	The underlying requests session.
+
+	.. versionadded:: 0.6.0
+	"""
 
 	#: How long to wait for the server to send data before giving up.
 	timeout: Union[None, float, Tuple[float, float], Tuple[float, None]]
@@ -369,14 +380,17 @@ class SlumberURL(URL):
 		if session is None:
 			session = requests.session()
 
+		self.serializer = serializer
+		self.session = session
+
 		if auth is not None:
-			session.auth = auth
+			self.session.auth = auth
 
 		self._store = {
 				"format": format if format is not None else "json",
 				"append_slash": append_slash,
-				"session": session,
-				"serializer": serializer,
+				"session": self.session,
+				"serializer": self.serializer,
 				}
 
 		self.timeout = timeout
@@ -398,7 +412,7 @@ class SlumberURL(URL):
 		return url
 
 	def _request(self, method, data=None, files=None, params=None):
-		serializer = self._store["serializer"]
+		serializer = self.serializer
 		url = self.url()
 
 		headers = {"accept": serializer.get_content_type()}
@@ -408,7 +422,7 @@ class SlumberURL(URL):
 			if data is not None:
 				data = serializer.dumps(data)
 
-		resp = self._store["session"].request(
+		resp = self.session.request(
 				method,
 				url,
 				data=data,
@@ -442,7 +456,7 @@ class SlumberURL(URL):
 		return resp
 
 	def _try_to_serialize_response(self, resp):
-		s = self._store["serializer"]
+		s = self.serializer
 		if resp.status_code in [204, 205]:
 			return
 
@@ -572,7 +586,7 @@ class SlumberURL(URL):
 
 	def __del__(self):
 		try:
-			self._store["session"].close()
+			self.session.close()
 		except Exception:
 			pass
 
@@ -585,7 +599,7 @@ class SlumberURL(URL):
 		:param kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
-		return self._store["session"].options(str(self), **kwargs).headers.get("Allow", '')
+		return self.session.options(str(self), **kwargs).headers.get("Allow", '')
 
 	def head(self, **kwargs) -> CaseInsensitiveDict:
 		"""
@@ -598,7 +612,7 @@ class SlumberURL(URL):
 			(as opposed to the default :func:`requests.request` behavior).
 		"""
 
-		return self._store["session"].head(str(self), **kwargs).headers
+		return self.session.head(str(self), **kwargs).headers
 
 	def __truediv__(self, other):
 		"""
@@ -609,6 +623,8 @@ class SlumberURL(URL):
 
 		if new_obj is not NotImplemented:
 			new_obj._store = copy.copy(self._store)
+			new_obj.serializer = self.serializer
+			new_obj.session = self.session
 			new_obj.timeout = self.timeout
 			new_obj.allow_redirects = self.allow_redirects
 			new_obj.proxies = self.proxies
