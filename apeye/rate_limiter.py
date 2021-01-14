@@ -53,6 +53,12 @@ __all__ = [
 		"HTTPCache",
 		]
 
+# Fixes intersphinx links
+requests.PreparedRequest.__module__ = "requests"
+requests.Response.__module__ = "requests"
+requests.Request.__module__ = "requests"
+requests.Session.__module__ = "requests"
+
 
 def rate_limit(min_time: float = 0.2, logger: Optional[logging.Logger] = None) -> Callable[[Callable], Any]:
 	"""
@@ -117,7 +123,7 @@ class RateLimitAdapter(CacheControlAdapter):
 		Send a request. Use the request information to see if it
 		exists in the cache and cache the response if we need to and can.
 
-		:param request: The :class:`requests.models.PreparedRequest` being sent.
+		:param request: The :class:`requests.PreparedRequest` being sent.
 		:param cacheable_methods:
 		:param kwargs: Additional arguments take by :meth:`requests.adapters.HTTPAdapter.send`.
 		"""  # noqa: D400

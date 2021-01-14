@@ -83,7 +83,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
 
-		:param params: (optional) Dictionary, list of tuples or bytes to send
+		:param params: Dictionary, list of tuples or bytes to send
 			in the query string for the :class:`requests.Request`.
 		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
@@ -120,9 +120,9 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
 
-		:param data: (optional) Dictionary, list of tuples, bytes, or file-like
+		:param data: Dictionary, list of tuples, bytes, or file-like
 			object to send in the body of the :class:`requests.Request`.
-		:param json: (optional) json data to send in the body of the :class:`requests.Request`.
+		:param json: json data to send in the body of the :class:`requests.Request`.
 		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
@@ -134,9 +134,9 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
 
-		:param data: (optional) Dictionary, list of tuples, bytes, or file-like
+		:param data: Dictionary, list of tuples, bytes, or file-like
 			object to send in the body of the :class:`requests.Request`.
-		:param json: (optional) json data to send in the body of the :class:`requests.Request`.
+		:param json: json data to send in the body of the :class:`requests.Request`.
 		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
@@ -148,9 +148,9 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH
 
-		:param data: (optional) Dictionary, list of tuples, bytes, or file-like
+		:param data: Dictionary, list of tuples, bytes, or file-like
 			object to send in the body of the :class:`requests.Request`.
-		:param json: (optional) json data to send in the body of the :class:`requests.Request`.
+		:param json: json data to send in the body of the :class:`requests.Request`.
 		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 

@@ -322,7 +322,6 @@ class URL(os.PathLike):
 		return Domain(extract.subdomain, extract.domain, extract.suffix)
 
 
-@prettify_docstrings
 class Domain(tldextract.tldextract.ExtractResult):  # noqa: D101
 	subdomain: str
 	domain: str
@@ -344,3 +343,10 @@ class Domain(tldextract.tldextract.ExtractResult):  # noqa: D101
 		if not (self.suffix or self.subdomain) and IP_RE.match(self.domain):
 			return ipaddress.ip_address(self.domain)
 		return None
+
+	def __repr__(self) -> str:
+		"""
+		Return a string representation of the :class:`~.Domain`.
+		"""
+
+		return super().__repr__()
