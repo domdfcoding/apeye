@@ -50,7 +50,8 @@ _ParamsType = Union[
 	]
 
 
-class RequestsURL(URL):
+# Ignore the LGTM warning as the "session" attribute should **not** affect equality.
+class RequestsURL(URL):  # lgtm [py/missing-equals]
 	"""
 	Extension of :class:`~apeye.url.URL` with support for interacting with the website using the
 	`Requests <https://requests.readthedocs.io>`__ library.

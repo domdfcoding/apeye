@@ -292,7 +292,9 @@ class SerializerRegistry:
 		return s.get_content_type()
 
 
-class SlumberURL(URL):
+# Ignore the LGTM warning as the "session" etc. attributes should **not** affect equality.
+# Equality should only consider the URL, not its attributes.
+class SlumberURL(URL):  # lgtm [py/missing-equals]
 	"""
 	Subclass of :class:`~apeye.url.URL` with support for interacting with
 	REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and
