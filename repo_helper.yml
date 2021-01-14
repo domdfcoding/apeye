@@ -10,7 +10,6 @@ license: 'LGPLv3+'
 short_desc: 'Handy tools for working with URLs and APIs.'
 
 conda_channels:
- - domdfcoding
  - conda-forge
 
 python_versions:
