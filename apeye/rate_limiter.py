@@ -146,7 +146,7 @@ class RateLimitAdapter(CacheControlAdapter):
 		rate of requests.
 		"""  # noqa: D400
 
-		return super(CacheControlAdapter, self).send(*args, **kwargs)
+		return super(CacheControlAdapter, self).send(*args, **kwargs)  # lgtm [py/super-not-enclosing-class]
 
 
 class HTTPCache:
