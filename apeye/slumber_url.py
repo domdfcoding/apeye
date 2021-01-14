@@ -51,7 +51,6 @@ from urllib.parse import unquote
 
 # 3rd party
 import requests
-from requests import Request
 from requests.auth import AuthBase
 from requests.structures import CaseInsensitiveDict
 from requests.utils import guess_json_utf
@@ -362,7 +361,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 	def __init__(
 			self,
 			url: Union[str, URL] = '',
-			auth: Union[None, Tuple[str, str], AuthBase, Callable[[Request], Request]] = None,
+			auth: Union[None, Tuple[str, str], AuthBase, Callable[[requests.Request], requests.Request]] = None,
 			format: str = "json",  # noqa: A002  # pylint: disable=redefined-builtin
 			append_slash: bool = True,
 			session=None,

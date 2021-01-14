@@ -46,7 +46,6 @@ from cachecontrol import CacheControl, CacheControlAdapter  # type: ignore
 from cachecontrol.caches.file_cache import FileCache  # type: ignore
 from cachecontrol.heuristics import ExpiresAfter  # type: ignore
 from domdf_python_tools.paths import PathPlus
-from requests import PreparedRequest
 
 __all__ = [
 		"rate_limit",
@@ -113,7 +112,7 @@ class RateLimitAdapter(CacheControlAdapter):
 	:param cacheable_methods:
 	"""
 
-	def send(self, request: PreparedRequest, cacheable_methods=None, **kwargs) -> requests.Response:
+	def send(self, request: requests.PreparedRequest, cacheable_methods=None, **kwargs) -> requests.Response:
 		"""
 		Send a request. Use the request information to see if it
 		exists in the cache and cache the response if we need to and can.
