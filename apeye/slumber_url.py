@@ -233,14 +233,13 @@ class SerializerRegistry:
 		:param content_type:
 		"""  # noqa: D400
 
-		if name is None and content_type is None:
-			return self.serializers[self.default]
-
-		elif name is not None and content_type is None:
-			if name not in self.serializers:
-				raise SerializerNotAvailable(name)
-			return self.serializers[name]
-
+		if content_type is None:
+			if name is None:
+				return self.serializers[self.default]
+			else:
+				if name not in self.serializers:
+					raise SerializerNotAvailable(name)
+				return self.serializers[name]
 		else:
 			for x in self.serializers.values():
 				for ctype in x.content_types:
