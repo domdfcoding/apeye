@@ -1,8 +1,11 @@
 # stdlib
 import unittest
 
+# 3rd party
+import pytest
+
 # this package
-from apeye.slumber_url import JsonSerializer, SerializerRegistry, YamlSerializer
+from apeye.slumber_url import JsonSerializer, SerializerNotAvailable, SerializerRegistry, YamlSerializer
 
 
 class ResourceTestCase(unittest.TestCase):
@@ -28,12 +31,25 @@ class ResourceTestCase(unittest.TestCase):
 		assert self.data == serializer.loads(result)
 
 	def test_yaml_get_serializer(self):
-		s = SerializerRegistry()
+		try:
+			# 3rd party
+			import yaml
 
-		for content_type in ["text/yaml"]:
-			serializer = s.get_serializer(content_type=content_type)
-			assert type(serializer) == YamlSerializer, "content_type %s should produce a YamlSerializer"
+			s = SerializerRegistry()
 
-		result = serializer.dumps(self.data)
-		assert result == "foo: bar\n"
-		assert self.data == serializer.loads(result)
+			for content_type in ["text/yaml"]:
+				serializer = s.get_serializer(content_type=content_type)
+				assert type(serializer) == YamlSerializer, "content_type %s should produce a YamlSerializer"
+
+			result = serializer.dumps(self.data)
+			assert result == "foo: bar\n"
+			assert self.data == serializer.loads(result)
+
+		except ImportError:
+			s = SerializerRegistry()
+
+			with pytest.raises(SerializerNotAvailable, match=f"No serializer available for 'yaml'."):
+				s.get_serializer("yaml")
+
+			with pytest.raises(SerializerNotAvailable, match=f"No serializer available for 'text/yaml'."):
+				s.get_serializer(content_type="text/yaml")

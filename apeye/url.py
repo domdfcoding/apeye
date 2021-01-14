@@ -11,7 +11,7 @@ Pathlib-like approach to URLs.
 	but can still be imported from this module.
 """
 #
-#  Copyright © 2020 Dominic Davis-Foster <dominic@davis-foster.co.uk>
+#  Copyright © 2020-2021 Dominic Davis-Foster <dominic@davis-foster.co.uk>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU Lesser General Public License as published by
@@ -59,5 +59,5 @@ URL.__module__ = "apeye.url"
 Domain.__module__ = "apeye.url"
 URLPath.__module__ = "apeye.url"
 
-if sys.version_info >= (3, 7):
+if sys.version_info >= (3, 7):  # pragma: no cover (<py37)
 	URLType.__module__ = "apeye.url"

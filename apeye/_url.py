@@ -5,7 +5,7 @@
 Pathlib-like approach to URLs.
 """
 #
-#  Copyright © 2020 Dominic Davis-Foster <dominic@davis-foster.co.uk>
+#  Copyright © 2020-2021 Dominic Davis-Foster <dominic@davis-foster.co.uk>
 #
 #  This program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU Lesser General Public License as published by
@@ -136,6 +136,7 @@ class URL(os.PathLike):
 	def __init__(self, url: Union[str, "URL"] = ''):
 		if isinstance(url, URL):
 			url = str(url)
+
 		scheme, netloc, parts, *_ = urlparse(url)
 
 		if not scheme and not str(url).startswith("//"):

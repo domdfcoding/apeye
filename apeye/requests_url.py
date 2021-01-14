@@ -30,6 +30,7 @@ Extension of :class:`~apeye.url.URL` with support for interacting with the websi
 #  Licensed under the Apache License, Version 2.0
 
 # stdlib
+from contextlib import suppress
 from typing import IO, Any, Iterable, Mapping, MutableMapping, Optional, Tuple, Union
 
 # 3rd party
@@ -166,15 +167,13 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 		return self.session.delete(str(self), **kwargs)
 
-	def __del__(self):
+	def __del__(self):  # pragma: no cover
 		"""
 		Attempt to close session when garbage collected to avoid leaving connections open.
 		"""
 
-		try:
+		with suppress(Exception):
 			self.session.close()
-		except Exception:
-			pass
 
 	def __truediv__(self, other):
 		"""

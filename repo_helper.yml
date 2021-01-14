@@ -33,3 +33,6 @@ keywords:
  - rest
 
 sphinx_html_theme: furo
+
+tox_unmanaged:
+ - testenv

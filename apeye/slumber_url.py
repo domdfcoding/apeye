@@ -46,6 +46,7 @@ REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and
 import copy
 import json
 from abc import ABC, abstractmethod
+from contextlib import suppress
 from typing import Any, Callable, Dict, List, Mapping, MutableMapping, Optional, Tuple, Type, Union
 from urllib.parse import unquote
 
@@ -81,7 +82,7 @@ class Serializer(ABC):
 
 	@property
 	@abstractmethod
-	def content_types(self) -> List[str]:
+	def content_types(self) -> List[str]:  # pragma: no cover
 		"""
 		List of supported content types.
 		"""
@@ -90,7 +91,7 @@ class Serializer(ABC):
 
 	@property
 	@abstractmethod
-	def key(self) -> str:  # noqa: D102
+	def key(self) -> str:  # noqa: D102  # pragma: no cover
 		return NotImplemented
 
 	def get_content_type(self) -> str:
@@ -189,6 +190,7 @@ try:
 	_SERIALIZERS.append(YamlSerializer)
 
 except ImportError:
+	# TODO: support for ruamel.yaml
 
 	class YamlSerializer(Serializer):  # type: ignore
 		"""
@@ -199,7 +201,7 @@ except ImportError:
 		key = "yaml"
 
 		def __init__(self):
-			raise NotImplementedError("'yaml' package not available.")
+			raise NotImplementedError("'PyYAML' package not available.")
 
 
 class SerializerRegistry:
@@ -236,7 +238,7 @@ class SerializerRegistry:
 
 		elif name is not None and content_type is None:
 			if name not in self.serializers:
-				raise SerializerNotAvailable(f"{name} is not an available serializer")
+				raise SerializerNotAvailable(name)
 			return self.serializers[name]
 
 		else:
@@ -245,7 +247,7 @@ class SerializerRegistry:
 					if content_type == ctype:
 						return x
 
-			raise SerializerNotAvailable(f"{content_type} is not an available serializer")
+			raise SerializerNotAvailable(content_type)
 
 	def loads(
 			self,
@@ -586,10 +588,8 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 			return False
 
 	def __del__(self):
-		try:
+		with suppress(Exception):
 			self.session.close()
-		except Exception:
-			pass
 
 	def options(self, **kwargs) -> str:
 		"""
@@ -674,3 +674,6 @@ class SerializerNotAvailable(SlumberBaseException):
 	"""
 	The chosen Serializer is not available.
 	"""
+
+	def __init__(self, content_type: str):
+		super().__init__(f"No serializer available for {content_type!r}.")

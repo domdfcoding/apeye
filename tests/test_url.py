@@ -381,6 +381,10 @@ class _TestURL(ABC):
 		assert URL() != {7, 'a', 3.14142}
 		assert URL() != {"int": 7, "str": 'a', "float": 3.14142}
 
+	def test_from_url(self):
+		url = URL("bbc.co.uk")
+		assert self._class(url) == url
+
 
 class TestUrl(_TestURL):
 
