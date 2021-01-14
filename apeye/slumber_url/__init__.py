@@ -44,10 +44,8 @@ REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and
 
 # stdlib
 import copy
-import json
-from abc import ABC, abstractmethod
 from contextlib import suppress
-from typing import Any, Callable, Dict, List, Mapping, MutableMapping, Optional, Tuple, Type, Union
+from typing import Callable, Dict, MutableMapping, Optional, Tuple, Union
 from urllib.parse import unquote
 
 # 3rd party
@@ -59,6 +57,20 @@ from requests.utils import guess_json_utf
 # this package
 from apeye._url import URL
 from apeye.requests_url import _Data
+from apeye.slumber_url.exceptions import (
+		HttpClientError,
+		HttpNotFoundError,
+		HttpServerError,
+		SlumberBaseException,
+		SlumberHttpBaseException
+		)
+from apeye.slumber_url.serializers import (
+		JsonSerializer,
+		Serializer,
+		SerializerNotAvailable,
+		SerializerRegistry,
+		YamlSerializer
+		)
 
 __all__ = [
 		"SlumberURL",
@@ -75,223 +87,6 @@ __all__ = [
 		]
 
 
-class Serializer(ABC):
-	"""
-	Base class for serializers.
-	"""
-
-	@property
-	@abstractmethod
-	def content_types(self) -> List[str]:  # pragma: no cover
-		"""
-		List of supported content types.
-		"""
-
-		return NotImplemented
-
-	@property
-	@abstractmethod
-	def key(self) -> str:  # noqa: D102  # pragma: no cover
-		return NotImplemented
-
-	def get_content_type(self) -> str:
-		"""
-		Returns the first value from :attr:`~.Serializer.content_types`.
-		"""
-
-		return self.content_types[0]
-
-	@abstractmethod
-	def loads(self, data: str) -> MutableMapping[str, Any]:
-		"""
-		Deserialize data using this :class:`~.Serializer`.
-
-		:param data:
-		"""
-
-		raise NotImplementedError()
-
-	@abstractmethod
-	def dumps(self, data: Mapping[str, Any]) -> str:
-		"""
-		Serialize data using this :class:`~.Serializer`.
-
-		:param data:
-		"""
-
-		raise NotImplementedError()
-
-
-class JsonSerializer(Serializer):
-	"""
-	Serializer for JSON data.
-	"""
-
-	content_types = [
-			"application/json",
-			"application/x-javascript",
-			"text/javascript",
-			"text/x-javascript",
-			"text/x-json",
-			]
-	key = "json"
-
-	def loads(self, data: str) -> MutableMapping[str, Any]:
-		"""
-		Deserialize data using this :class:`~.Serializer`.
-
-		:param data:
-		"""
-
-		return json.loads(data)
-
-	def dumps(self, data: Mapping[str, Any]) -> str:
-		"""
-		Serialize data using this :class:`~.Serializer`.
-
-		:param data:
-		"""
-
-		return json.dumps(data)
-
-
-_SERIALIZERS: List[Type[Serializer]] = [JsonSerializer]
-
-try:
-	# 3rd party
-	import yaml
-
-	class YamlSerializer(Serializer):
-		"""
-		Serializer for YAML data.
-		"""
-
-		content_types = ["text/yaml"]
-		key = "yaml"
-
-		def loads(self, data: str) -> MutableMapping[str, Any]:
-			"""
-			Deserialize data using this :class:`~.Serializer`.
-
-			:param data:
-			"""
-
-			return yaml.safe_load(str(data))
-
-		def dumps(self, data: Mapping[str, Any]) -> str:
-			"""
-			Serialize data using this :class:`~.Serializer`.
-
-			:param data:
-			"""
-
-			return yaml.dump(data)
-
-	_SERIALIZERS.append(YamlSerializer)
-
-except ImportError:
-	# TODO: support for ruamel.yaml
-
-	class YamlSerializer(Serializer):  # type: ignore
-		"""
-		Serializer for YAML data.
-		"""
-
-		content_types = ["text/yaml"]
-		key = "yaml"
-
-		def __init__(self):
-			raise NotImplementedError("'PyYAML' package not available.")
-
-
-class SerializerRegistry:
-	"""
-	Serializes and deserializes data for transfer to and from a REST API.
-
-	:param default: The default serializer to use if none is specified.
-		Corresponds to the :attr:`~.Serializer.key` of a :class:`~.Serializer`.
-	:param serializers: List of :class:`~.Serializer` objects to use.
-	"""
-
-	def __init__(self, default: str = "json", serializers: Optional[List[Serializer]] = None):
-
-		#: Mapping of formats to :class:`~.Serializer` objects.
-		self.serializers: Dict[str, Serializer] = {}
-
-		for serializer in serializers or [x() for x in _SERIALIZERS]:
-			self.serializers[serializer.key] = serializer
-
-		#: The default serializer to use if none is specified.
-		self.default: str = default
-
-	def get_serializer(self, name: Optional[str] = None, content_type: Optional[str] = None):
-		"""
-		Returns the first :class:`~.Serializer` that supports either the given
-		format or the given content type.
-
-		:param name:
-		:param content_type:
-		"""  # noqa: D400
-
-		if content_type is None:
-			if name is None:
-				return self.serializers[self.default]
-			else:
-				if name not in self.serializers:
-					raise SerializerNotAvailable(name)
-				return self.serializers[name]
-		else:
-			for x in self.serializers.values():
-				for ctype in x.content_types:
-					if content_type == ctype:
-						return x
-
-			raise SerializerNotAvailable(content_type)
-
-	def loads(
-			self,
-			data: str,
-			format: Optional[str] = None,  # noqa: A002  # pylint: disable=redefined-builtin
-			) -> MutableMapping[str, Any]:
-		"""
-		Deserialize data of the given format.
-
-		:param data:
-		:param format: The serialization format to use.
-		"""
-
-		s = self.get_serializer(format)
-		return s.loads(data)
-
-	def dumps(
-			self,
-			data: Mapping[str, Any],
-			format: Optional[str] = None,  # noqa: A002  # pylint: disable=redefined-builtin
-			) -> str:
-		"""
-		Serialize data of the given format.
-
-		:param data:
-		:param format: The serialization format to use.
-		"""
-
-		s = self.get_serializer(format)
-		return s.dumps(data)
-
-	def get_content_type(
-			self,
-			format: Optional[str] = None,  # noqa: A002  # pylint: disable=redefined-builtin
-			):
-		"""
-		Returns the content type for the serializer that supports the given format.
-
-		:param format: The desired serialization format.
-		"""
-
-		s = self.get_serializer(format)
-		return s.get_content_type()
-
-
 # Ignore the LGTM warning as the "session" etc. attributes should **not** affect equality.
 # Equality should only consider the URL, not its attributes.
 class SlumberURL(URL):  # lgtm [py/missing-equals]
@@ -305,17 +100,17 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 	:param format:
 	:param append_slash:
 	:param session:
-	:param serializer: (optional) An instance of :class:`apeye.url.SerializerRegistry`.
-	:param timeout: (optional) How long to wait for the server to send
+	:param serializer:
+	:param timeout: How long to wait for the server to send
 		data before giving up.
 	:param allow_redirects: Whether to allow redirects. .
-	:param proxies: (optional) Dictionary mapping protocol or protocol and
+	:param proxies: Dictionary mapping protocol or protocol and
 		hostname to the URL of the proxy.
-	:param verify: (optional) Either a boolean, in which case it controls whether we verify
+	:param verify: Either a boolean, in which case it controls whether we verify
 		the server's TLS certificate, or a string, in which case it must be a path
 		to a CA bundle to use.
-	:param cert: (optional) if String, path to ssl client cert file (.pem).
-		If Tuple, ('cert', 'key') pair.
+	:param cert: Either the path to the SSL client cert file (``.pem``),
+		or a tuple of ``('cert', 'key')``.
 
 	``timeout``, ``allow_redirects``, ``proxies``, ``verify`` and ``cert`` are
 	passed to Requests when making any HTTP requests, and are inherited by all children
@@ -506,9 +301,9 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
 
-		:param data: (optional) Dictionary, list of tuples, bytes, or file-like
+		:param data: Dictionary, list of tuples, bytes, or file-like
 			object to send in the body of the :class:`requests.Request`.
-		:param files: (optional) Dictionary of ``'name': file-like-objects``
+		:param files: Dictionary of ``'name': file-like-objects``
 			(or ``{'name': file-tuple}``) for multipart encoding upload.
 			``file-tuple`` can be a 2-tuple ``('filename', fileobj)``,
 			3-tuple ``('filename', fileobj, 'content_type')``
@@ -528,9 +323,9 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH
 
-		:param data: (optional) Dictionary, list of tuples, bytes, or file-like
+		:param data: Dictionary, list of tuples, bytes, or file-like
 			object to send in the body of the :class:`requests.Request`.
-		:param files: (optional) Dictionary of ``'name': file-like-objects``
+		:param files: Dictionary of ``'name': file-like-objects``
 			(or ``{'name': file-tuple}``) for multipart encoding upload.
 			``file-tuple`` can be a 2-tuple ``('filename', fileobj)``,
 			3-tuple ``('filename', fileobj, 'content_type')``
@@ -550,9 +345,9 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
 
-		:param data: (optional) Dictionary, list of tuples, bytes, or file-like
+		:param data: Dictionary, list of tuples, bytes, or file-like
 			object to send in the body of the :class:`requests.Request`.
-		:param files: (optional) Dictionary of ``'name': file-like-objects``
+		:param files: Dictionary of ``'name': file-like-objects``
 			(or ``{'name': file-tuple}``) for multipart encoding upload.
 			``file-tuple`` can be a 2-tuple ``('filename', fileobj)``,
 			3-tuple ``('filename', fileobj, 'content_type')``
@@ -632,47 +427,3 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 			new_obj.cert = self.cert
 
 		return new_obj
-
-
-class SlumberBaseException(Exception):
-	"""
-	All Slumber exceptions inherit from this exception.
-	"""
-
-
-class SlumberHttpBaseException(SlumberBaseException):
-	"""
-	All Slumber HTTP Exceptions inherit from this exception.
-	"""
-
-	def __init__(self, *args, **kwargs):
-		for key, value in kwargs.items():
-			setattr(self, key, value)
-		super().__init__(*args)
-
-
-class HttpClientError(SlumberHttpBaseException):
-	"""
-	Called when the server tells us there was a client error (4xx).
-	"""
-
-
-class HttpNotFoundError(HttpClientError):
-	"""
-	Called when the server sends a 404 error.
-	"""
-
-
-class HttpServerError(SlumberHttpBaseException):
-	"""
-	Called when the server tells us there was a server error (5xx).
-	"""
-
-
-class SerializerNotAvailable(SlumberBaseException):
-	"""
-	The chosen Serializer is not available.
-	"""
-
-	def __init__(self, content_type: str):
-		super().__init__(f"No serializer available for {content_type!r}.")
