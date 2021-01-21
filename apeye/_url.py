@@ -162,7 +162,7 @@ class URL(os.PathLike):
 		if isinstance(url, URL):
 			url = str(url)
 
-		if not re.match("[A-Za-z-.]+://", url):
+		if not re.match("([A-Za-z-.]+:)?//", url):
 			url = "//" + str(url)
 
 		scheme, netloc, parts, params, query, fragment = urlparse(url)
