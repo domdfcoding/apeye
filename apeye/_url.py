@@ -42,8 +42,9 @@ Pathlib-like approach to URLs.
 import ipaddress
 import os
 import pathlib
-from typing import TYPE_CHECKING, List, Optional, Tuple, Type, TypeVar, Union
-from urllib.parse import urlparse
+import re
+from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Tuple, Type, TypeVar, Union
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 # 3rd party
 import tldextract  # type: ignore
@@ -61,6 +62,7 @@ __all__ = ["URL", "URLPath", "Domain", "URLType"]
 URLType = TypeVar("URLType", bound="URL")
 
 
+@prettify_docstrings
 class URLPath(pathlib.PurePosixPath):
 	"""
 	Represents the path part of a URL.
@@ -126,41 +128,95 @@ class URL(os.PathLike):
 	"""
 	Pathlib-like class for URLs.
 
-	:param url: The url to construct the :class:`~apeye.url.URL` object from.
+	:param url: The URL to construct the :class:`~apeye.url.URL` object from.
 
 	.. versionchanged:: 0.3.0
 
 		The ``url`` parameter can now be a string or a :class:`~.URL`.
 	"""
 
+	#: URL scheme specifier
+	scheme: str
+
+	#: Network location part of the URL
+	netloc: str
+
+	#: The hierarchical path of the URL
+	path: URLPath
+
+	query: Dict[Any, List]
+	"""
+	The query parameters of the URL, if present.
+
+	.. versionadded:: 0.7.0
+	"""
+
+	fragment: Optional[str]
+	"""
+	The URL fragment, used to identify a part of the document. :py:obj:`None` if absent from the URL.
+
+	.. versionadded:: 0.7.0
+	"""
+
 	def __init__(self, url: Union[str, "URL"] = ''):
 		if isinstance(url, URL):
 			url = str(url)
 
-		scheme, netloc, parts, *_ = urlparse(url)
+		if not re.match("[A-Za-z-.]+://", url):
+			url = "//" + str(url)
 
-		if not scheme and not str(url).startswith("//"):
-			scheme, netloc, parts, *_ = urlparse("//" + str(url))
+		scheme, netloc, parts, params, query, fragment = urlparse(url)
 
 		self.scheme: str = scheme
 		self.netloc: str = netloc
 		self.path = URLPath(parts)
+		self.query = parse_qs(query or '')
+		self.fragment = fragment or None
+
+	@property
+	def port(self) -> Optional[int]:
+		"""
+		The port of number of the URL as an integer, if present. Default :py:obj:`None`.
+
+		.. versionadded:: 0.7.0
+		"""
+
+		if ':' not in self.netloc:
+			return None
+		else:
+			return int(self.netloc.split(':')[-1])
 
 	@classmethod
-	def from_parts(cls: Type[URLType], scheme: str, netloc: str, path: PathLike) -> URLType:
+	def from_parts(
+			cls: Type[URLType],
+			scheme: str,
+			netloc: str,
+			path: PathLike,
+			query: Optional[Mapping[Any, List]] = None,
+			fragment: Optional[str] = None,
+			) -> URLType:
 		"""
 		Construct a :class:`~apeye.url.URL` from a scheme, netloc and path.
 
 		:param scheme: The scheme of the URL, e.g ``'http'``.
 		:param netloc: The netloc of the URl, e.g. ``'bbc.co.uk:80'``.
 		:param path: The path of the URL, e.g. ``'/news'``.
+		:param query: The query parameters of the URL, if present.
+		:param fragment: The URL fragment, used to identify a part of the document.
+			:py:obj:`None` if absent from the URL.
 
 		Put together, the resulting path would be ``'http://bbc.co.uk:80/news'``
+
+		:rtype:
+
+		.. versionchanged:: 0.7.0  Added the ``query`` and ``fragment`` arguments.
 		"""
 
 		obj = cls('')
 		obj.scheme = scheme
 		obj.netloc = netloc
+		obj.query = dict(query or {})
+		obj.fragment = fragment or None
 
 		path = URLPath(path)
 
@@ -176,10 +232,13 @@ class URL(os.PathLike):
 		Returns the :class:`~apeye.url.URL` as a string.
 		"""
 
-		if self.scheme:
-			return f"{self.scheme}://{self.netloc}{self.path}"
+		query = urlencode(self.query, doseq=True)
+		url = urlunparse([self.scheme, self.netloc, str(self.path), None, query, self.fragment])
+
+		if url.startswith("//"):
+			return url[2:]
 		else:
-			return f"{self.netloc}{self.path}"
+			return url
 
 	def __repr__(self) -> str:
 		"""
@@ -188,17 +247,49 @@ class URL(os.PathLike):
 
 		return f"{self.__class__.__name__}({str(self)!r})"
 
-	def __truediv__(self: URLType, key: PathLike) -> URLType:
+	def __truediv__(self: URLType, key: Union[PathLike, int]) -> URLType:
 		"""
 		Construct a new :class:`~apeye.url.URL` object for the given child of this :class:`~apeye.url.URL`.
+
+		:rtype:
+
+		.. versionchanged:: 0.7.0  Added support for division by integers.
+
+		.. versionchanged:: 0.7.0
+
+			Now officially supports the new path having a URL fragment and/or query parameters.
+			Any URL fragment or query parameters from the parent URL is not inherited by its children.
 		"""
 
-		# TODO: division by int
+		_key = key
+
+		if isinstance(key, pathlib.PurePath):
+			key = key.as_posix()
+		elif isinstance(key, os.PathLike):  # type: ignore
+			key = os.fspath(key)
+		elif isinstance(key, int):
+			key = str(key)
 
 		try:
-			return self.from_parts(self.scheme, self.netloc, self.path / key)
+			parse_result = urlparse(key)
+		except AttributeError as e:
+			if str(e).endswith("'decode'"):
+				raise TypeError(
+						f"unsupported operand type(s) for /: "
+						f"'{type(self.path).__name__!r}' and {type(_key).__name__!r}",
+						) from None
+			else:
+				raise
+
+		try:
+			new_path = self.from_parts(self.scheme, self.netloc, self.path / parse_result.path)
 		except TypeError:
 			return NotImplemented
+
+		new_path.query = parse_qs(parse_result.query)
+		new_path.fragment = parse_result.fragment or None
+
+		return new_path
 
 	def __fspath__(self) -> str:
 		return f"{self.netloc}{self.path}"
@@ -206,10 +297,31 @@ class URL(os.PathLike):
 	def __eq__(self, other) -> bool:
 		"""
 		Return ``self == other``.
+
+		.. attention::
+
+			URL fragments and query parameters are not compared.
+
+			.. seealso:: :meth:`.URL.strict_compare`, which *does* consider those attributes.
 		"""
 
 		if isinstance(other, URL):
 			return self.netloc == other.netloc and self.scheme == other.scheme and self.path == other.path
+		else:
+			return NotImplemented
+
+	def strict_compare(self, other) -> bool:
+		"""
+		Return ``self ≡ other``, comparing the scheme, netloc, path, fragment and query parameters.
+
+		.. versionadded:: 0.7.0
+		"""
+
+		if isinstance(other, URL):
+			return (
+					self.netloc == other.netloc and self.scheme == other.scheme and self.path == other.path
+					and self.query == other.query and self.fragment == other.fragment
+					)
 		else:
 			return NotImplemented
 
@@ -254,23 +366,59 @@ class URL(os.PathLike):
 
 		return self.path.stem
 
-	def with_name(self, name: str) -> "URL":
+	def with_name(self: URLType, name: str, inherit: bool = True) -> URLType:
 		"""
 		Return a new :class:`~apeye.url.URL` with the file name changed.
+
+		:param name:
+		:param inherit: Whether the new :class:`~apeye.url.URL` should inherit the query string
+			and fragment from this :class:`~apeye.url.URL`.
+
+		:rtype:
+
+		.. versionchanged:: 0.7.0  Added the ``inherit`` parameter.
 		"""
 
-		return self.from_parts(self.scheme, self.netloc, self.path.with_name(name))
+		if inherit:
+			kwargs = {"query": self.query, "fragment": self.fragment}
+		else:
+			kwargs = {}
 
-	def with_suffix(self, suffix: str) -> "URL":
+		return self.from_parts(
+				self.scheme,
+				self.netloc,
+				self.path.with_name(name),
+				**kwargs,  # type: ignore
+				)
+
+	def with_suffix(self: URLType, suffix: str, inherit: bool = True) -> URLType:
 		"""
 		Returns a new :class:`~apeye.url.URL` with the file suffix changed.
 
 		If the :class:`~apeye.url.URL` has no suffix, add the given suffix.
 
 		If the given suffix is an empty string, remove the suffix from the :class:`~apeye.url.URL`.
+
+		:param suffix:
+		:param inherit: Whether the new :class:`~apeye.url.URL` should inherit the query string
+			and fragment from this :class:`~apeye.url.URL`.
+
+		:rtype:
+
+		.. versionchanged:: 0.7.0  Added the ``inherit`` parameter.
 		"""
 
-		return self.from_parts(self.scheme, self.netloc, self.path.with_suffix(suffix))
+		if inherit:
+			kwargs = {"query": self.query, "fragment": self.fragment}
+		else:
+			kwargs = {}
+
+		return self.from_parts(
+				self.scheme,
+				self.netloc,
+				self.path.with_suffix(suffix),
+				**kwargs,  # type: ignore
+				)
 
 	@property
 	def parts(self) -> Tuple[str, ...]:
@@ -289,7 +437,7 @@ class URL(os.PathLike):
 				)
 
 	@property
-	def parent(self) -> "URL":
+	def parent(self: URLType) -> URLType:
 		"""
 		The logical parent of the :class:`~apeye.url.URL`.
 		"""
@@ -297,7 +445,7 @@ class URL(os.PathLike):
 		return self.from_parts(self.scheme, self.netloc, self.path.parent)
 
 	@property
-	def parents(self) -> Tuple["URL", ...]:
+	def parents(self: URLType) -> Tuple[URLType, ...]:
 		"""
 		An immutable sequence providing access to the logical ancestors of the :class:`~apeye.url.URL`.
 		"""
@@ -315,11 +463,25 @@ class URL(os.PathLike):
 	@property
 	def domain(self) -> "Domain":
 		"""
-		Returns a :class:`apeye.url.Domain` object representing the domain part of the url.
+		Returns a :class:`apeye.url.Domain` object representing the domain part of the URL.
 		"""
 
 		extract: tldextract.tldextract.ExtractResult = tldextract.extract(self.netloc)
 		return Domain(extract.subdomain, extract.domain, extract.suffix)
+
+	@property
+	def base_url(self: URLType) -> URLType:
+		"""
+		Returns a :class:`apeye.url.URL` object representing the URL without query strings or URL fragments.
+
+		.. versionadded:: 0.7.0
+		"""
+
+		return self.from_parts(
+				self.scheme,
+				self.netloc,
+				self.path,
+				)
 
 
 class Domain(tldextract.tldextract.ExtractResult):  # noqa: D101

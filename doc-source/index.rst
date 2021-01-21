@@ -146,6 +146,9 @@ Installation
 	:caption: API Reference
 	:glob:
 
+	api/url
+	api/requests_url
+	api/slumber_url
 	api/*
 
 .. toctree::

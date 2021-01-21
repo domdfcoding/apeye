@@ -201,7 +201,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		Returns the URL as a string.
 		"""
 
-		url = str(self)
+		url = str(self.base_url)
 
 		if self._store["append_slash"] and not url.endswith('/'):
 			url = url + '/'
@@ -394,7 +394,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		:param kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
-		return self.session.options(str(self), **kwargs).headers.get("Allow", '')
+		return self.session.options(str(self.base_url), **kwargs).headers.get("Allow", '')
 
 	def head(self, **kwargs) -> CaseInsensitiveDict:
 		"""
@@ -407,7 +407,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 			(as opposed to the default :func:`requests.request` behavior).
 		"""
 
-		return self.session.head(str(self), **kwargs).headers
+		return self.session.head(str(self.base_url), **kwargs).headers
 
 	def __truediv__(self, other):
 		"""

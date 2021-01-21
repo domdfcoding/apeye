@@ -1,4 +1,5 @@
 # stdlib
+import json
 import os
 import pathlib
 import sys
@@ -6,12 +7,15 @@ from abc import ABC, abstractmethod
 from ipaddress import IPv4Address
 from textwrap import dedent
 from typing import Type
+from urllib.parse import parse_qs
 
 # 3rd party
 import pytest
 import pytest_httpserver.pytest_plugin  # type: ignore
 import requests
-from domdf_python_tools.testing import count
+import werkzeug
+from coincidence import count
+from pytest_httpserver.httpserver import QueryMatcher  # type: ignore
 
 # this package
 from apeye.requests_url import TrailingRequestsURL
@@ -179,9 +183,9 @@ class _TestURL(ABC):
 		assert self._class() / "news" == self._class("/news")
 
 	@count(100)
-	def test_division_errors_number(self, count: int):
-		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: '.*' and 'int'"):
-			self._class() / count  # pylint: disable=expression-not-assigned
+	def test_division_number(self, count: int):
+		assert (self._class() / count).parts[-1] == str(count)
+
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: '.*' and 'float'"):
 			self._class() / float(count)  # pylint: disable=expression-not-assigned
 
@@ -385,6 +389,31 @@ class _TestURL(ABC):
 		url = URL("bbc.co.uk")
 		assert self._class(url) == url
 
+	def test_with_query(self):
+		url = self._class("https://api.github.com/user/domdfcoding/repos?page=2&per_page=50")
+		assert url.query == {"page": ['2'], "per_page": ["50"]}
+
+		url = self._class("https://api.github.com/user/domdfcoding/repos?name=bob")
+		assert url.query == {"name": ["bob"]}
+
+		url = self._class("https://api.github.com/user/domdfcoding/repos")
+		assert url.query == {}
+
+		url = self._class("https://api.github.com?foo=bar")
+		assert url.query == {"foo": ["bar"]}
+		assert (url / "users").query == {}
+
+	def test_with_fragment(self):
+		url = self._class("https://api.github.com/user/domdfcoding/repos#footer")
+		assert url.fragment == "footer"
+
+		url = self._class("https://api.github.com/user/domdfcoding/repos")
+		assert url.fragment is None
+
+		url = self._class("https://api.github.com#footer")
+		assert url.fragment == "footer"
+		assert (url / "users").fragment is None
+
 
 class TestUrl(_TestURL):
 
@@ -562,6 +591,29 @@ class TestRequestsURL(_TestURL):
 				"the terms and conditions of version 3 of the GNU General Public",
 				"License, supplemented by the additional permissions listed below.",
 				]
+
+	def test_get_default_params(self, httpserver: pytest_httpserver.pytest_plugin.PluginHTTPServer):
+
+		class QM(QueryMatcher):
+
+			def get_comparing_values(self, request_query_string: bytes) -> tuple:
+				return '', ''
+
+			def match(self, request_query_string: bytes) -> bool:
+				return True
+
+		def handler(request: werkzeug.Request):
+			headers = {"Content-Type": "application/json"}
+			body = json.dumps(parse_qs(request.query_string.decode("UTF-8")))
+			return werkzeug.Response(body, 200, headers, None, None)
+
+		httpserver.expect_request("/query", method="GET", query_string=QM()).respond_with_handler(handler)
+
+		url = RequestsURL(httpserver.url_for("/query?foo=bar&fizz=buzz"))
+		assert url.get().json() == {"foo": ["bar"], "fizz": ["buzz"]}
+
+		url = RequestsURL(httpserver.url_for("/query"))
+		assert url.get(params={"bdfl": "Guido"}).json() == {"bdfl": ["Guido"]}
 
 	def test_requests_integration(self, httpserver: pytest_httpserver.pytest_plugin.PluginHTTPServer):
 		# We only need to test the wrapper; the actual implementations are tested by requests themselves.

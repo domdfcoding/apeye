@@ -86,9 +86,17 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		:param params: Dictionary, list of tuples or bytes to send
 			in the query string for the :class:`requests.Request`.
 		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
+
+		.. versionchanged:: 0.7.0
+
+			If ``params`` is :py:obj:`None` but the URL has a query string,
+			the query string will be parsed and used for ``params``.
 		"""
 
-		return self.session.get(str(self), params=params, **kwargs)
+		if params is None and self.query:
+			params = self.query
+
+		return self.session.get(str(self.base_url), params=params, **kwargs)
 
 	def options(self, **kwargs) -> requests.Response:
 		r"""
@@ -99,7 +107,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
-		return self.session.options(str(self), **kwargs)
+		return self.session.options(str(self.base_url), **kwargs)
 
 	def head(self, **kwargs) -> requests.Response:
 		r"""
@@ -112,7 +120,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 			(as opposed to the default :func:`requests.request` behavior).
 		"""
 
-		return self.session.head(str(self), **kwargs)
+		return self.session.head(str(self.base_url), **kwargs)
 
 	def post(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
 		r"""
@@ -126,7 +134,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
-		return self.session.post(str(self), data=data, json=json, **kwargs)
+		return self.session.post(str(self.base_url), data=data, json=json, **kwargs)
 
 	def put(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
 		r"""
@@ -140,7 +148,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
-		return self.session.put(str(self), data=data, json=json, **kwargs)
+		return self.session.put(str(self.base_url), data=data, json=json, **kwargs)
 
 	def patch(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
 		r"""
@@ -154,7 +162,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
-		return self.session.patch(str(self), data=data, json=json, **kwargs)
+		return self.session.patch(str(self.base_url), data=data, json=json, **kwargs)
 
 	def delete(self, **kwargs) -> requests.Response:
 		r"""
@@ -165,7 +173,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		:param \*\*kwargs: Optional arguments that :func:`requests.request` takes.
 		"""
 
-		return self.session.delete(str(self), **kwargs)
+		return self.session.delete(str(self.base_url), **kwargs)
 
 	def __del__(self):  # pragma: no cover
 		"""

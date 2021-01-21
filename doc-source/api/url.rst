@@ -14,7 +14,7 @@
 
 .. autoclass:: apeye.url.URLPath
 	:exclude-members: match,is_absolute,joinpath,relative_to,anchor,drive,__lt__,__le__,__gt__,__ge__,as_uri
-	:autosummary-exclude-members: match,is_absolute,joinpath,relative_to,anchor,drive,__lt__,__le__,__gt__,__ge__,as_uri,__hash__,__new__,__weakred__
+	:autosummary-exclude-members: match,is_absolute,joinpath,relative_to,anchor,drive,__lt__,__le__,__gt__,__ge__,as_uri,__hash__,__new__,__weakref__
 	:inherited-members:
 
 .. autonamedtuple:: apeye.url.Domain
