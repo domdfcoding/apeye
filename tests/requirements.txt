@@ -1,5 +1,6 @@
 backports-datetime-fromisoformat==1.0.0; python_version == "3.6"
 cherrypy>=18.6.0
+coincidence>=0.1.0
 coverage>=5.1
 coverage-pyver-pragma>=0.0.6
 domdf-python-tools[testing]>=2.0.1
