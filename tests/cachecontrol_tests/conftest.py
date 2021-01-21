@@ -7,6 +7,7 @@
 # stdlib
 import os
 import socket
+from contextlib import suppress
 from pprint import pformat
 
 # 3rd party
@@ -77,7 +78,5 @@ def pytest_configure(config):
 
 
 def pytest_unconfigure(config):
-	try:
+	with suppress(Exception):
 		cherrypy.server.stop()
-	except:
-		pass  # nosec: B110  # pylint: disable=bare-except

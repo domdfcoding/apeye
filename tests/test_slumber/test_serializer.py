@@ -24,7 +24,9 @@ class ResourceTestCase(unittest.TestCase):
 				"text/x-json",
 				]:
 			serializer = s.get_serializer(content_type=content_type)
-			assert type(serializer) == JsonSerializer, "content_type %s should produce a JsonSerializer"
+
+			if not type(serializer) == JsonSerializer:  # pylint: disable=unidiomatic-typecheck
+				raise AssertionError("content_type %s should produce a JsonSerializer")
 
 		result = serializer.dumps(self.data)
 		assert result == '{"foo": "bar"}'
@@ -35,7 +37,9 @@ class ResourceTestCase(unittest.TestCase):
 
 		for content_type in ["text/yaml"]:
 			serializer = s.get_serializer(content_type=content_type)
-			assert type(serializer) == YamlSerializer, "content_type %s should produce a YamlSerializer"
+
+			if not type(serializer) == YamlSerializer:  # pylint: disable=unidiomatic-typecheck
+				raise AssertionError("content_type %s should produce a YamlSerializer")
 
 		result = serializer.dumps(self.data)
 		assert result == "foo: bar\n"

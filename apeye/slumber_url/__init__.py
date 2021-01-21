@@ -373,13 +373,14 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		"""
 
 		resp = self._request("DELETE", params=params)
-		if 200 <= resp.status_code <= 299:
-			if resp.status_code == 204:
-				return True
-			else:
-				return True
-		else:
-			return False
+		# if 200 <= resp.status_code <= 299:
+		# 	if resp.status_code == 204:
+		# 		return True
+		# 	else:
+		# 		return True
+		# else:
+		# 	return False
+		return 200 <= resp.status_code <= 299
 
 	def __del__(self):
 		with suppress(Exception):
