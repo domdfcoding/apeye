@@ -39,7 +39,7 @@ from functools import wraps
 from typing import Any, Callable, Dict, Optional
 
 # 3rd party
-import appdirs  # type: ignore
+import appdirs
 # import codetiming
 import requests
 from cachecontrol import CacheControl, CacheControlAdapter  # type: ignore
