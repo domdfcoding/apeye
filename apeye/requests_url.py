@@ -94,7 +94,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		"""
 
 		if params is None and self.query:
-			params = self.query
+			params = self.query  # type: ignore
 
 		return self.session.get(str(self.base_url), params=params, **kwargs)
 

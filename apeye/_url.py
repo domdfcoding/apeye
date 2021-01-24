@@ -144,7 +144,7 @@ class URL(os.PathLike):
 	#: The hierarchical path of the URL
 	path: URLPath
 
-	query: Dict[Any, List]
+	query: Dict[str, List[str]]
 	"""
 	The query parameters of the URL, if present.
 
