@@ -4,7 +4,10 @@
 """
 Caching functions for functions.
 
-.. seealso:: The `cachier project <https://pypi.org/project/cachier/>`_
+.. seealso::
+
+	* The `cachier project <https://pypi.org/project/cachier/>`_
+	* `DiskCache <http://www.grantjenks.com/docs/diskcache/index.html>`_
 """
 #
 #  Copyright (c) 2020 Dominic Davis-Foster <dominic@davis-foster.co.uk>
