@@ -80,8 +80,8 @@ def rate_limit(min_time: float = 0.2, logger: Optional[logging.Logger] = None) -
 	def decorator(func: Callable) -> Callable:
 
 		function_name = func.__name__
-		last_ran_message = f"{function_name}: Last ran %d seconds ago."
-		waiting_message = f"{function_name}: Waiting %d seconds."
+		last_ran_message = f"{function_name}: Last ran %.2f seconds ago."
+		waiting_message = f"{function_name}: Waiting %.2f seconds."
 
 		@wraps(func)
 		def rate_limit_wrapper(*args, **kwargs):
