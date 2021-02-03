@@ -46,6 +46,8 @@ def test_rate_limit(capsys, caplog):
 
 	last_ran_re = re.compile(r"rate_limited_function: Last ran (\d+(\.\d+)?|\d+e-\d+) seconds ago\.")
 
+	print(caplog.record_tuples)
+
 	assert last_ran_re.match(caplog.record_tuples[0][2])
 	assert re.match(r"rate_limited_function: Waiting (\d+(\.\d+)?|\d+e-\d+) seconds\.", caplog.record_tuples[1][2])
 	assert last_ran_re.match(caplog.record_tuples[2][2])
