@@ -1,4 +1,4 @@
-# Configuration for 'repo_helper' (https://github.com/domdfcoding/repo_helper
+# Configuration for 'repo_helper' (https://github.com/domdfcoding/repo_helper)
 ---
 modname: 'apeye'
 copyright_years: 2020-2021
@@ -13,11 +13,13 @@ conda_channels:
  - conda-forge
 
 python_versions:
- - 3.6
- - 3.7
- - 3.8
- - 3.9
+ - '3.6'
+ - '3.7'
+ - '3.8'
+ - '3.9'
  - 3.10-dev
+ - pypy3
+ - rustpython
 
 classifiers:
  - 'Development Status :: 4 - Beta'

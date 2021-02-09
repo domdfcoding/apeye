@@ -16,9 +16,10 @@ from werkzeug import Request, Response
 from apeye.rate_limiter import HTTPCache, rate_limit
 
 if sys.version_info < (3, 7):
-	# 3rd party
-	from backports.datetime_fromisoformat import MonkeyPatch
-	MonkeyPatch.patch_fromisoformat()
+	from backports.datetime_fromisoformat import datetime_fromisoformat
+
+else:
+	datetime_fromisoformat = datetime.fromisoformat
 
 logging.basicConfig()
 
@@ -98,11 +99,11 @@ def test_cache_canary(timeserver: HTTPServer):
 
 	response = session.get(target_url)
 	assert response.status_code == 200
-	original_time = datetime.fromisoformat(response.json()["datetime"])  # type: ignore
+	original_time = datetime_fromisoformat(response.json()["datetime"])  # type: ignore
 
 	response = session.get(target_url)
 	assert response.status_code == 200
-	current_time = datetime.fromisoformat(response.json()["datetime"])  # type: ignore
+	current_time = datetime_fromisoformat(response.json()["datetime"])  # type: ignore
 
 	assert current_time > original_time
 
@@ -117,12 +118,12 @@ def test_http_cache(testing_http_cache, capsys, run_number: int, timeserver: HTT
 	response = session.get(target_url)
 	assert response.status_code == 200
 	assert not response.from_cache
-	original_time = datetime.fromisoformat(response.json()["datetime"])  # type: ignore
+	original_time = datetime_fromisoformat(response.json()["datetime"])  # type: ignore
 
 	response = session.get(target_url)
 	assert response.status_code == 200
 	assert response.from_cache
-	current_time = datetime.fromisoformat(response.json()["datetime"])  # type: ignore
+	current_time = datetime_fromisoformat(response.json()["datetime"])  # type: ignore
 
 	# If the times have changed the cache has failed.
 	assert current_time == original_time
@@ -135,7 +136,7 @@ def test_http_cache(testing_http_cache, capsys, run_number: int, timeserver: HTT
 	response = session.get(target_url)
 	assert response.status_code == 200
 	assert not response.from_cache
-	current_time = datetime.fromisoformat(response.json()["datetime"])  # type: ignore
+	current_time = datetime_fromisoformat(response.json()["datetime"])  # type: ignore
 
 	assert current_time > original_time
 
