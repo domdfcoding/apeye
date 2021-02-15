@@ -265,7 +265,7 @@ class URL(os.PathLike):
 
 		if isinstance(key, pathlib.PurePath):
 			key = key.as_posix()
-		elif isinstance(key, os.PathLike):  # type: ignore
+		elif isinstance(key, os.PathLike):
 			key = os.fspath(key)
 		elif isinstance(key, int):
 			key = str(key)
