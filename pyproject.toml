@@ -1,3 +1,25 @@
 [build-system]
 requires = [ "setuptools>=40.6.0", "wheel>=0.34.2",]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "apeye"
+version = "0.7.0"
+description = "Handy tools for working with URLs and APIs."
+readme = "README.rst"
+keywords = [ "api", "url", "requests", "cache", "rest",]
+dynamic = [ "requires-python", "classifiers", "dependencies",]
+
+[[project.authors]]
+email = "dominic@davis-foster.co.uk"
+name = "Dominic Davis-Foster"
+
+
+[project.license]
+file = "LICENSE"
+
+[project.urls]
+Homepage = "https://github.com/domdfcoding/apeye"
+"Issue Tracker" = "https://github.com/domdfcoding/apeye/issues"
+"Source Code" = "https://github.com/domdfcoding/apeye"
+Documentation = "https://apeye.readthedocs.io/en/latest"
