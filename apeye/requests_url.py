@@ -81,6 +81,8 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 	def resolve(self: _R) -> _R:
 		"""
 		Resolves the URL into its canonical form.
+
+		.. versionadded:: 0.8.0
 		"""
 
 		response: requests.Response = self.head(allow_redirects=True)
