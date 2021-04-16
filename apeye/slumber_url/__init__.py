@@ -44,7 +44,6 @@ REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and
 
 # stdlib
 import copy
-from contextlib import suppress
 from typing import Callable, Dict, MutableMapping, Optional, Tuple, Union
 from urllib.parse import unquote
 
@@ -383,8 +382,10 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		return 200 <= resp.status_code <= 299
 
 	def __del__(self):
-		with suppress(Exception):
+		try:
 			self.session.close()
+		except Exception:
+			pass
 
 	def options(self, **kwargs) -> str:
 		"""

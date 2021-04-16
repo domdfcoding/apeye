@@ -30,8 +30,7 @@ Extension of :class:`~apeye.url.URL` with support for interacting with the websi
 #  Licensed under the Apache License, Version 2.0
 
 # stdlib
-from contextlib import suppress
-from typing import IO, Any, Iterable, Mapping, MutableMapping, Optional, Tuple, Union
+from typing import IO, Any, Iterable, Mapping, MutableMapping, Optional, Tuple, TypeVar, Union
 
 # 3rd party
 import requests
@@ -180,8 +179,10 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		Attempt to close session when garbage collected to avoid leaving connections open.
 		"""
 
-		with suppress(Exception):
+		try:
 			self.session.close()
+		except:
+			pass
 
 	def __truediv__(self, other):
 		"""
