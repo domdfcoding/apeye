@@ -574,6 +574,13 @@ class TestRequestsURL(_TestURL):
 
 	base = RequestsURL("https://raw.githubusercontent.com")
 
+	def test_resolve(self):
+		expected = "https://github.com/PyMassSpec/PyMassSpec"
+		assert str(RequestsURL("https://github.com/domdfcoding/PyMassSpec").resolve()) == expected
+
+		expected = "https://pypi.org/project/domdf-python-tools"
+		assert str(RequestsURL("http://pypi.io/p/domdf_python_tools").resolve()) == expected
+
 	def test_get(self):
 		target_url = self.base / "domdfcoding" / "domdf_python_tools" / "master" / "LICENSE"
 

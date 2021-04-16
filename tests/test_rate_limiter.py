@@ -25,7 +25,7 @@ else:
 logging.basicConfig()
 
 
-@rate_limit(1)
+@rate_limit(3)
 def rate_limited_function():
 	print("Inside function")
 	return 42

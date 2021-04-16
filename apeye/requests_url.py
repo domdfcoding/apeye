@@ -30,8 +30,7 @@ Extension of :class:`~apeye.url.URL` with support for interacting with the websi
 #  Licensed under the Apache License, Version 2.0
 
 # stdlib
-from contextlib import suppress
-from typing import IO, Any, Iterable, Mapping, MutableMapping, Optional, Tuple, Union
+from typing import IO, Any, Iterable, Mapping, MutableMapping, Optional, Tuple, TypeVar, Union
 
 # 3rd party
 import requests
@@ -49,6 +48,8 @@ _ParamsType = Union[
 	Tuple[Union[str, bytes, int, float], _ParamsMappingValueType],
 	None
 	]
+
+_R = TypeVar("_R", bound="RequestsURL")
 
 
 # Ignore the LGTM warning as the "session" attribute should **not** affect equality.
@@ -76,6 +77,20 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 	def __init__(self, url: Union[str, URL] = ''):
 		super().__init__(url)
 		self.session = requests.Session()
+
+	def resolve(self: _R) -> _R:
+		"""
+		Resolves the URL into its canonical form.
+		"""
+
+		response: requests.Response = self.head(allow_redirects=True)
+
+		if response.status_code != 200:
+			raise requests.HTTPError(f"Could not resolve {self!r}: HTTP Status {response.status_code}")
+
+		new_obj = self.__class__(response.url)
+		new_obj.session = self.session
+		return new_obj
 
 	def get(self, params: _ParamsType = None, **kwargs) -> requests.Response:
 		r"""
@@ -180,8 +195,10 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		Attempt to close session when garbage collected to avoid leaving connections open.
 		"""
 
-		with suppress(Exception):
+		try:
 			self.session.close()
+		except:
+			pass
 
 	def __truediv__(self, other):
 		"""
