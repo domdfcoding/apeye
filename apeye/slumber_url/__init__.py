@@ -94,7 +94,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 	REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and
 	`Requests <https://requests.readthedocs.io>`__.
 
-	:param url: The url to construct the :class:`~.SlumberURL` object from.
+	:param url: The url to construct the :class:`~apeye.slumber_url.SlumberURL` object from.
 	:param auth:
 	:param format:
 	:param append_slash:

@@ -2,7 +2,7 @@
 #
 #  slumber_url.py
 """
-Exceptions for :class:`~.SlumberURL`.
+Exceptions for :class:`~apeye.slumber_url.SlumberURL`.
 
 .. versionadded:: 0.6.0
 """

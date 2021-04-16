@@ -2,7 +2,7 @@
 #
 #  _pyyaml_serializer.py
 """
-ruamel.yaml-backed YAML serializer for :class:`~.SlumberURL`.
+ruamel.yaml-backed YAML serializer for :class:`~apeye.slumber_url.SlumberURL`.
 
 .. versionadded:: 0.6.0
 """

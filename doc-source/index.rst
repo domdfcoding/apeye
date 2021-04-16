@@ -1,6 +1,6 @@
-######
+======
 apeye
-######
+======
 
 .. start short_desc
 
@@ -121,6 +121,14 @@ apeye
 		:alt: PyPI - Downloads
 
 .. end shields
+
+``apeye`` provides:
+
+* :mod:`apeye.url`: :class:`pathlib.Path`\-like objects to represent URLs
+* :class:`~.Cache`: A JSON-backed cache decorator for functions
+* :class:`~.RateLimitAdapter`: A CacheControl_ adapter to limit the rate of requests
+
+.. _CacheControl: https://github.com/ionrock/cachecontrol
 
 Installation
 ---------------

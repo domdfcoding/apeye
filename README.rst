@@ -1,6 +1,6 @@
-######
+======
 apeye
-######
+======
 
 .. start short_desc
 
@@ -118,7 +118,16 @@ apeye
 
 .. end shields
 
-|
+``apeye`` provides:
+
+* ``pathlib.Path``\-like objects to represent URLs
+* a JSON-backed cache decorator for functions
+* a CacheControl_ adapter to limit the rate of requests
+
+See `the documentation`_ for more details.
+
+.. _CacheControl: https://github.com/ionrock/cachecontrol
+.. _the documentation: https://apeye.readthedocs.io/en/latest/api/cache.html
 
 Installation
 --------------

@@ -3,7 +3,10 @@
 ==========================
 
 .. automodule:: apeye.slumber_url
-	:members: SlumberURL
+	:no-members:
+	:autosummary-members: SlumberURL
+
+.. autoclass:: apeye.slumber_url.SlumberURL
 
 
 :mod:`slumber_url.serializers <apeye.slumber_url.serializers>`

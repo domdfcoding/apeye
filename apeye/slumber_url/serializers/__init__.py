@@ -2,7 +2,7 @@
 #
 #  __init__.py
 """
-JSON and YAML serializers for :class:`~.SlumberURL`.
+JSON and YAML serializers for :class:`~apeye.slumber_url.SlumberURL`.
 
 .. versionadded:: 0.6.0
 """
