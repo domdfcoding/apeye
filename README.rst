@@ -158,3 +158,12 @@ To install with ``conda``:
 		$ conda install apeye
 
 .. end installation
+
+
+.. attention::
+
+	In v0.9.0 and above the ``rate_limiter`` module requires the ``limiter`` extra to be installed:
+
+	.. code-block:: bash
+
+		$ python -m pip install apeye[limiter]

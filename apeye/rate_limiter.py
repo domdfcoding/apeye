@@ -3,6 +3,10 @@
 #  rate_limiter.py
 """
 Rate limiters for making calls to external APIs in a polite manner.
+
+.. extras-require:: limiter
+	:pyproject:
+
 """
 #
 #  Copyright (c) 2020-2021 Dominic Davis-Foster <dominic@davis-foster.co.uk>
@@ -68,7 +72,7 @@ def rate_limit(min_time: float = 0.2, logger: Optional[logging.Logger] = None) -
 	:param min_time: The minimum interval between subsequent runs of the decorated function.
 	:default min_time: ``0.2``, which gives a maximum rate of 5 calls per second.
 	:param logger: Optional logger to log information about requests to. Defaults to the root logger.
-	:no default logger:
+	:no-default logger:
 	"""
 
 	if logger is None:

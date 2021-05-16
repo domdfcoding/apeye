@@ -143,6 +143,17 @@ Installation
 
 .. end installation
 
+.. attention::
+
+	In v0.6.0 and above the :mod:`rate_limiter` module requires the ``limiter`` extra to be installed:
+
+	.. prompt::
+
+		python -m pip install apeye[limiter]
+
+API Reference
+--------------
+
 .. toctree::
 	:hidden:
 

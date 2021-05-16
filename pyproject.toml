@@ -24,6 +24,10 @@ Homepage = "https://github.com/domdfcoding/apeye"
 "Source Code" = "https://github.com/domdfcoding/apeye"
 Documentation = "https://apeye.readthedocs.io/en/latest"
 
+[project.optional-dependencies]
+limiter = [ "cachecontrol[filecache]>=0.12.6", "lockfile>=0.12.2",]
+all = [ "cachecontrol[filecache]>=0.12.6", "lockfile>=0.12.2",]
+
 [tool.mkrecipe]
 conda-channels = [ "conda-forge", "domdfcoding",]
 extras = "all"
