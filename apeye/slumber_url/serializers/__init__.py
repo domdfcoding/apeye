@@ -5,6 +5,8 @@
 JSON and YAML serializers for :class:`~apeye.slumber_url.SlumberURL`.
 
 .. versionadded:: 0.6.0
+
+.. latex:vspace:: 10px
 """
 #
 #  Copyright © 2020-2021 Dominic Davis-Foster <dominic@davis-foster.co.uk>
@@ -121,6 +123,7 @@ class SerializerRegistry:
 	:param serializers: List of :class:`~.Serializer` objects to use.
 
 	.. versionchanged:: 0.6.0  Moved to :mod:`apeye.slumber_url.serializers`
+	.. latex:clearpage::
 	"""
 
 	def __init__(self, default: str = "json", serializers: Optional[List[Serializer]] = None):

@@ -46,6 +46,7 @@ __all__ = [
 		]
 
 try:
+	# this package
 	from apeye import rate_limiter
 	__all__.append("rate_limiter")
 

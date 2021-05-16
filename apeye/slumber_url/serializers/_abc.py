@@ -54,7 +54,7 @@ class Serializer(ABC):
 	@abstractmethod
 	def key(self) -> str:  # pragma: no cover
 		"""
-		A short identifier for the type of data this serializer supports.
+		An identifier for the supported data type.
 
 		For example, a YAML serializer would set this to ``'yaml'``.
 		"""

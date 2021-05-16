@@ -100,11 +100,9 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 	:param append_slash:
 	:param session:
 	:param serializer:
-	:param timeout: How long to wait for the server to send
-		data before giving up.
-	:param allow_redirects: Whether to allow redirects. .
-	:param proxies: Dictionary mapping protocol or protocol and
-		hostname to the URL of the proxy.
+	:param timeout: How long to wait for the server to send data before giving up.
+	:param allow_redirects: Whether to allow redirects.
+	:param proxies: Dictionary mapping protocol or protocol and hostname to the URL of the proxy.
 	:param verify: Either a boolean, in which case it controls whether we verify
 		the server's TLS certificate, or a string, in which case it must be a path
 		to a CA bundle to use.
@@ -115,9 +113,9 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 	passed to Requests when making any HTTP requests, and are inherited by all children
 	created from this URL.
 
-	.. versionchanged:: 0.3.0
-
-		The ``url`` parameter can now be a string or a :class:`~.URL`.
+	.. latex:vspace:: 10px
+	.. versionchanged:: 0.3.0  The ``url`` parameter can now be a string or a :class:`~.URL`.
+	.. latex:clearpage::
 	"""  # noqa: D400
 
 	serializer: SerializerRegistry
@@ -150,7 +148,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 	to a CA bundle to use.
 	"""
 
-	#: The path to ssl client cert file or a ('cert', 'key') pair.
+	#: The path to ssl client cert file or a tuple of ``('cert', 'key')``.
 	cert: Union[str, Tuple[str, str], None]
 
 	def __init__(

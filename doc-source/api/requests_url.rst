@@ -3,3 +3,4 @@
 ==========================
 
 .. automodule:: apeye.requests_url
+	:exclude-members: __truediv__

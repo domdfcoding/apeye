@@ -122,6 +122,9 @@ apeye
 
 .. end shields
 
+Overview
+----------
+
 ``apeye`` provides:
 
 * :mod:`apeye.url`: :class:`pathlib.Path`\-like objects to represent URLs
@@ -145,7 +148,7 @@ Installation
 
 .. attention::
 
-	In v0.6.0 and above the :mod:`rate_limiter` module requires the ``limiter`` extra to be installed:
+	In v0.6.0 and above the :mod:`~.rate_limiter` module requires the ``limiter`` extra to be installed:
 
 	.. prompt::
 
@@ -154,6 +157,8 @@ Installation
 API Reference
 --------------
 
+.. html-section::
+
 .. toctree::
 	:hidden:
 
@@ -161,7 +166,6 @@ API Reference
 
 .. toctree::
 	:maxdepth: 3
-	:caption: API Reference
 	:glob:
 
 	api/url
@@ -169,12 +173,15 @@ API Reference
 	api/slumber_url
 	api/*
 
-.. toctree::
-	:maxdepth: 3
-	:caption: Contributing
+
+.. sidebar-links::
+	:caption: Links
+	:github:
+	:pypi: apeye
 
 	contributing
 	Source
+
 
 .. start links
 
@@ -182,6 +189,6 @@ API Reference
 
 	View the :ref:`Function Index <genindex>` or browse the `Source Code <_modules/index.html>`__.
 
-	`Browse the GitHub Repository <https://github.com/domdfcoding/apeye>`__
+	:github:repo:`Browse the GitHub Repository <domdfcoding/apeye>`
 
 .. end links

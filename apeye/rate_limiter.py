@@ -46,9 +46,9 @@ from typing import Any, Callable, Dict, Optional
 import appdirs
 # import codetiming
 import requests
-from cachecontrol import CacheControl, CacheControlAdapter  # type: ignore
-from cachecontrol.caches.file_cache import FileCache  # type: ignore
-from cachecontrol.heuristics import ExpiresAfter  # type: ignore
+from cachecontrol import CacheControl, CacheControlAdapter  # type: ignore  # nodep
+from cachecontrol.caches.file_cache import FileCache  # type: ignore  # nodep
+from cachecontrol.heuristics import ExpiresAfter  # type: ignore  # nodep
 from domdf_python_tools.paths import PathPlus
 
 __all__ = [
@@ -70,7 +70,7 @@ def rate_limit(min_time: float = 0.2, logger: Optional[logging.Logger] = None) -
 	Used for rate limiting.
 
 	:param min_time: The minimum interval between subsequent runs of the decorated function.
-	:default min_time: ``0.2``, which gives a maximum rate of 5 calls per second.
+	:default min_time: ``0.2``, which gives a maximum rate of 5 calls per second
 	:param logger: Optional logger to log information about requests to. Defaults to the root logger.
 	:no-default logger:
 	"""
@@ -111,8 +111,8 @@ def rate_limit(min_time: float = 0.2, logger: Optional[logging.Logger] = None) -
 
 
 class RateLimitAdapter(CacheControlAdapter):
-	"""
-	Custom :class:`CacheControl.CacheControlAdapter` to limit the rate of requests to 5 per second.
+	r"""
+	Custom :class:`~.CacheControlAdapter` to limit the rate of requests to 5 per second.
 
 	:param cache:
 	:param cache_etags:
@@ -120,17 +120,20 @@ class RateLimitAdapter(CacheControlAdapter):
 	:param serializer:
 	:param heuristic:
 	:param cacheable_methods:
+
+	.. latex:vspace:: 20px
 	"""
 
 	def send(self, request: requests.PreparedRequest, cacheable_methods=None, **kwargs) -> requests.Response:
-		"""
-		Send a request. Use the request information to see if it
-		exists in the cache and cache the response if we need to and can.
+		r"""
+		Send a request.
+
+		Use the request information to see if it exists in the cache and cache the response if we need to and can.
 
 		:param request: The :class:`requests.PreparedRequest` being sent.
 		:param cacheable_methods:
-		:param kwargs: Additional arguments take by :meth:`requests.adapters.HTTPAdapter.send`.
-		"""  # noqa: D400
+		:param \*\*kwargs: Additional arguments take by :meth:`requests.adapters.HTTPAdapter.send`.
+		"""
 
 		cacheable = cacheable_methods or self.cacheable_methods
 		if request.method in cacheable:
@@ -151,8 +154,8 @@ class RateLimitAdapter(CacheControlAdapter):
 	@rate_limit(0.2)
 	def rate_limited_send(self, *args, **kwargs) -> requests.Response:
 		"""
-		Wrapper around :meth:`CacheControl.CacheControlAdapter.send` to limit the
-		rate of requests.
+		Wrapper around :meth:`CacheControlAdapter.send <CacheControl.CacheControlAdapter.send>`
+		to limit the rate of requests.
 		"""  # noqa: D400
 
 		return super(CacheControlAdapter, self).send(*args, **kwargs)  # lgtm [py/super-not-enclosing-class]

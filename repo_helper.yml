@@ -8,6 +8,7 @@ username: 'domdfcoding'
 version: '0.8.0'
 license: 'LGPLv3+'
 short_desc: 'Handy tools for working with URLs and APIs.'
+preserve_custom_theme: true
 
 conda_channels:
  - conda-forge
@@ -46,3 +47,7 @@ extras_require:
   - lockfile>=0.12.2
 
 tox_testenv_extras: limiter
+
+extra_sphinx_extensions:
+ - latex_unicode
+ - html_section

@@ -2,7 +2,7 @@
 #
 #  url.py
 """
-Pathlib-like approach to URLs.
+:mod:`pathlib`-like approach to URLs.
 
 .. versionchanged:: 0.2.0
 

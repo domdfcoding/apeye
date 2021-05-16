@@ -125,14 +125,16 @@ class URLPath(pathlib.PurePosixPath):
 
 
 class URL(os.PathLike):
-	"""
-	Pathlib-like class for URLs.
+	r"""
+	:mod:`pathlib`-like class for URLs.
 
 	:param url: The URL to construct the :class:`~apeye.url.URL` object from.
 
 	.. versionchanged:: 0.3.0
 
 		The ``url`` parameter can now be a string or a :class:`~.URL`.
+
+	.. latex:vspace:: 20px
 	"""
 
 	#: URL scheme specifier
@@ -230,6 +232,10 @@ class URL(os.PathLike):
 	def __str__(self) -> str:
 		"""
 		Returns the :class:`~apeye.url.URL` as a string.
+
+		:rtype:
+
+		.. clearpage::
 		"""
 
 		query = urlencode(self.query, doseq=True)
@@ -253,12 +259,12 @@ class URL(os.PathLike):
 
 		:rtype:
 
-		.. versionchanged:: 0.7.0  Added support for division by integers.
-
 		.. versionchanged:: 0.7.0
 
-			Now officially supports the new path having a URL fragment and/or query parameters.
-			Any URL fragment or query parameters from the parent URL is not inherited by its children.
+			* Added support for division by integers.
+
+			* Now officially supports the new path having a URL fragment and/or query parameters.
+			  Any URL fragment or query parameters from the parent URL is not inherited by its children.
 		"""
 
 		_key = key
@@ -292,6 +298,10 @@ class URL(os.PathLike):
 		return new_path
 
 	def __fspath__(self) -> str:
+		"""
+		Returns the file system path representation of the :class:`~.URL`
+		"""
+
 		return f"{self.netloc}{self.path}"
 
 	def __eq__(self, other) -> bool:
@@ -377,6 +387,8 @@ class URL(os.PathLike):
 		:rtype:
 
 		.. versionchanged:: 0.7.0  Added the ``inherit`` parameter.
+
+		.. clearpage::
 		"""
 
 		if inherit:

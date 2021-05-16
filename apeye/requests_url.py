@@ -59,14 +59,18 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 	`Requests <https://requests.readthedocs.io>`__ library.
 
 	The :class:`requests.Session` used for this object -- and all objects created using the
-	``/`` or ``.parent`` operations -- can be accessed using the ``.session`` attribute.
+	``/`` or ``.parent`` operations -- can be accessed using the :attr:`~.session` attribute.
 	If desired, this can be replaced with a different session object, such as one using caching.
 
 	:param url: The url to construct the :class:`~apeye.url.URL` object from.
 
+	.. latex:vspace:: 10px
+
 	.. versionchanged:: 0.3.0
 
 		The ``url`` parameter can now be a string or a :class:`~.URL`.
+
+	.. latex:vspace:: 20px
 	"""  # noqa: D400
 
 	session: requests.Session
