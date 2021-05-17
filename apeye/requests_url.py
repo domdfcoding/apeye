@@ -203,7 +203,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 		try:
 			self.session.close()
-		except:
+		except:  # nosec: B110  # pylint disable=bare-except
 			pass
 
 	def __truediv__(self, other):

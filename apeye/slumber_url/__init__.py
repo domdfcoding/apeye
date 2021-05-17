@@ -382,7 +382,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 	def __del__(self):
 		try:
 			self.session.close()
-		except Exception:
+		except Exception:  # nosec: B110  # pylint disable=bare-except
 			pass
 
 	def options(self, **kwargs) -> str:
