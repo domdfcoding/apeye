@@ -64,9 +64,7 @@ autodoc_default_options = {
 		"exclude-members": ','.join(config["autodoc_exclude_members"]),
 		}
 
-latex_elements = {
-		"printindex": "\\begin{flushleft}\n\\printindex\n\\end{flushleft}",
-		}
+latex_elements = {}
 
 
 def setup(app):
@@ -74,6 +72,3 @@ def setup(app):
 	from sphinx_toolbox.latex import better_header_layout
 
 	app.connect("config-inited", lambda app, config: better_header_layout(config))
-
-
-latex_elements["preamble"] = r"\usepackage{multicol}"
