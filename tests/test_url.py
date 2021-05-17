@@ -582,9 +582,9 @@ class TestRequestsURL(_TestURL):
 		assert str(RequestsURL("http://pypi.io/p/domdf_python_tools").resolve()) == expected
 
 	def test_get(self):
-		target_url = self.base / "domdfcoding" / "domdf_python_tools" / "master" / "LICENSE"
+		target_url = self.base / "domdfcoding" / "domdf_python_tools" / "v2.9.1" / "LICENSE"
 
-		assert target_url == URL("https://raw.githubusercontent.com/domdfcoding/domdf_python_tools/master/LICENSE")
+		assert target_url == URL("https://raw.githubusercontent.com/domdfcoding/domdf_python_tools/v2.9.1/LICENSE")
 		assert target_url.get().text.splitlines()[:11] == [
 				"                   GNU LESSER GENERAL PUBLIC LICENSE",
 				"                       Version 3, 29 June 2007",
