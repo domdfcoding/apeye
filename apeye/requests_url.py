@@ -203,7 +203,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 		try:
 			self.session.close()
-		except:  # nosec: B110  # pylint disable=bare-except
+		except:  # nosec: B110  # pylint: disable=bare-except
 			pass
 
 	def __truediv__(self, other):
@@ -223,9 +223,12 @@ class TrailingRequestsURL(RequestsURL):
 	"""
 	Extension of :class:`~apeye.requests_url.RequestsURL` which adds a trailing slash to the end of the URL.
 
+	.. versionadded:: 0.5.0
+
 	:param url: The url to construct the :class:`~apeye.url.URL` object from.
 
-	.. versionadded:: 0.5.0
+	.. autoclasssumm:: TrailingRequestsURL
+		:autosummary-sections: ;;
 	"""
 
 	def __str__(self) -> str:

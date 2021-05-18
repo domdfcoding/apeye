@@ -150,7 +150,7 @@ Installation
 
 	In v0.6.0 and above the :mod:`~.rate_limiter` module requires the ``limiter`` extra to be installed:
 
-	.. prompt::
+	.. prompt:: bash
 
 		python -m pip install apeye[limiter]
 

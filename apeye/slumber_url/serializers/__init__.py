@@ -5,8 +5,6 @@
 JSON and YAML serializers for :class:`~apeye.slumber_url.SlumberURL`.
 
 .. versionadded:: 0.6.0
-
-.. latex:vspace:: 10px
 """
 #
 #  Copyright © 2020-2021 Dominic Davis-Foster <dominic@davis-foster.co.uk>
