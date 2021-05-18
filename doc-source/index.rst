@@ -148,7 +148,7 @@ Installation
 
 .. attention::
 
-	In v0.6.0 and above the :mod:`~.rate_limiter` module requires the ``limiter`` extra to be installed:
+	In v0.9.0 and above the :mod:`~.rate_limiter` module requires the ``limiter`` extra to be installed:
 
 	.. prompt:: bash
 
