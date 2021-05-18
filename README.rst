@@ -101,7 +101,7 @@ apeye
 .. |language| image:: https://img.shields.io/github/languages/top/domdfcoding/apeye
 	:alt: GitHub top language
 
-.. |commits-since| image:: https://img.shields.io/github/commits-since/domdfcoding/apeye/v0.8.0
+.. |commits-since| image:: https://img.shields.io/github/commits-since/domdfcoding/apeye/v0.9.0
 	:target: https://github.com/domdfcoding/apeye/pulse
 	:alt: GitHub commits since tagged version
 

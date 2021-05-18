@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "apeye"
-version = "0.8.0"
+version = "0.9.0"
 description = "Handy tools for working with URLs and APIs."
 readme = "README.rst"
 keywords = [ "api", "cache", "requests", "rest", "url",]
