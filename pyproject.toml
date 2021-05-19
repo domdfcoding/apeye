@@ -30,7 +30,7 @@ all = [ "cachecontrol[filecache]>=0.12.6", "lockfile>=0.12.2",]
 
 [tool.mkrecipe]
 conda-channels = [ "conda-forge", "domdfcoding",]
-extras = "all"
+extras = [ "limiter",]
 license-key = "LGPL-3.0-or-later"
 
 [tool.sphinx-pyproject]

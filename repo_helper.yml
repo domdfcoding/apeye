@@ -53,3 +53,6 @@ tox_testenv_extras: limiter
 extra_sphinx_extensions:
  - latex_unicode
  - html_section
+
+conda_extras:
+ - limiter
