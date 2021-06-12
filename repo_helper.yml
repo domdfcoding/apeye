@@ -56,3 +56,6 @@ extra_sphinx_extensions:
 
 conda_extras:
  - limiter
+
+manifest_additional:
+ - include apeye/public_suffix_list.dat
