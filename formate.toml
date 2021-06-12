@@ -41,6 +41,7 @@ known_third_party = [
     "coverage_pyver_pragma",
     "domdf_python_tools",
     "github",
+    "idna",
     "importlib_metadata",
     "lockfile",
     "pytest",
