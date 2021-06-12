@@ -54,7 +54,6 @@ from requests.structures import CaseInsensitiveDict
 from requests.utils import guess_json_utf
 
 # this package
-from apeye._url import URL
 from apeye.requests_url import _Data
 from apeye.slumber_url.exceptions import (
 		HttpClientError,
@@ -70,6 +69,7 @@ from apeye.slumber_url.serializers import (
 		SerializerRegistry,
 		YamlSerializer
 		)
+from apeye.url import URL
 
 __all__ = [
 		"SlumberURL",

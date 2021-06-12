@@ -4,11 +4,10 @@
 """
 :mod:`pathlib`-like approach to URLs.
 
-.. versionchanged:: 0.2.0
+.. versionchanged:: 1.0.0
 
 	:class:`~apeye.slumber_url.SlumberURL` and :class:`~apeye.requests_url.RequestsURL`
-	moved to :mod:`apeye.slumber_url` and :mod:`apeye.requests_url` respectively,
-	but can still be imported from this module.
+	moved to :mod:`apeye.slumber_url` and :mod:`apeye.requests_url` respectively.
 """
 #
 #  Copyright © 2020-2021 Dominic Davis-Foster <dominic@davis-foster.co.uk>

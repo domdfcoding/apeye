@@ -24,9 +24,6 @@ Handy tools for working with URLs and APIs.
 #
 
 # this package
-from apeye import cache
-from apeye.requests_url import RequestsURL, TrailingRequestsURL
-from apeye.slumber_url import SlumberURL
 from apeye.url import URL, Domain, URLPath
 
 __author__: str = "Dominic Davis-Foster"
@@ -39,16 +36,4 @@ __all__ = [
 		"URL",
 		"Domain",
 		"URLPath",
-		"RequestsURL",
-		"TrailingRequestsURL",
-		"SlumberURL",
-		"cache",
 		]
-
-try:
-	# this package
-	from apeye import rate_limiter
-	__all__.append("rate_limiter")
-
-except ImportError:
-	pass

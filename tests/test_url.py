@@ -18,8 +18,9 @@ from coincidence import count
 from pytest_httpserver.httpserver import QueryMatcher  # type: ignore
 
 # this package
-from apeye.requests_url import TrailingRequestsURL
-from apeye.url import URL, Domain, RequestsURL, SlumberURL, URLPath
+from apeye.requests_url import RequestsURL, TrailingRequestsURL
+from apeye.slumber_url import SlumberURL
+from apeye.url import URL, Domain, URLPath
 
 
 class TestUrlPath:
