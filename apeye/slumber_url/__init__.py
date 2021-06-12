@@ -193,7 +193,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		self.verify = verify
 		self.cert = cert
 
-	def url(self):
+	def url(self) -> str:
 		"""
 		Returns the URL as a string.
 		"""
