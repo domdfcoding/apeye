@@ -2,9 +2,13 @@
 :mod:`apeye.slumber_url`
 ==========================
 
+.. autosummary-widths:: 40/100
+
 .. automodule:: apeye.slumber_url
 	:no-members:
 	:autosummary-members: SlumberURL
+
+.. autosummary-widths:: 1/4
 
 .. autoclass:: apeye.slumber_url.SlumberURL
 	:exclude-members: __truediv__
@@ -12,6 +16,8 @@
 
 :mod:`slumber_url.serializers <apeye.slumber_url.serializers>`
 -----------------------------------------------------------------
+
+.. autosummary-widths:: 1/2
 
 .. automodule:: apeye.slumber_url.serializers
 

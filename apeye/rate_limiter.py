@@ -121,7 +121,7 @@ class RateLimitAdapter(CacheControlAdapter):
 	:param heuristic:
 	:param cacheable_methods:
 
-	.. latex:vspace:: 10px
+	.. autosummary-widths:: 7/16
 	"""
 
 	def send(self, request: requests.PreparedRequest, cacheable_methods=None, **kwargs) -> requests.Response:

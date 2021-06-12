@@ -2,11 +2,10 @@
 #
 #  requests_url.py
 """
-Extension of :class:`~apeye.url.URL` with support for interacting with the website using the
-`Requests <https://requests.readthedocs.io>`__ library.
+Extension of :class:`~apeye.url.URL` with support for interacting with the website using the :requests:`.` library.
 
 .. versionadded:: 0.2.0
-"""  # noqa: D400
+"""
 #
 #  Copyright © 2020-2021 Dominic Davis-Foster <dominic@davis-foster.co.uk>
 #
@@ -36,7 +35,7 @@ from typing import IO, Any, Iterable, Mapping, MutableMapping, Optional, Tuple, 
 import requests
 
 # this package
-from apeye._url import URL
+from apeye.url import URL
 
 __all__ = ["RequestsURL", "TrailingRequestsURL"]
 
@@ -55,8 +54,7 @@ _R = TypeVar("_R", bound="RequestsURL")
 # Ignore the LGTM warning as the "session" attribute should **not** affect equality.
 class RequestsURL(URL):  # lgtm [py/missing-equals]
 	"""
-	Extension of :class:`~apeye.url.URL` with support for interacting with the website using the
-	`Requests <https://requests.readthedocs.io>`__ library.
+	Extension of :class:`~apeye.url.URL` with support for interacting with the website using the :requests:`.` library.
 
 	The :class:`requests.Session` used for this object -- and all objects created using the
 	``/`` or ``.parent`` operations -- can be accessed using the :attr:`~.session` attribute.
@@ -64,14 +62,12 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 	:param url: The url to construct the :class:`~apeye.url.URL` object from.
 
-	.. latex:vspace:: 10px
+	.. latex:vspace:: 5px
 
-	.. versionchanged:: 0.3.0
+	.. versionchanged:: 0.3.0  The ``url`` parameter can now be a string or a :class:`~.URL`.
 
-		The ``url`` parameter can now be a string or a :class:`~.URL`.
-
-	.. latex:vspace:: 20px
-	"""  # noqa: D400
+	.. latex:vspace:: -4px
+	"""
 
 	session: requests.Session
 	"""
@@ -100,7 +96,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 	def get(self, params: _ParamsType = None, **kwargs) -> requests.Response:
 		r"""
-		Perform a GET request using `Requests <https://requests.readthedocs.io>`__.
+		Perform a GET request using :requests:`.`.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/GET
 
@@ -121,7 +117,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 	def options(self, **kwargs) -> requests.Response:
 		r"""
-		Send an OPTIONS request using `Requests <https://requests.readthedocs.io>`__.
+		Send an OPTIONS request using :requests:`.`.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
 
@@ -132,7 +128,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 	def head(self, **kwargs) -> requests.Response:
 		r"""
-		Send a HEAD request using `Requests <https://requests.readthedocs.io>`__.
+		Send a HEAD request using :requests:`.`.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/HEAD
 
@@ -145,7 +141,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 	def post(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
 		r"""
-		Send a POST request using `Requests <https://requests.readthedocs.io>`__.
+		Send a POST request using :requests:`.`.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
 
@@ -159,7 +155,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 	def put(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
 		r"""
-		Send a PUT request using `Requests <https://requests.readthedocs.io>`__.
+		Send a PUT request using :requests:`.`.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT
 
@@ -173,7 +169,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 	def patch(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
 		r"""
-		Send a PATCH request using `Requests <https://requests.readthedocs.io>`__.
+		Send a PATCH request using :requests:`.`.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH
 
@@ -187,7 +183,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 	def delete(self, **kwargs) -> requests.Response:
 		r"""
-		Send a DELETE request using `Requests <https://requests.readthedocs.io>`__.
+		Send a DELETE request using :requests:`.`.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/DELETE
 
