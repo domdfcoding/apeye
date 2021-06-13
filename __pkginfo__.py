@@ -16,7 +16,7 @@ __all__ = [
 		"extras_require",
 		]
 
-__version__ = "0.9.1"
+__version__ = "1.0.0"
 extras_require = {
 		"limiter": ["cachecontrol[filecache]>=0.12.6", "lockfile>=0.12.2"],
 		"all": ["cachecontrol[filecache]>=0.12.6", "lockfile>=0.12.2"]
