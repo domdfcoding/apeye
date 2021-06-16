@@ -273,25 +273,38 @@ def test_email_valid(email_input, output):
 				("my@twodots..com", "An email address cannot have two periods in a row."),
 				(
 						"my@baddash.-.com",
-						"The domain name baddash.-.com contains invalid characters (Label must not start or end with a hyphen)."
+						{
+								"The domain name baddash.-.com contains invalid characters (Label must not start or end with a hyphen).",
+								"The domain name baddash.-.com contains invalid characters (The label b'-' is not a valid A-label).",
+								}
 						),
 				(
 						"my@baddash.-a.com",
-						"The domain name baddash.-a.com contains invalid characters (Label must not start or end with a hyphen)."
+						{
+								"The domain name baddash.-a.com contains invalid characters (Label must not start or end with a hyphen).",
+								"The domain name baddash.-a.com contains invalid characters (The label b'-a' is not a valid A-label).",
+								}
 						),
 				(
 						"my@baddash.b-.com",
-						"The domain name baddash.b-.com contains invalid characters (Label must not start or end with a hyphen)."
+						{
+								"The domain name baddash.b-.com contains invalid characters (Label must not start or end with a hyphen).",
+								"The domain name baddash.b-.com contains invalid characters (The label b'b-' is not a valid A-label)."
+								}
 						),
 				(
 						'my@example.com\n',
-						'The domain name example.com\n contains invalid characters (Codepoint U+000A at position 4 of '
-						'\'com\\n\' not allowed).'
+						{
+								'The domain name example.com\n contains invalid characters (Codepoint U+000A at position 4 of \'com\\n\' not allowed).',
+								"The domain name example.com\n contains invalid characters (Codepoint U+000A not allowed at position 12 in 'example.com\\n').",
+								}
 						),
 				(
 						'my@example\n.com',
-						'The domain name example\n.com contains invalid characters (Codepoint U+000A at position 8 of '
-						'\'example\\n\' not allowed).'
+						{
+								"The domain name example\n.com contains invalid characters (Codepoint U+000A at position 8 of 'example\\n' not allowed).",
+								"The domain name example\n.com contains invalid characters (Codepoint U+000A not allowed at position 8 in 'example\\n.com').",
+								}
 						),
 				(".leadingdot@domain.com", "The email address contains invalid characters before the @-sign: .."),
 				("..twodots@domain.com", "The email address contains invalid characters before the @-sign: .."),
@@ -346,7 +359,11 @@ def test_email_invalid(email_input, error_msg):
 	with pytest.raises(EmailSyntaxError) as exc_info:
 		validate_email(email_input)
 	# print(f'({email_input!r}, {str(exc_info.value)!r}),')
-	assert str(exc_info.value) == error_msg
+
+	if isinstance(error_msg, set):
+		assert str(exc_info.value) in error_msg
+	else:
+		assert str(exc_info.value) == error_msg
 
 
 def test_dict_accessor():
