@@ -2,6 +2,9 @@
 :mod:`apeye.rate_limiter`
 ===========================
 
+.. autosummary-widths:: 1/2
+	:html: 4/10
+
 .. automodule:: apeye.rate_limiter
 	:autosummary-members:
 	:no-members:

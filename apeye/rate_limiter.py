@@ -122,6 +122,7 @@ class RateLimitAdapter(CacheControlAdapter):
 	:param cacheable_methods:
 
 	.. autosummary-widths:: 7/16
+		:html: 4/10
 	"""
 
 	def send(self, request: requests.PreparedRequest, cacheable_methods=None, **kwargs) -> requests.Response:

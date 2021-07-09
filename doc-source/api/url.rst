@@ -3,6 +3,7 @@
 ===================
 
 .. autosummary-widths:: 35/100
+	:html: 38/100
 
 .. automodule:: apeye.url
 	:no-members:
@@ -16,6 +17,7 @@
 	:inherited-members:
 
 .. autosummary-widths:: 1/4
+	:html: 30/100
 
 .. autoclass:: apeye.url.URLPath
 	:exclude-members: match,is_absolute,joinpath,relative_to,anchor,drive,__lt__,__le__,__gt__,__ge__,as_uri,__reduce__

@@ -101,6 +101,7 @@ class ValidatedEmail:
 	:param smtputf8: Indicates whether SMTPUTF8 will be required to transmit messages to this address.
 
 	.. autosummary-widths:: 1/4
+		:html: 2/10
 	"""
 
 	#: The email address that was passed to validate_email. (If passed as bytes, this will be a string.)
