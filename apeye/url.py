@@ -49,7 +49,7 @@ import ipaddress
 import os
 import pathlib
 import re
-from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Tuple, Type, TypeVar, Union
+from typing import NamedTuple, TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Tuple, Type, TypeVar, Union
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 # 3rd party
@@ -504,7 +504,7 @@ class URL(os.PathLike):
 				)
 
 
-class Domain(collections.namedtuple("Domain", "subdomain, domain, suffix")):
+class Domain(NamedTuple):
 	"""
 	:class:`typing.NamedTuple` of a URL's subdomain, domain, and suffix.
 	"""
@@ -512,8 +512,6 @@ class Domain(collections.namedtuple("Domain", "subdomain, domain, suffix")):
 	subdomain: str
 	domain: str
 	suffix: str
-
-	__slots__ = ()
 
 	@property
 	def registered_domain(self):
@@ -572,4 +570,7 @@ class Domain(collections.namedtuple("Domain", "subdomain, domain, suffix")):
 		Return a string representation of the :class:`~.Domain`.
 		"""
 
-		return super().__repr__()
+		# This is necessary to get the custom docstring
+
+		repr_fmt = f"({', '.join(f'{name}=%r' for name in self._fields)})"
+		return f"{self.__class__.__name__}{repr_fmt % self}"

@@ -27,3 +27,4 @@
 .. autonamedtuple:: apeye.url.Domain
 	:inherited-members: tuple
 	:special-members:
+	:no-show-inheritance:
