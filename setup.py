@@ -18,10 +18,10 @@ repo_root = pathlib.Path(__file__).parent
 install_requires = (repo_root / "requirements.txt").read_text(encoding="UTF-8").split('\n')
 
 setup(
-		name="apeye",
 		description="Handy tools for working with URLs and APIs.",
 		extras_require=extras_require,
 		install_requires=install_requires,
+		name="apeye",
 		py_modules=[],
 		version=__version__,
 		)
