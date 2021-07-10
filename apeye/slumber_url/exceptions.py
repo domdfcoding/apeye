@@ -61,7 +61,7 @@ class SlumberHttpBaseException(SlumberBaseException):
 
 class HttpClientError(SlumberHttpBaseException):
 	"""
-	Called when the server tells us there was a client error (4xx).
+	Raised when the server tells us there was a client error (4xx).
 
 	.. versionchanged:: 0.6.0  Moved to :mod:`apeye.slumber_url.exceptions`
 	"""
@@ -69,7 +69,7 @@ class HttpClientError(SlumberHttpBaseException):
 
 class HttpNotFoundError(HttpClientError):
 	"""
-	Called when the server sends a 404 error.
+	Raised when the server sends a 404 error.
 
 	.. versionchanged:: 0.6.0  Moved to :mod:`apeye.slumber_url.exceptions`
 	"""
@@ -77,7 +77,7 @@ class HttpNotFoundError(HttpClientError):
 
 class HttpServerError(SlumberHttpBaseException):
 	"""
-	Called when the server tells us there was a server error (5xx).
+	Raised when the server tells us there was a server error (5xx).
 
 	.. versionchanged:: 0.6.0  Moved to :mod:`apeye.slumber_url.exceptions`
 	"""

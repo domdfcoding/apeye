@@ -49,7 +49,7 @@ import ipaddress
 import os
 import pathlib
 import re
-from typing import NamedTuple, TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Tuple, Type, TypeVar, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Mapping, NamedTuple, Optional, Tuple, Type, TypeVar, Union
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 # 3rd party
