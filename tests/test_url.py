@@ -140,7 +140,6 @@ class TestURLPath:
 							URLPath("/programmes/b006qtlx"),
 							marks=pytest.mark.xfail(reason="The type is taken from the left object.")
 							),
-					(URLPath("/programmes") / URLPath("b006qtlx"), URLPath("/programmes/b006qtlx")),
 					]
 			)
 	def test_division_pathlike(self, value, expects):
@@ -199,7 +198,7 @@ class _TestURL(ABC):
 
 	@property
 	@abstractmethod
-	def _class(self) -> Type[URLType]:
+	def _class(self) -> Type:
 		pass
 
 	@pytest.mark.parametrize(
@@ -417,87 +416,114 @@ class _TestURL(ABC):
 	def test_stem(self, url, stem):
 		assert self._class(url).stem == stem
 
-	def test_with_name(self):
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").with_name("foo")
-		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo")
-
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry").with_name("foo")
-		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo")
-
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment").with_name("foo")
-		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo")
-
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment").with_name("foo")
-		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo")
-
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").with_name("foo", inherit=True)
-		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo"))
-
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry").with_name(
-				"foo", inherit=True
-				)
-		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo?que=ry"))
-
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment").with_name(
-				"foo", inherit=True
-				)
-		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo#fragment"))
-
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment").with_name(
-				"foo", inherit=True
-				)
-		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo?que=ry#fragment"))
-
-		value = self._class("/programmes/b006qtlx/episodes").with_name("foo")
-		assert value == self._class("/programmes/b006qtlx/foo")
-
-		value = self._class("https://imgs.xkcd.com/comics/workflow.png").with_name("baz")
-		assert value == self._class("https://imgs.xkcd.com/comics/baz")
-
+	def test_with_name_errors(self):
 		with pytest.raises(ValueError, match=r"URLPath\(''\) has an empty name"):
 			self._class("www.bbc.co.uk").with_name("bar")
+
 		with pytest.raises(ValueError, match=r"URLPath\(''\) has an empty name"):
 			self._class().with_name("bar")
 
-	def test_with_suffix(self):
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").with_suffix(".foo")
-		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo")
+	@pytest.mark.parametrize(
+			"url, expected, name",
+			[(
+					"https://www.bbc.co.uk/programmes/b006qtlx/episodes",
+					"https://www.bbc.co.uk/programmes/b006qtlx/foo",
+					"foo"
+					),
+				(
+						"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry",
+						"https://www.bbc.co.uk/programmes/b006qtlx/foo",
+						"foo"
+						),
+				(
+						"https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment",
+						"https://www.bbc.co.uk/programmes/b006qtlx/foo",
+						"foo"
+						),
+				(
+						"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment",
+						"https://www.bbc.co.uk/programmes/b006qtlx/foo",
+						"foo"
+						), ("/programmes/b006qtlx/episodes", "/programmes/b006qtlx/foo", "foo"),
+				("https://imgs.xkcd.com/comics/workflow.png", "https://imgs.xkcd.com/comics/baz", "baz")]
+			)
+	def test_with_name(self, url: str, expected: str, name: str):
+		assert self._class(url).with_name(name) == self._class(expected)
 
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry").with_suffix(".foo")
-		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo")
+	@pytest.mark.parametrize(
+			"url, expected",
+			[
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes",
+							"https://www.bbc.co.uk/programmes/b006qtlx/foo",
+							),
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry",
+							"https://www.bbc.co.uk/programmes/b006qtlx/foo?que=ry",
+							),
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment",
+							"https://www.bbc.co.uk/programmes/b006qtlx/foo#fragment",
+							),
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment",
+							"https://www.bbc.co.uk/programmes/b006qtlx/foo?que=ry#fragment",
+							),
+					]
+			)
+	def test_with_name_inherit(self, url: str, expected: str):
+		assert self._class(url).with_name("foo", inherit=True) == self._class(expected)
 
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment").with_suffix(".foo")
-		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo")
+	@pytest.mark.parametrize(
+			"url, expected, suffix",
+			[(
+					"https://www.bbc.co.uk/programmes/b006qtlx/episodes",
+					"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
+					".foo"
+					),
+				(
+						"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry",
+						"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
+						".foo"
+						),
+				(
+						"https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment",
+						"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
+						".foo"
+						),
+				(
+						"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment",
+						"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
+						".foo"
+						), ("/programmes/b006qtlx/episodes", "/programmes/b006qtlx/episodes.foo", ".foo"),
+				("https://imgs.xkcd.com/comics/workflow.png", "https://imgs.xkcd.com/comics/workflow.baz", ".baz")]
+			)
+	def test_with_suffix(self, url: str, expected: str, suffix: str):
+		assert self._class(url).with_suffix(suffix) == self._class(expected)
 
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment"
-							).with_suffix(".foo")
-		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo")
-
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").with_suffix(".foo", inherit=True)
-		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo"))
-
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry").with_suffix(
-				".foo", inherit=True
-				)
-		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo?que=ry"))
-
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment").with_suffix(
-				".foo", inherit=True
-				)
-		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo#fragment"))
-
-		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment").with_suffix(
-				".foo", inherit=True
-				)
-		assert value.strict_compare(
-				self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo?que=ry#fragment")
-				)
-
-		value = self._class("/programmes/b006qtlx/episodes").with_suffix(".foo")
-		assert value == self._class("/programmes/b006qtlx/episodes.foo")
-
-		value = self._class("https://imgs.xkcd.com/comics/workflow.png").with_suffix(".baz")
-		assert value == self._class("https://imgs.xkcd.com/comics/workflow.baz")
+	@pytest.mark.parametrize(
+			"url, expected",
+			[
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes",
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
+							),
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry",
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo?que=ry",
+							),
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment",
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo#fragment",
+							),
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment",
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo?que=ry#fragment",
+							),
+					]
+			)
+	def test_with_suffix_inherit(self, url: str, expected: str):
+		assert self._class(url).with_suffix(".foo", inherit=True) == self._class(expected)
 
 	@pytest.mark.parametrize(
 			"url, parent",
@@ -645,7 +671,7 @@ class _TestURL(ABC):
 		assert (url / "users").fragment is None
 
 
-class TestUrl(_TestURL):
+class TestURL(_TestURL):
 
 	_class = URL
 

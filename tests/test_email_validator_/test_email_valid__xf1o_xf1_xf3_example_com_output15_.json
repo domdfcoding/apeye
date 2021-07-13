@@ -1,0 +1,1 @@
+{"original_email": "\u00f1o\u00f1\u00f3@example.com", "email": "\u00f1o\u00f1\u00f3@example.com", "local_part": "\u00f1o\u00f1\u00f3", "domain": "example.com", "ascii_email": null, "ascii_local_part": null, "ascii_domain": "example.com", "smtputf8": true, "__repr__": "<ValidatedEmail \u00f1o\u00f1\u00f3@example.com>", "__str__": "\u00f1o\u00f1\u00f3@example.com"}
