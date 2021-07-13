@@ -336,6 +336,24 @@ class _TestURL(ABC):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: .* and '.*'"):
 			obj / self._class()  # pylint: disable=expression-not-assigned
 
+	def test_joinurl(self):
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").joinurl("player")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes/player")
+
+		value = self._class("/programmes/b006qtlx/episodes").joinurl("player")
+		assert value == self._class("/programmes/b006qtlx/episodes/player")
+
+		assert self._class("www.bbc.co.uk").joinurl("news") == self._class("www.bbc.co.uk/news")
+		assert self._class().joinurl("news") == self._class("/news")
+
+		assert self._class("www.bbc.co.uk").joinurl("news", "sport") == self._class("www.bbc.co.uk/news/sport")
+
+		expected = self._class("www.bbc.co.uk/news/sport?que=ry")
+		assert self._class("www.bbc.co.uk").joinurl("news#anchor", "sport?que=ry") == expected
+
+		expected = self._class("www.bbc.co.uk/news/sport#anchor")
+		assert self._class("www.bbc.co.uk").joinurl("news?que=ry", "sport#anchor") == expected
+
 	def test_empty_url_operations(self):
 		assert self._class().name == ''
 		assert self._class().suffix == ''

@@ -49,8 +49,22 @@ import ipaddress
 import os
 import pathlib
 import re
-from typing import TYPE_CHECKING, Any, Dict, List, Mapping, NamedTuple, Optional, Tuple, Type, TypeVar, Union
-from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
+from operator import attrgetter
+from typing import (
+		TYPE_CHECKING,
+		Any,
+		Dict,
+		Iterable,
+		List,
+		Mapping,
+		NamedTuple,
+		Optional,
+		Tuple,
+		Type,
+		TypeVar,
+		Union
+		)
+from urllib.parse import ParseResult, parse_qs, urlencode, urlparse, urlunparse
 
 # 3rd party
 from domdf_python_tools.doctools import prettify_docstrings
@@ -63,7 +77,7 @@ if TYPE_CHECKING:
 	# stdlib
 	from typing import NoReturn
 
-__all__ = ["URL", "URLPath", "Domain", "URLType"]
+__all__ = ["URL", "URLPath", "Domain", "URLType", "URLPathType"]
 
 #: Type variable bound to :class:`~apeye.url.URL`.
 URLType = TypeVar("URLType", bound="URL")
@@ -292,38 +306,80 @@ class URL(os.PathLike):
 			* Added support for division by integers.
 
 			* Now officially supports the new path having a URL fragment and/or query parameters.
-			  Any URL fragment or query parameters from the parent URL is not inherited by its children.
+			  Any URL fragment or query parameters from the parent URL are not inherited by its children.
 		"""
 
-		_key = key
-
-		if isinstance(key, pathlib.PurePath):
-			key = key.as_posix()
-		elif isinstance(key, os.PathLike):
-			key = os.fspath(key)
-		elif isinstance(key, int):
-			key = str(key)
-
 		try:
-			parse_result = urlparse(key)
-		except AttributeError as e:
-			if str(e).endswith("'decode'"):
-				raise TypeError(
-						f"unsupported operand type(s) for /: "
-						f"'{type(self.path).__name__!r}' and {type(_key).__name__!r}",
-						) from None
-			else:
-				raise
-
-		try:
-			new_path = self.from_parts(self.scheme, self.netloc, self.path / parse_result.path)
+			return self._make_child((key, ))
 		except TypeError:
 			return NotImplemented
 
-		new_path.query = parse_qs(parse_result.query)
-		new_path.fragment = parse_result.fragment or None
+	def _make_child(self: URLType, args: Iterable[Union[PathLike, int]]) -> URLType:
+		"""
+		Construct a new :class:`~apeye.url.URL` object by combining the given arguments with this instance's path part.
+
+		.. versionadded:: 1.1.0  (private)
+
+		Except for the final path element any queries and fragments are ignored.
+
+		:returns: A new :class:`~.URL` representing either a subpath
+			(if all arguments are relative paths) or a totally different path
+			(if one of the arguments is absolute).
+		"""
+
+		parsed_args: List[ParseResult] = []
+
+		for arg in args:
+
+			raw_arg = arg
+
+			if isinstance(arg, pathlib.PurePath):
+				arg = arg.as_posix()
+			elif isinstance(arg, os.PathLike):
+				arg = os.fspath(arg)
+			elif isinstance(arg, int):
+				arg = str(arg)
+
+			try:
+				parse_result = urlparse(arg)
+			except AttributeError as e:
+				if str(e).endswith("'decode'"):
+					msg = f"Cannot join {type(raw_arg).__name__!r} to a {type(self.path).__name__!r}"
+					raise TypeError(msg) from None
+				else:
+					raise
+
+			parsed_args.append(parse_result)
+
+		try:
+			new_path = self.from_parts(
+					self.scheme,
+					self.netloc,
+					self.path.joinpath(*map(attrgetter("path"), parsed_args)),
+					)
+		except TypeError:
+			return NotImplemented
+
+		if parsed_args:
+			new_path.query = parse_qs(parsed_args[-1].query)
+			new_path.fragment = parsed_args[-1].fragment or None
 
 		return new_path
+
+	def joinurl(self: URLType, *args) -> URLType:
+		"""
+		Construct a new :class:`~apeye.url.URL` object by combining the given arguments with this instance's path part.
+
+		.. versionadded:: 1.1.0
+
+		Except for the final path element any queries and fragments are ignored.
+
+		:returns: A new :class:`~.URL` representing either a subpath
+			(if all arguments are relative paths) or a totally different path
+			(if one of the arguments is absolute).
+		"""
+
+		return self._make_child(args)
 
 	def __fspath__(self) -> str:
 		"""
