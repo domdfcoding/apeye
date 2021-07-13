@@ -23,7 +23,6 @@ setup(
 		install_requires=install_requires,
 		name="apeye",
 		py_modules=[],
-		version=__version__,
 		)
 
 shutil.rmtree("apeye.egg-info", ignore_errors=True)
