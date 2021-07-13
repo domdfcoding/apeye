@@ -37,7 +37,7 @@ import unicodedata
 from typing import Any, Dict, Optional, Union
 
 # 3rd party
-import idna  # type: ignore  # implements IDNA 2008; Python's codec is only IDNA 2003
+import idna  # implements IDNA 2008; Python's codec is only IDNA 2003
 from domdf_python_tools.doctools import prettify_docstrings
 
 __all__ = [

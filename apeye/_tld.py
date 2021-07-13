@@ -48,7 +48,7 @@ from typing import List, Tuple
 from urllib.parse import scheme_chars
 
 # 3rd party
-import idna  # type: ignore
+import idna
 from domdf_python_tools.compat import importlib_resources
 
 __all__ = [
