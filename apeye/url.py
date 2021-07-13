@@ -79,13 +79,10 @@ if TYPE_CHECKING:
 
 __all__ = ["URL", "URLPath", "Domain", "URLType", "URLPathType"]
 
-#: Type variable bound to :class:`~apeye.url.URL`.
 URLType = TypeVar("URLType", bound="URL")
 
 URLPathType = TypeVar("URLPathType", bound="URLPath")
 """
-Type variable bound to :class:`~apeye.url.URLPath`.
-
 .. versionadded:: 1.1.0
 """
 
@@ -114,6 +111,9 @@ class URLPath(pathlib.PurePosixPath):
 		except AttributeError:
 			self._str = self._format_parsed_parts(self._drv, self._root, self._parts) or ''  # type: ignore
 			return self._str
+
+	def __repr__(self):  # noqa: D102
+		return super().__repr__()
 
 	@classmethod
 	def _format_parsed_parts(cls, drv, root, parts):
