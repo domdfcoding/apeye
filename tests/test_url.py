@@ -20,7 +20,13 @@ from pytest_httpserver.httpserver import QueryMatcher  # type: ignore
 # this package
 from apeye.requests_url import RequestsURL, TrailingRequestsURL
 from apeye.slumber_url import SlumberURL
-from apeye.url import URL, Domain, URLPath
+from apeye.url import URL, Domain, URLPath, URLType
+
+
+class MyPathLike(os.PathLike):
+
+	def __fspath__(self):
+		return "/python"
 
 
 class TestUrlPath:
@@ -83,6 +89,29 @@ class TestUrlPath:
 			)
 	def test_division(self, value, expects):
 		assert value == expects
+		assert isinstance(value, URLPath)
+
+	@pytest.mark.parametrize(
+			"value, expects",
+			[
+					(URLPath() / pathlib.PurePosixPath("news"), URLPath("news")),
+					(URLPath() / URLPath("news"), URLPath("news")),
+					(URLPath('/') / pathlib.PurePosixPath("news"), URLPath("/news")),
+					(URLPath('/') / URLPath("news"), URLPath("/news")),
+					(URLPath('/') / MyPathLike(), URLPath("/python")),
+					(URLPath("/programmes") / pathlib.PurePosixPath("b006qtlx"), URLPath("/programmes/b006qtlx")),
+					(URLPath("/programmes") / URLPath("b006qtlx"), URLPath("/programmes/b006qtlx")),
+					pytest.param(
+							pathlib.PurePosixPath("/programmes") / URLPath("b006qtlx"),
+							URLPath("/programmes/b006qtlx"),
+							marks=pytest.mark.xfail(reason="The type is taken from the left object.")
+							),
+					(URLPath("/programmes") / URLPath("b006qtlx"), URLPath("/programmes/b006qtlx")),
+					]
+			)
+	def test_division_pathlike(self, value, expects):
+		assert value == expects
+		assert isinstance(value, URLPath)
 
 	@count(100)
 	def test_division_errors_number(self, count: int):
@@ -120,7 +149,7 @@ class _TestURL(ABC):
 
 	@property
 	@abstractmethod
-	def _class(self) -> Type:
+	def _class(self) -> Type[URLType]:
 		pass
 
 	@pytest.mark.parametrize(
@@ -176,16 +205,73 @@ class _TestURL(ABC):
 	def test_division(self):
 		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes") / "player"
 		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes/player")
+		assert isinstance(value, self._class)
 
 		value = self._class("/programmes/b006qtlx/episodes") / "player"
 		assert value == self._class("/programmes/b006qtlx/episodes/player")
+		assert isinstance(value, self._class)
 
-		assert self._class("www.bbc.co.uk") / "news" == self._class("www.bbc.co.uk/news")
-		assert self._class() / "news" == self._class("/news")
+		value = self._class("/programmes/b006qtlx/episodes") / "/news"
+		assert value == self._class("/news")
+		assert isinstance(value, self._class)
+
+		value = self._class("www.bbc.co.uk/news")
+		assert self._class("www.bbc.co.uk") / "news" == value
+		assert isinstance(value, self._class)
+
+		value = self._class("/news")
+		assert self._class() / "news" == value
+		assert isinstance(value, self._class)
+
+	def test_division_pathlike(self):
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes") / pathlib.PurePosixPath("player")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes/player")
+		assert isinstance(value, self._class)
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes") / URLPath("player")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes/player")
+		assert isinstance(value, self._class)
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes") / URL("player")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes/player")
+		assert isinstance(value, self._class)
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes") / URL("/news")
+		assert value == self._class("https://www.bbc.co.uk/news")
+		assert isinstance(value, self._class)
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes") / MyPathLike()
+		assert value == self._class("https://www.bbc.co.uk/python")
+		assert isinstance(value, self._class)
+
+		value = self._class("/programmes/b006qtlx/episodes") / pathlib.PurePosixPath("player")
+		assert value == self._class("/programmes/b006qtlx/episodes/player")
+		assert isinstance(value, self._class)
+
+		value = self._class("/programmes/b006qtlx/episodes") / URLPath("player")
+		assert value == self._class("/programmes/b006qtlx/episodes/player")
+		assert isinstance(value, self._class)
+
+		value = self._class("www.bbc.co.uk/news")
+		assert self._class("www.bbc.co.uk") / pathlib.PurePosixPath("news") == value
+		assert isinstance(value, self._class)
+
+		value = self._class("www.bbc.co.uk/news")
+		assert self._class("www.bbc.co.uk") / URLPath("news") == value
+		assert isinstance(value, self._class)
+
+		value = self._class("/news")
+		assert self._class() / pathlib.PurePosixPath("news") == value
+		assert isinstance(value, self._class)
+
+		value = self._class("/news")
+		assert self._class() / URLPath("news") == value
+		assert isinstance(value, self._class)
 
 	@count(100)
 	def test_division_number(self, count: int):
 		assert (self._class() / count).parts[-1] == str(count)
+		assert isinstance(self._class() / count, self._class)
 
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: '.*' and 'float'"):
 			self._class() / float(count)  # pylint: disable=expression-not-assigned
@@ -206,6 +292,7 @@ class _TestURL(ABC):
 		assert self._class().fqdn == ''
 		assert self._class().stem == ''
 		assert self._class().suffixes == []
+		assert self._class().port is None
 
 	@pytest.mark.parametrize(
 			"url, name",
@@ -266,6 +353,33 @@ class _TestURL(ABC):
 		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").with_name("foo")
 		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo")
 
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry").with_name("foo")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo")
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment").with_name("foo")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo")
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment").with_name("foo")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo")
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").with_name("foo", inherit=True)
+		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo"))
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry").with_name(
+				"foo", inherit=True
+				)
+		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo?que=ry"))
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment").with_name(
+				"foo", inherit=True
+				)
+		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo#fragment"))
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment").with_name(
+				"foo", inherit=True
+				)
+		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/foo?que=ry#fragment"))
+
 		value = self._class("/programmes/b006qtlx/episodes").with_name("foo")
 		assert value == self._class("/programmes/b006qtlx/foo")
 
@@ -280,6 +394,36 @@ class _TestURL(ABC):
 	def test_with_suffix(self):
 		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").with_suffix(".foo")
 		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo")
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry").with_suffix(".foo")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo")
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment").with_suffix(".foo")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo")
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment"
+							).with_suffix(".foo")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo")
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").with_suffix(".foo", inherit=True)
+		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo"))
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry").with_suffix(
+				".foo", inherit=True
+				)
+		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo?que=ry"))
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment").with_suffix(
+				".foo", inherit=True
+				)
+		assert value.strict_compare(self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo#fragment"))
+
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment").with_suffix(
+				".foo", inherit=True
+				)
+		assert value.strict_compare(
+				self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo?que=ry#fragment")
+				)
 
 		value = self._class("/programmes/b006qtlx/episodes").with_suffix(".foo")
 		assert value == self._class("/programmes/b006qtlx/episodes.foo")
@@ -328,6 +472,23 @@ class _TestURL(ABC):
 		assert self._class(url).domain.domain == domain
 		assert self._class(url).domain.suffix == suffix
 		assert self._class(url).domain.ipv4 == ipv4
+
+	@pytest.mark.parametrize(
+			"url, port",
+			[
+					("https://www.bbc.co.uk/programmes/b006qtlx/episodes", None),
+					("https://www.bbc.co.uk:80/programmes/b006qtlx/episodes", 80),
+					("https://www.bbc.co.uk:8080/programmes/b006qtlx/episodes", 8080),
+					("https://www.bbc.co.uk:443/programmes/b006qtlx/episodes", 443),
+					("www.bbc.co.uk", None),
+					("www.bbc.co.uk:80", 80),
+					("www.bbc.co.uk:8080", 8080),
+					("www.bbc.co.uk:443", 443),
+					("/programmes/b006qtlx/episodes", None),
+					]
+			)
+	def test_port(self, url, port):
+		assert self._class(url).port == port
 
 	@pytest.mark.parametrize(
 			"url, expects",
@@ -460,6 +621,31 @@ class TestUrl(_TestURL):
 		assert URL("bbc.co.uk") != URL("bbc.co.uk/news")
 		assert URL("bbc.co.uk") != URL("http://bbc.co.uk/news")
 		assert URL("bbc.co.uk") != URL("http://bbc.co.uk")
+
+	def test_strict_equality(self):
+		assert URL().strict_compare(URL())
+		assert URL("bbc.co.uk").strict_compare(URL("bbc.co.uk"))
+		assert URL("bbc.co.uk#fragment").strict_compare(URL("bbc.co.uk#fragment"))
+		assert URL("bbc.co.uk?que=ry").strict_compare(URL("bbc.co.uk?que=ry"))
+		assert URL("bbc.co.uk?que=ry#fragment").strict_compare(URL("bbc.co.uk?que=ry#fragment"))
+		assert URL("https://bbc.co.uk").strict_compare(URL("https://bbc.co.uk"))
+		assert URL("https://bbc.co.uk#fragment").strict_compare(URL("https://bbc.co.uk#fragment"))
+		assert URL("https://bbc.co.uk?que=ry").strict_compare(URL("https://bbc.co.uk?que=ry"))
+		assert URL("https://bbc.co.uk?que=ry#fragment").strict_compare(URL("https://bbc.co.uk?que=ry#fragment"))
+		assert URL("bbc.co.uk/news").strict_compare(URL("bbc.co.uk/news"))
+		assert URL("bbc.co.uk/news#fragment").strict_compare(URL("bbc.co.uk/news#fragment"))
+		assert URL("bbc.co.uk/news?que=ry").strict_compare(URL("bbc.co.uk/news?que=ry"))
+		assert URL("bbc.co.uk/news?que=ry#fragment").strict_compare(URL("bbc.co.uk/news?que=ry#fragment"))
+
+		assert not URL("bbc.co.uk").strict_compare(URL("bbc.co.uk/news"))
+		assert not URL("bbc.co.uk#fragment").strict_compare(URL("bbc.co.uk/news"))
+		assert not URL("bbc.co.uk#fragment").strict_compare(URL("bbc.co.uk"))
+		assert not URL("bbc.co.uk?que=ry").strict_compare(URL("bbc.co.uk/news"))
+		assert not URL("bbc.co.uk?que=ry").strict_compare(URL("bbc.co.uk"))
+		assert not URL("bbc.co.uk?que=ry").strict_compare(URL("bbc.co.uk/news#fragment"))
+		assert not URL("bbc.co.uk?que=ry").strict_compare(URL("bbc.co.uk#fragment"))
+		assert not URL("bbc.co.uk").strict_compare(URL("http://bbc.co.uk/news"))
+		assert not URL("bbc.co.uk").strict_compare(URL("http://bbc.co.uk"))
 
 
 class TestSlumberURL(_TestURL):
@@ -737,3 +923,23 @@ class TestTrailingRequestsURL(TestRequestsURL):
 			)
 	def test_str(self, url, expects):
 		assert str(self._class(url)) == expects
+
+
+def test_domain_class():
+	d = Domain("docs", "python", "org")
+	assert d.subdomain == "docs"
+	assert d.domain == "python"
+	assert d.suffix == "org"
+	assert d.fqdn == "docs.python.org"
+	assert d.registered_domain == "python.org"
+	assert d.ipv4 is None
+	assert repr(d) == "Domain(subdomain='docs', domain='python', suffix='org')"
+
+	iv4d = Domain(subdomain='', domain="127.0.0.1", suffix='')
+	assert iv4d.subdomain == ''
+	assert iv4d.domain == "127.0.0.1"
+	assert iv4d.suffix == ''
+	assert iv4d.fqdn == ''
+	assert iv4d.registered_domain == ''
+	assert iv4d.ipv4 == IPv4Address("127.0.0.1")
+	assert repr(iv4d) == "Domain(subdomain='', domain='127.0.0.1', suffix='')"

@@ -1,5 +1,6 @@
 # 3rd party
 import pytest
+from coincidence import AdvancedDataRegressionFixture
 
 # this package
 from apeye.email_validator import EmailSyntaxError, ValidatedEmail
@@ -259,9 +260,18 @@ from apeye.email_validator import validate_email
 						),
 				],
 		)
-def test_email_valid(email_input, output):
+def test_email_valid(
+		email_input: str,
+		output: ValidatedEmail,
+		advanced_data_regression: AdvancedDataRegressionFixture,
+		):
 	# print(f'({email_input!r}, {validate_email(email_input)!r}),')
 	assert validate_email(email_input) == output
+
+	data = output.as_dict()
+	data["__repr__"] = repr(output)
+	data["__str__"] = str(output)
+	advanced_data_regression.check(data)
 
 
 @pytest.mark.parametrize(
@@ -353,6 +363,8 @@ def test_email_valid(email_input, output):
 						"my.λong.address@1111111111222222222233333333334444444444555555555.6666666666777777777788888888889999999999000000000.1111111111222222222233333333334444444444555555555.6666666666777777777788888888889999999999000000000.1111111111222222222233333333334444.info",
 						"The email address is too long (at least 1 character too many)."
 						),
+				("local_part_only@", "There must be something after the @-sign."),
+				("dom@example.com.", "An email address cannot end with a period."),
 				],
 		)
 def test_email_invalid(email_input, error_msg):
