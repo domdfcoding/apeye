@@ -29,7 +29,49 @@ class MyPathLike(os.PathLike):
 		return "/python"
 
 
-class TestUrlPath:
+class MyPathLike(os.PathLike):
+
+	def __fspath__(self):
+		return "/python"
+
+
+class TestURLPath:
+
+	@pytest.mark.parametrize(
+			"value, expected",
+			[
+					("/watch?v=NG21KWZSiok", '/'),
+					("watch?v=NG21KWZSiok", ''),
+					('', ''),
+					("/programmes/b006qtlx/episodes/player", '/'),
+					("/news", '/'),
+					("news", ''),
+					]
+			)
+	def test_drive_root_anchor(self, value: str, expected: str):
+		# These were originally NotImplemented, but they weren't doing any harm and might be useful
+		assert URLPath(value).drive == ''
+		assert URLPath(value).root == expected
+		assert URLPath(value).anchor == expected
+
+	@pytest.mark.parametrize(
+			"value, absolute",
+			[
+					(URLPath(), False),
+					(URLPath(''), False),
+					(URLPath('/'), True),
+					(URLPath("/news"), True),
+					(URLPath("news"), False),
+					(URLPath("/programmes/b006qtlx"), True),
+					(URLPath("programmes/b006qtlx"), False),
+					(URLPath("/programmes/b006qtlx/episodes/player"), True),
+					(URLPath("/watch?v=NG21KWZSiok"), True),
+					(URLPath("watch?v=NG21KWZSiok"), False),
+					]
+			)
+	def test_is_absolute(self, value: str, absolute: bool):
+		# Was originally NotImplemented, but it might be useful
+		assert URLPath(value).is_absolute() is absolute
 
 	@pytest.mark.parametrize(
 			"value", [
@@ -58,8 +100,6 @@ class TestUrlPath:
 			"method",
 			[
 					URLPath().match,
-					URLPath().is_absolute,
-					URLPath().joinpath,
 					URLPath().relative_to,
 					URLPath().as_uri,
 					URLPath().__lt__,
@@ -71,12 +111,6 @@ class TestUrlPath:
 	def test_notimplemented(self, method):
 		with pytest.raises(NotImplementedError):
 			method()
-
-	def test_notimplemented_properties(self):
-		with pytest.raises(NotImplementedError):
-			URLPath().anchor  # pylint: disable=expression-not-assigned
-		with pytest.raises(NotImplementedError):
-			URLPath().drive  # pylint: disable=expression-not-assigned
 
 	@pytest.mark.parametrize(
 			"value, expects",
@@ -110,6 +144,22 @@ class TestUrlPath:
 					]
 			)
 	def test_division_pathlike(self, value, expects):
+		assert value == expects
+		assert isinstance(value, URLPath)
+
+	@pytest.mark.parametrize(
+			"value, expects",
+			[
+					(URLPath().joinpath("news"), URLPath("news")),
+					(URLPath('/').joinpath("news"), URLPath("/news")),
+					(URLPath("/programmes").joinpath("b006qtlx"), URLPath("/programmes/b006qtlx")),
+					(
+							URLPath("/programmes").joinpath("b006qtlx", "details"),
+							URLPath("/programmes/b006qtlx/details")
+							),
+					]
+			)
+	def test_joinpath(self, value, expects):
 		assert value == expects
 		assert isinstance(value, URLPath)
 

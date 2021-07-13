@@ -68,6 +68,13 @@ __all__ = ["URL", "URLPath", "Domain", "URLType"]
 #: Type variable bound to :class:`~apeye.url.URL`.
 URLType = TypeVar("URLType", bound="URL")
 
+URLPathType = TypeVar("URLPathType", bound="URLPath")
+"""
+Type variable bound to :class:`~apeye.url.URLPath`.
+
+.. versionadded:: 1.1.0
+"""
+
 
 @prettify_docstrings
 class URLPath(pathlib.PurePosixPath):
@@ -75,6 +82,12 @@ class URLPath(pathlib.PurePosixPath):
 	Represents the path part of a URL.
 
 	Subclass of :class:`pathlib.PurePosixPath` that provides a subset of its methods.
+
+	.. versionchanged:: 1.1.0
+
+		Implemented :meth:`~.URLPath.is_absolute`, :meth:`~.URLPath.joinpath`,
+		:attr:`~.URLPath.anchor` and :attr:`~.URLPath.drive`,
+		which previously raised :exc:`NotImplementedError`.
 	"""
 
 	def __str__(self) -> str:
@@ -98,21 +111,29 @@ class URLPath(pathlib.PurePosixPath):
 	def match(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
 		raise NotImplementedError
 
-	def is_absolute(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
-		raise NotImplementedError
+	def is_absolute(self) -> bool:
+		"""
+		Returns whether the path is absolute (i.e. starts with ``/``).
 
-	def joinpath(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
-		raise NotImplementedError
+		.. versionadded:: 1.1.0  previously raised :exc:`NotImplementedError`.
+		"""
+
+		return self.root == '/'
+
+	def joinpath(self: URLPathType, *args) -> URLPathType:
+		"""
+		Combine this :class:`~.URLPath` with one or several arguments.
+
+		.. versionadded:: 1.1.0  previously raised :exc:`NotImplementedError`.
+
+		:returns: A new :class:`~.URLPath` representing either a subpath
+			(if all arguments are relative paths) or a totally different path
+			(if one of the arguments is absolute).
+		"""
+
+		return super().joinpath(*args)
 
 	def relative_to(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
-		raise NotImplementedError
-
-	@property
-	def anchor(self):  # noqa: D102
-		raise NotImplementedError
-
-	@property
-	def drive(self):  # noqa: D102
 		raise NotImplementedError
 
 	def __lt__(self, *args, **kwargs) -> "NoReturn":
