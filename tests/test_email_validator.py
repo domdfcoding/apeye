@@ -1,6 +1,9 @@
+# stdlib
+import json
+
 # 3rd party
 import pytest
-from coincidence import AdvancedDataRegressionFixture
+from coincidence import AdvancedFileRegressionFixture
 
 # this package
 from apeye.email_validator import EmailSyntaxError, ValidatedEmail
@@ -263,7 +266,7 @@ from apeye.email_validator import validate_email
 def test_email_valid(
 		email_input: str,
 		output: ValidatedEmail,
-		advanced_data_regression: AdvancedDataRegressionFixture,
+		advanced_file_regression: AdvancedFileRegressionFixture,
 		):
 	# print(f'({email_input!r}, {validate_email(email_input)!r}),')
 	assert validate_email(email_input) == output
@@ -271,7 +274,7 @@ def test_email_valid(
 	data = output.as_dict()
 	data["__repr__"] = repr(output)
 	data["__str__"] = str(output)
-	advanced_data_regression.check(data)
+	advanced_file_regression.check(json.dumps(data), extension=".json")
 
 
 @pytest.mark.parametrize(
