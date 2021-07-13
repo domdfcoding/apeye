@@ -556,9 +556,7 @@ class Domain(NamedTuple):
 			>>> URL('https://127.0.0.1/path/to/file').domain.ipv4
 			IPv4Address('127.0.0.1')
 			>>> URL('https://127.0.0.1.1/path/to/file').domain.ipv4
-			None
 			>>> URL('https://256.1.1.1').domain.ipv4
-			None
 		"""
 
 		if not (self.suffix or self.subdomain) and _tld.IP_RE.match(self.domain):
