@@ -1,0 +1,10 @@
+__repr__: <ValidatedEmail !#$%&'*+-/=?^_`.{|}~@example.com>
+__str__: '!#$%&''*+-/=?^_`.{|}~@example.com'
+ascii_domain: example.com
+ascii_email: '!#$%&''*+-/=?^_`.{|}~@example.com'
+ascii_local_part: '!#$%&''*+-/=?^_`.{|}~'
+domain: example.com
+email: '!#$%&''*+-/=?^_`.{|}~@example.com'
+local_part: '!#$%&''*+-/=?^_`.{|}~'
+original_email: '!#$%&''*+-/=?^_`.{|}~@example.com'
+smtputf8: false

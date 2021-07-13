@@ -1,0 +1,10 @@
+__repr__: <ValidatedEmail उदाहरण.परीक्ष@domain.with.idn.tld>
+__str__: उदाहरण.परीक्ष@domain.with.idn.tld
+ascii_domain: domain.with.idn.tld
+ascii_email: null
+ascii_local_part: null
+domain: domain.with.idn.tld
+email: उदाहरण.परीक्ष@domain.with.idn.tld
+local_part: उदाहरण.परीक्ष
+original_email: उदाहरण.परीक्ष@domain.with.idn.tld
+smtputf8: true

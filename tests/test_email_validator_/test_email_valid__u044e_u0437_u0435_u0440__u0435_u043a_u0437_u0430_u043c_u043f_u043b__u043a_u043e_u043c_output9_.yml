@@ -1,0 +1,10 @@
+__repr__: <ValidatedEmail юзер@екзампл.ком>
+__str__: юзер@екзампл.ком
+ascii_domain: xn--80ajglhfv.xn--j1aef
+ascii_email: null
+ascii_local_part: null
+domain: екзампл.ком
+email: юзер@екзампл.ком
+local_part: юзер
+original_email: юзер@екзампл.ком
+smtputf8: true

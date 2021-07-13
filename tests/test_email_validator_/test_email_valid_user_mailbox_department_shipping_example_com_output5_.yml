@@ -1,0 +1,10 @@
+__repr__: <ValidatedEmail user+mailbox/department=shipping@example.com>
+__str__: user+mailbox/department=shipping@example.com
+ascii_domain: example.com
+ascii_email: user+mailbox/department=shipping@example.com
+ascii_local_part: user+mailbox/department=shipping
+domain: example.com
+email: user+mailbox/department=shipping@example.com
+local_part: user+mailbox/department=shipping
+original_email: user+mailbox/department=shipping@example.com
+smtputf8: false

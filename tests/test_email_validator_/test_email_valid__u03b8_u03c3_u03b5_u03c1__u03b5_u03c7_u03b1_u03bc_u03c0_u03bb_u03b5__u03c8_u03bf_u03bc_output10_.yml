@@ -1,0 +1,10 @@
+__repr__: <ValidatedEmail θσερ@εχαμπλε.ψομ>
+__str__: θσερ@εχαμπλε.ψομ
+ascii_domain: xn--mxahbxey0c.xn--xxaf0a
+ascii_email: null
+ascii_local_part: null
+domain: εχαμπλε.ψομ
+email: θσερ@εχαμπλε.ψομ
+local_part: θσερ
+original_email: θσερ@εχαμπλε.ψομ
+smtputf8: true

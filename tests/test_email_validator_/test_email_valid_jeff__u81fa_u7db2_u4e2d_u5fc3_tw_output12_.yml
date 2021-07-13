@@ -1,0 +1,10 @@
+__repr__: <ValidatedEmail jeff@臺網中心.tw>
+__str__: jeff@臺網中心.tw
+ascii_domain: xn--fiqq24b10vi0d.tw
+ascii_email: jeff@xn--fiqq24b10vi0d.tw
+ascii_local_part: jeff
+domain: 臺網中心.tw
+email: jeff@臺網中心.tw
+local_part: jeff
+original_email: jeff@臺網中心.tw
+smtputf8: false
