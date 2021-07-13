@@ -106,7 +106,6 @@ class TestUrlPath:
 							URLPath("/programmes/b006qtlx"),
 							marks=pytest.mark.xfail(reason="The type is taken from the left object.")
 							),
-					(URLPath("/programmes") / URLPath("b006qtlx"), URLPath("/programmes/b006qtlx")),
 					]
 			)
 	def test_division_pathlike(self, value, expects):
@@ -149,7 +148,7 @@ class _TestURL(ABC):
 
 	@property
 	@abstractmethod
-	def _class(self) -> Type[URLType]:
+	def _class(self) -> Type:
 		pass
 
 	@pytest.mark.parametrize(
@@ -577,7 +576,7 @@ class _TestURL(ABC):
 		assert (url / "users").fragment is None
 
 
-class TestUrl(_TestURL):
+class TestURL(_TestURL):
 
 	_class = URL
 
