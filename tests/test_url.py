@@ -787,10 +787,13 @@ class TestRequestsURL(_TestURL):
 
 	base = RequestsURL("https://raw.githubusercontent.com")
 
-	@pytest.mark.parametrize("url, expected", [
-			("https://github.com/domdfcoding/PyMassSpec", "https://github.com/PyMassSpec/PyMassSpec"),
-			("http://pypi.io/p/domdf_python_tools", "https://pypi.org/project/domdf-python-tools"),
-			])
+	@pytest.mark.parametrize(
+			"url, expected",
+			[
+					("https://github.com/domdfcoding/PyMassSpec", "https://github.com/PyMassSpec/PyMassSpec"),
+					("http://pypi.io/p/domdf_python_tools", "https://pypi.org/project/domdf-python-tools"),
+					]
+			)
 	def test_resolve(self, url: str, expected: str):
 		assert str(RequestsURL(url).resolve()) == expected
 		assert str(RequestsURL(url).resolve(timeout=10)) == expected
