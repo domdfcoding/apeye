@@ -20,13 +20,7 @@ from pytest_httpserver.httpserver import QueryMatcher  # type: ignore
 # this package
 from apeye.requests_url import RequestsURL, TrailingRequestsURL
 from apeye.slumber_url import SlumberURL
-from apeye.url import URL, Domain, URLPath, URLType
-
-
-class MyPathLike(os.PathLike):
-
-	def __fspath__(self):
-		return "/python"
+from apeye.url import URL, Domain, URLPath
 
 
 class MyPathLike(os.PathLike):
