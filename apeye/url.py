@@ -97,7 +97,7 @@ class URLPath(pathlib.PurePosixPath):
 	.. versionchanged:: 1.1.0
 
 		Implemented :meth:`~.URLPath.is_absolute`, :meth:`~.URLPath.joinpath`,
-		:attr:`~.URLPath.anchor` and :attr:`~.URLPath.drive`,
+		:meth:`~.URLPath.relative_to`, ``anchor`` and ``drive``,
 		which previously raised :exc:`NotImplementedError`.
 	"""
 
@@ -147,8 +147,45 @@ class URLPath(pathlib.PurePosixPath):
 
 		return super().joinpath(*args)
 
-	def relative_to(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
-		raise NotImplementedError
+	def relative_to(self: URLPathType, *other: PathLike) -> URLPathType:
+		r"""
+		Returns the relative path to another path identified by the passed arguments.
+
+		The arguments are joined together to form a single path, and therefore the following behave identically:
+
+		.. code-block:: pycon
+
+			>>> URLPath("/news/sport").relative_to("/", "news")
+			URLPath('sport')
+			>>> URLPath("/news/sport").relative_to("/news")
+			URLPath('sport')
+
+		.. versionadded:: 1.1.0  previously raised :exc:`NotImplementedError`.
+
+		:param \*other:
+
+		:raises ValueError: if the operation is not possible (because this is not a subpath of the other path)
+
+		.. seealso::
+
+			:meth:`~.URL.relative_to`, which is recommended when constructing a relative path from a :class:`~URL`.
+			This method cannot correctly handle some cases, such as:
+
+			.. code-block:: pycon
+
+				>>> URL("https://github.com/domdfcoding").path.relative_to(URL("https://github.com").path)
+				Traceback (most recent call last):
+				ValueError: '/domdfcoding' does not start with ''
+
+			Since ``URL("https://github.com").path`` is ``URLPath('')``.
+
+			Instead, use:
+
+				>>> URL("https://github.com/domdfcoding").relative_to(URL("https://github.com"))
+				URLPath('/domdfcoding')
+		"""
+
+		return super().relative_to(*other)
 
 	def __lt__(self, *args, **kwargs) -> "NoReturn":
 		raise NotImplementedError
@@ -579,6 +616,39 @@ class URL(os.PathLike):
 				self.netloc,
 				self.path,
 				)
+
+	def relative_to(self, other: Union[str, "URL", URLPath]) -> URLPath:
+		"""
+		Returns a version of this URL's path relative to ``other``.
+
+		:param other: Either a :class:`~.URL`, or a string or :class:`~.URLPath` representing an *absolute* path.
+			If a :class:`~.URL`, the :attr:`~.URL.netloc` must match this URL's.
+
+		:raises ValueError: if the operation is not possible
+			(i.e. because this URL's path is not a subpath of the other path)
+		"""
+
+		if isinstance(other, URLPath):
+			if not other.is_absolute():
+				raise ValueError("'URL.relative_to' cannot be used with relative URLPath objects")
+			else:
+				other = URL('/') / other
+		elif not isinstance(other, URL):
+			# Parse other as a URL
+			other = URL(other)
+
+		# Compare netloc, if both have one
+		if self.netloc and other.netloc and self.netloc != other.netloc:
+			raise ValueError(f"{self!r} does not start with {other!r}")
+
+		# Make the paths absolute
+		# If coming from a URL they must always be absolute
+		our_path = '/' / self.path
+		other_path = '/' / other.path
+
+		relative_path = our_path.relative_to(other_path)
+
+		return '/' / relative_path
 
 
 class Domain(NamedTuple):

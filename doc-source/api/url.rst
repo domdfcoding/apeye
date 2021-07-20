@@ -21,8 +21,8 @@
 	:html: 30/100
 
 .. autoclass:: apeye.url.URLPath
-	:exclude-members: match,as_posix,relative_to,anchor,drive,__lt__,__le__,__gt__,__ge__,as_uri,__reduce__
-	:autosummary-exclude-members: match,as_posix,relative_to,anchor,drive,__lt__,__le__,__gt__,__ge__,as_uri,__hash__,__new__,__weakref__,__reduce__
+	:exclude-members: match,as_posix,anchor,drive,__lt__,__le__,__gt__,__ge__,as_uri,__reduce__
+	:autosummary-exclude-members: match,as_posix,anchor,drive,__lt__,__le__,__gt__,__ge__,as_uri,__hash__,__new__,__weakref__,__reduce__
 	:inherited-members:
 
 .. autonamedtuple:: apeye.url.Domain

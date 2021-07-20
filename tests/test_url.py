@@ -94,7 +94,6 @@ class TestURLPath:
 			"method",
 			[
 					URLPath().match,
-					URLPath().relative_to,
 					URLPath().as_uri,
 					URLPath().__lt__,
 					URLPath().__le__,
@@ -186,6 +185,21 @@ class TestURLPath:
 		else:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: .* and 'URLPath'"):
 				obj / URLPath()  # pylint: disable=expression-not-assigned
+
+	@pytest.mark.parametrize(
+			"base, other",
+			[
+					(URLPath("/news/sport"), "/news"),
+					(URLPath("/news/sport"), URLPath("/news")),
+					(URLPath("/news/sport"), pathlib.Path("/news")),
+					(URLPath("news/sport"), "news"),
+					(URLPath("news/sport"), URLPath("news")),
+					(URLPath("news/sport"), pathlib.Path("news")),
+					]
+			)
+	def test_relative_to(self, base: URLPath, other):
+		assert base.relative_to(other) == URLPath("sport")
+		assert isinstance(base.relative_to(other), URLPath)
 
 
 class _TestURL(ABC):
@@ -663,6 +677,45 @@ class _TestURL(ABC):
 		url = self._class("https://api.github.com#footer")
 		assert url.fragment == "footer"
 		assert (url / "users").fragment is None
+
+	def test_relative_to(self):
+		expected = URLPath("/domdfcoding")
+		assert self._class("https://github.com/domdfcoding").relative_to(URL("https://github.com")) == expected
+		assert self._class("https://github.com/domdfcoding").relative_to(
+				RequestsURL("https://github.com")
+				) == expected
+		assert self._class("https://github.com/domdfcoding").relative_to(
+				SlumberURL("https://github.com")
+				) == expected
+
+		expected = URLPath("/football")
+		assert self._class("https://www.bbc.co.uk:443/news/sport/football").relative_to("/news/sport") == expected
+		assert self._class("https://www.bbc.co.uk:443/news/sport/football").relative_to(
+				URLPath("/news/sport")
+				) == expected
+
+		with pytest.raises(ValueError, match="'URL.relative_to' cannot be used with relative URLPath objects"):
+			self._class("https://www.bbc.co.uk:443/news/sport/football").relative_to(URLPath("news/sport"))
+
+		with pytest.raises(ValueError, match=".* does not start with .*"):
+			self._class("https://github.com/domdfcoding").relative_to(URL("https://bbc.co.uk/news"))
+
+		with pytest.raises(ValueError, match=".* does not start with .*"):
+			self._class("https://www.bbc.co.uk:443/news/sport").relative_to(URL("https://bbc.co.uk/news"))
+
+		# Perhaps not quite what was intended
+		with pytest.raises(
+				ValueError,
+				match=
+				r".*URL\('https://bbc.co.uk/news/sport/football(/)?'\) does not start with .*URL\('news/sport'\)",
+				):
+			self._class("https://bbc.co.uk/news/sport/football").relative_to("news/sport")
+
+		the_url = self._class("https://github.com/domdfcoding")
+		assert the_url.path == URLPath("/domdfcoding")
+		the_url.path = URLPath("domdfcoding")
+		assert the_url.path == URLPath("domdfcoding")
+		assert the_url.relative_to(URL("https://github.com")) == URLPath("/domdfcoding")
 
 
 class TestURL(_TestURL):
