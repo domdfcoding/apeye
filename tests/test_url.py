@@ -191,10 +191,10 @@ class TestURLPath:
 			[
 					(URLPath("/news/sport"), "/news"),
 					(URLPath("/news/sport"), URLPath("/news")),
-					(URLPath("/news/sport"), pathlib.Path("/news")),
+					(URLPath("/news/sport"), pathlib.PurePosixPath("/news")),
 					(URLPath("news/sport"), "news"),
 					(URLPath("news/sport"), URLPath("news")),
-					(URLPath("news/sport"), pathlib.Path("news")),
+					(URLPath("news/sport"), pathlib.PurePosixPath("news")),
 					]
 			)
 	def test_relative_to(self, base: URLPath, other):
