@@ -704,11 +704,8 @@ class _TestURL(ABC):
 			self._class("https://www.bbc.co.uk:443/news/sport").relative_to(URL("https://bbc.co.uk/news"))
 
 		# Perhaps not quite what was intended
-		with pytest.raises(
-				ValueError,
-				match=
-				r".*URL\('https://bbc.co.uk/news/sport/football(/)?'\) does not start with .*URL\('news/sport'\)",
-				):
+		match = r".*URL\('https://bbc.co.uk/news/sport/football(/)?'\) does not start with .*URL\('news/sport'\)"
+		with pytest.raises(ValueError, match=match):
 			self._class("https://bbc.co.uk/news/sport/football").relative_to("news/sport")
 
 		the_url = self._class("https://github.com/domdfcoding")
