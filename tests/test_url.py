@@ -679,7 +679,7 @@ class _TestURL(ABC):
 		assert (url / "users").fragment is None
 
 	def test_relative_to(self):
-		expected = URLPath("/domdfcoding")
+		expected = URLPath("domdfcoding")
 		assert self._class("https://github.com/domdfcoding").relative_to(URL("https://github.com")) == expected
 		assert self._class("https://github.com/domdfcoding").relative_to(
 				RequestsURL("https://github.com")
@@ -688,7 +688,7 @@ class _TestURL(ABC):
 				SlumberURL("https://github.com")
 				) == expected
 
-		expected = URLPath("/football")
+		expected = URLPath("football")
 		assert self._class("https://www.bbc.co.uk:443/news/sport/football").relative_to("/news/sport") == expected
 		assert self._class("https://www.bbc.co.uk:443/news/sport/football").relative_to(
 				URLPath("/news/sport")
@@ -712,10 +712,10 @@ class _TestURL(ABC):
 		assert the_url.path == URLPath("/domdfcoding")
 		the_url.path = URLPath("domdfcoding")
 		assert the_url.path == URLPath("domdfcoding")
-		assert the_url.relative_to(URL("https://github.com")) == URLPath("/domdfcoding")
+		assert the_url.relative_to(URL("https://github.com")) == URLPath("domdfcoding")
 
 		# Should be case insensitive (NOT case folded) per RFC 4343
-		expected = URLPath("/domdfcoding")
+		expected = URLPath("domdfcoding")
 		url = self._class("https://github.com/domdfcoding")
 		assert url.relative_to(self._class("https://GitHub.COM")) == expected
 

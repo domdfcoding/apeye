@@ -648,7 +648,7 @@ class URL(os.PathLike):
 
 		relative_path = our_path.relative_to(other_path)
 
-		return '/' / relative_path
+		return relative_path
 
 
 class Domain(NamedTuple):
