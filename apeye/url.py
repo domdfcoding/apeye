@@ -638,7 +638,7 @@ class URL(os.PathLike):
 			other = URL(other)
 
 		# Compare netloc, if both have one
-		if self.netloc and other.netloc and self.netloc != other.netloc:
+		if self.netloc and other.netloc and self.netloc.lower() != other.netloc.lower():
 			raise ValueError(f"{self!r} does not start with {other!r}")
 
 		# Make the paths absolute

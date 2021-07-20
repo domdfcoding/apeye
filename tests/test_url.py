@@ -717,6 +717,11 @@ class _TestURL(ABC):
 		assert the_url.path == URLPath("domdfcoding")
 		assert the_url.relative_to(URL("https://github.com")) == URLPath("/domdfcoding")
 
+		# Should be case insensitive (NOT case folded) per RFC 4343
+		expected = URLPath("/domdfcoding")
+		url = self._class("https://github.com/domdfcoding")
+		assert url.relative_to(self._class("https://GitHub.COM")) == expected
+
 
 class TestURL(_TestURL):
 
