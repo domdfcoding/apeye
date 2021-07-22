@@ -75,3 +75,10 @@ def setup(app):
 	from sphinx_toolbox.latex import better_header_layout
 
 	app.connect("config-inited", lambda app, config: better_header_layout(config))
+
+
+nitpicky = True
+ignore_missing_xrefs = [
+		"^requests.structures.CaseInsensitiveDict$",
+		"^cachecontrol.adapter.CacheControlAdapter",
+		]

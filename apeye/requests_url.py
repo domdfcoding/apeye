@@ -37,7 +37,7 @@ import requests
 # this package
 from apeye.url import URL
 
-__all__ = ["RequestsURL", "TrailingRequestsURL"]
+__all__ = ["RequestsURL", "TrailingRequestsURL", "_R"]
 
 _ParamsMappingValueType = Union[str, bytes, int, float, Iterable[Union[str, bytes, int, float]]]
 _Data = Union[None, str, bytes, MutableMapping[str, Any], Iterable[Tuple[str, Optional[str]]], IO]

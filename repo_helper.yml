@@ -56,10 +56,17 @@ extra_sphinx_extensions:
  - sphinx_toolbox_experimental.autosummary_widths
  - sphinx_toolbox_experimental.needspace
  - sphinx_toolbox_experimental.peps
- - sphinx_toolbox_experimental.toml
+ - sphinx_toolbox_experimental.missing_xref
 
 conda_extras:
  - limiter
 
 manifest_additional:
  - include apeye/public_suffix_list.dat
+
+sphinx_conf_epilogue:
+ - nitpicky = True
+ - "ignore_missing_xrefs = ["
+ - "    '^requests.structures.CaseInsensitiveDict$',"
+ - "    '^cachecontrol.adapter.CacheControlAdapter',"
+ - "]"
