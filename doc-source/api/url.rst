@@ -12,10 +12,15 @@
 .. autotypevar:: apeye.url.URLType
 .. autotypevar:: apeye.url.URLPathType
 
+.. latex:clearpage::
 .. autosummary-widths:: 1/2
 
 .. autoclass:: apeye.url.URL
 	:inherited-members:
+	:exclude-members: __lt__,__le__,__gt__,__ge__
+	:autosummary-exclude-members: __lt__,__le__,__gt__,__ge__
+
+.. latex:vspace:: 20px
 
 .. autosummary-widths:: 1/4
 	:html: 30/100

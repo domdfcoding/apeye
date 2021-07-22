@@ -98,7 +98,8 @@ class URLPath(pathlib.PurePosixPath):
 
 		Implemented :meth:`~.URLPath.is_absolute`, :meth:`~.URLPath.joinpath`,
 		:meth:`~.URLPath.relative_to`, :meth:`~.pathlib.PurePath.match`,
-		``anchor`` and ``drive``, which previously raised :exc:`NotImplementedError`.
+		``anchor``, ``drive``, and support for rich comparisons (``<``, ``<=``, ``>`` and ``>=``),
+		which previously raised :exc:`NotImplementedError`.
 	"""
 
 	def __str__(self) -> str:
@@ -195,6 +196,10 @@ class URL(os.PathLike):
 	:param url: The URL to construct the :class:`~apeye.url.URL` object from.
 
 	.. versionchanged:: 0.3.0  The ``url`` parameter can now be a string or a :class:`~.URL`.
+
+	.. versionchanged:: 1.1.0
+
+		Added support for sorting and rich comparisons (``<``, ``<=``, ``>`` and ``>=``).
 
 	.. autoclasssumm:: URL
 		:autosummary-sections: Methods
@@ -648,6 +653,8 @@ class URL(os.PathLike):
 	def relative_to(self, other: Union[str, "URL", URLPath]) -> URLPath:
 		"""
 		Returns a version of this URL's path relative to ``other``.
+
+		.. versionadded:: 1.1.0
 
 		:param other: Either a :class:`~.URL`, or a string or :class:`~.URLPath` representing an *absolute* path.
 			If a :class:`~.URL`, the :attr:`~.URL.netloc` must match this URL's.
