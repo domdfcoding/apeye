@@ -90,9 +90,7 @@ class TestURLPath:
 	def test_repr(self, value, expects):
 		assert repr(URLPath(value)) == expects
 
-	@pytest.mark.parametrize("method", [
-			URLPath().as_uri,
-			])
+	@pytest.mark.parametrize("method", [URLPath().as_uri])
 	def test_notimplemented(self, method):
 		with pytest.raises(NotImplementedError):
 			method()
@@ -713,100 +711,67 @@ class _TestURL(ABC):
 
 	def test_ordering(self):
 		# f comes before t
-		assert self._class("https://bbc.co.uk:443/news/sport/football"
-							) < self._class("https://bbc.co.uk:443/news/sport/tennis")
-		assert self._class("https://bbc.co.uk:443/news/sport/football"
-							) <= self._class("https://bbc.co.uk:443/news/sport/tennis")
-		assert self._class("https://bbc.co.uk:443/news/sport/tennis"
-							) > self._class("https://bbc.co.uk:443/news/sport/football")
-		assert self._class("https://bbc.co.uk:443/news/sport/tennis"
-							) >= self._class("https://bbc.co.uk:443/news/sport/football")
-		assert sorted([
-				self._class("https://bbc.co.uk:443/news/sport/tennis"),
-				self._class("https://bbc.co.uk:443/news/sport/football")
-				]) == [
-						self._class("https://bbc.co.uk:443/news/sport/football"),
-						self._class("https://bbc.co.uk:443/news/sport/tennis")
-						]
+		football = self._class("https://bbc.co.uk:443/news/sport/football")
+		tennis = self._class("https://bbc.co.uk:443/news/sport/tennis")
+		assert football < tennis
+		assert football <= tennis
+		assert tennis > football
+		assert tennis >= football
+		assert sorted([tennis, football]) == [football, tennis]
 
 		# port number is sorted before path
-		assert self._class("https://bbc.co.uk:80/news/sport/tennis"
-							) < self._class("https://bbc.co.uk:443/news/sport/football")
-		assert self._class("https://bbc.co.uk:80/news/sport/tennis"
-							) <= self._class("https://bbc.co.uk:443/news/sport/football")
-		assert self._class("https://bbc.co.uk:443/news/sport/football"
-							) > self._class("https://bbc.co.uk:80/news/sport/tennis")
-		assert self._class("https://bbc.co.uk:443/news/sport/football"
-							) >= self._class("https://bbc.co.uk:80/news/sport/tennis")
+		tennis = self._class("https://bbc.co.uk:80/news/sport/tennis")
+		assert tennis < self._class("https://bbc.co.uk:443/news/sport/football")
+		assert tennis <= self._class("https://bbc.co.uk:443/news/sport/football")
+		assert football > tennis
+		assert football >= tennis
 
 		# scheme is sorted before path
-		assert self._class("http://bbc.co.uk/news/sport/tennis"
-							) < self._class("https://bbc.co.uk/news/sport/football")
-		assert self._class("http://bbc.co.uk/news/sport/tennis"
-							) <= self._class("https://bbc.co.uk/news/sport/football")
-		assert self._class("https://bbc.co.uk/news/sport/football"
-							) > self._class("http://bbc.co.uk/news/sport/tennis")
-		assert self._class("https://bbc.co.uk/news/sport/football"
-							) >= self._class("http://bbc.co.uk/news/sport/tennis")
+		tennis = self._class("http://bbc.co.uk/news/sport/tennis")
+		assert tennis < self._class("https://bbc.co.uk/news/sport/football")
+		assert tennis <= self._class("https://bbc.co.uk/news/sport/football")
+		assert self._class("https://bbc.co.uk/news/sport/football") > tennis
+		assert self._class("https://bbc.co.uk/news/sport/football") >= tennis
 
 		# Empty subdomain comes first
-		assert self._class("https://bbc.co.uk/news/sport/tennis"
-							) < self._class("https://news.bbc.co.uk/sport/tennis")
-		assert self._class("https://bbc.co.uk/news/sport/tennis"
-							) <= self._class("https://news.bbc.co.uk/sport/tennis")
-		assert self._class("https://news.bbc.co.uk/sport/tennis"
-							) > self._class("https://bbc.co.uk/news/sport/tennis")
-		assert self._class("https://news.bbc.co.uk/sport/tennis"
-							) >= self._class("https://bbc.co.uk/news/sport/tennis")
+		tennis = self._class("https://bbc.co.uk/news/sport/tennis")
+		assert tennis < self._class("https://news.bbc.co.uk/sport/tennis")
+		assert tennis <= self._class("https://news.bbc.co.uk/sport/tennis")
+		assert self._class("https://news.bbc.co.uk/sport/tennis") > tennis
+		assert self._class("https://news.bbc.co.uk/sport/tennis") >= tennis
 
 	@pytest.mark.parametrize("other_class", [URL, SlumberURL, RequestsURL, TrailingRequestsURL])
 	def test_ordering_other_classes(self, other_class):
 		# f comes before t
-		assert self._class("https://bbc.co.uk:443/news/sport/football"
-							) < other_class("https://bbc.co.uk:443/news/sport/tennis")
-		assert self._class("https://bbc.co.uk:443/news/sport/football"
-							) <= other_class("https://bbc.co.uk:443/news/sport/tennis")
-		assert self._class("https://bbc.co.uk:443/news/sport/tennis"
-							) > other_class("https://bbc.co.uk:443/news/sport/football")
-		assert self._class("https://bbc.co.uk:443/news/sport/tennis"
-							) >= other_class("https://bbc.co.uk:443/news/sport/football")
-		assert sorted([
-				self._class("https://bbc.co.uk:443/news/sport/tennis"),
-				other_class("https://bbc.co.uk:443/news/sport/football")
-				]) == [
-						self._class("https://bbc.co.uk:443/news/sport/football"),
-						self._class("https://bbc.co.uk:443/news/sport/tennis")
-						]
+		football = "https://bbc.co.uk:443/news/sport/football"
+		tennis = "https://bbc.co.uk:443/news/sport/tennis"
+		assert self._class(football) < other_class(tennis)
+		assert self._class(football) <= other_class(tennis)
+		assert self._class(tennis) > other_class(football)
+		assert self._class(tennis) >= other_class(football)
+		assert sorted([self._class(tennis), other_class(football)]) == [self._class(football), self._class(tennis)]
 
 		# port number is sorted before path
-		assert self._class("https://bbc.co.uk:80/news/sport/tennis"
-							) < other_class("https://bbc.co.uk:443/news/sport/football")
-		assert self._class("https://bbc.co.uk:80/news/sport/tennis"
-							) <= other_class("https://bbc.co.uk:443/news/sport/football")
-		assert self._class("https://bbc.co.uk:443/news/sport/football"
-							) > other_class("https://bbc.co.uk:80/news/sport/tennis")
-		assert self._class("https://bbc.co.uk:443/news/sport/football"
-							) >= other_class("https://bbc.co.uk:80/news/sport/tennis")
+		tennis = "https://bbc.co.uk:80/news/sport/tennis"
+		assert self._class(tennis) < other_class(football)
+		assert self._class(tennis) <= other_class(football)
+		assert self._class(football) > other_class(tennis)
+		assert self._class(football) >= other_class(tennis)
 
 		# scheme is sorted before path
-		assert self._class("http://bbc.co.uk/news/sport/tennis"
-							) < other_class("https://bbc.co.uk/news/sport/football")
-		assert self._class("http://bbc.co.uk/news/sport/tennis"
-							) <= other_class("https://bbc.co.uk/news/sport/football")
-		assert self._class("https://bbc.co.uk/news/sport/football"
-							) > other_class("http://bbc.co.uk/news/sport/tennis")
-		assert self._class("https://bbc.co.uk/news/sport/football"
-							) >= other_class("http://bbc.co.uk/news/sport/tennis")
+		tennis = "http://bbc.co.uk/news/sport/tennis"
+		assert self._class(tennis) < other_class("https://bbc.co.uk/news/sport/football")
+		assert self._class(tennis) <= other_class("https://bbc.co.uk/news/sport/football")
+		assert self._class("https://bbc.co.uk/news/sport/football") > other_class(tennis)
+		assert self._class("https://bbc.co.uk/news/sport/football") >= other_class(tennis)
 
 		# Empty subdomain comes first
-		assert self._class("https://bbc.co.uk/news/sport/tennis"
-							) < other_class("https://news.bbc.co.uk/sport/tennis")
-		assert self._class("https://bbc.co.uk/news/sport/tennis"
-							) <= other_class("https://news.bbc.co.uk/sport/tennis")
-		assert self._class("https://news.bbc.co.uk/sport/tennis"
-							) > other_class("https://bbc.co.uk/news/sport/tennis")
-		assert self._class("https://news.bbc.co.uk/sport/tennis"
-							) >= other_class("https://bbc.co.uk/news/sport/tennis")
+		tennis = "https://bbc.co.uk/news/sport/tennis"
+
+		assert self._class(tennis) < other_class("https://news.bbc.co.uk/sport/tennis")
+		assert self._class(tennis) <= other_class("https://news.bbc.co.uk/sport/tennis")
+		assert self._class("https://news.bbc.co.uk/sport/tennis") > other_class(tennis)
+		assert self._class("https://news.bbc.co.uk/sport/tennis") >= other_class(tennis)
 
 
 class TestURL(_TestURL):
