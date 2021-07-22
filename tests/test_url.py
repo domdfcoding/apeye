@@ -93,7 +93,6 @@ class TestURLPath:
 	@pytest.mark.parametrize(
 			"method",
 			[
-					URLPath().match,
 					URLPath().as_uri,
 					URLPath().__lt__,
 					URLPath().__le__,

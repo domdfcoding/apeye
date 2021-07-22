@@ -97,8 +97,8 @@ class URLPath(pathlib.PurePosixPath):
 	.. versionchanged:: 1.1.0
 
 		Implemented :meth:`~.URLPath.is_absolute`, :meth:`~.URLPath.joinpath`,
-		:meth:`~.URLPath.relative_to`, ``anchor`` and ``drive``,
-		which previously raised :exc:`NotImplementedError`.
+		:meth:`~.URLPath.relative_to`, :meth:`~.pathlib.PurePath.match`,
+		``anchor`` and ``drive``, which previously raised :exc:`NotImplementedError`.
 	"""
 
 	def __str__(self) -> str:
@@ -121,9 +121,6 @@ class URLPath(pathlib.PurePosixPath):
 			return drv + root + pathlib._posix_flavour.join(parts[1:])  # type: ignore
 		else:
 			return pathlib._posix_flavour.join(parts)  # type: ignore
-
-	def match(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
-		raise NotImplementedError
 
 	def is_absolute(self) -> bool:
 		"""
