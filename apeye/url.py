@@ -184,18 +184,6 @@ class URLPath(pathlib.PurePosixPath):
 
 		return super().relative_to(*other)
 
-	def __lt__(self, *args, **kwargs) -> "NoReturn":
-		raise NotImplementedError
-
-	def __le__(self, *args, **kwargs) -> "NoReturn":
-		raise NotImplementedError
-
-	def __gt__(self, *args, **kwargs) -> "NoReturn":
-		raise NotImplementedError
-
-	def __ge__(self, *args, **kwargs) -> "NoReturn":
-		raise NotImplementedError
-
 	def as_uri(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
 		raise NotImplementedError
 
@@ -442,6 +430,30 @@ class URL(os.PathLike):
 		else:
 			return NotImplemented
 
+	def __lt__(self, other):
+		if isinstance(other, URL):
+			return self._parts_port < other._parts_port
+		else:
+			return NotImplemented
+
+	def __le__(self, other):
+		if isinstance(other, URL):
+			return self._parts_port <= other._parts_port
+		else:
+			return NotImplemented
+
+	def __gt__(self, other):
+		if isinstance(other, URL):
+			return self._parts_port > other._parts_port
+		else:
+			return NotImplemented
+
+	def __ge__(self, other):
+		if isinstance(other, URL):
+			return self._parts_port >= other._parts_port
+		else:
+			return NotImplemented
+
 	def strict_compare(self, other) -> bool:
 		"""
 		Return ``self ≡ other``, comparing the scheme, netloc, path, fragment and query parameters.
@@ -565,7 +577,26 @@ class URL(os.PathLike):
 				self.domain.subdomain,
 				self.domain.domain,
 				self.domain.suffix,
-				*self.path.parts[1:],
+				*('/' / self.path).parts[1:],
+				)
+
+	@property
+	def _parts_port(self) -> Tuple:
+		"""
+		An object providing sequence-like access to the components in the URL.
+
+		Unlike ``.parts`` this includes the port.
+
+		To retrieve only the parts of the path, use :meth:`URL.path.parts <URLPath.parts>`.
+		"""
+
+		return (
+				self.scheme,
+				self.domain.subdomain,
+				self.domain.domain,
+				self.domain.suffix,
+				self.port or 0,
+				*('/' / self.path).parts[1:],
 				)
 
 	@property
