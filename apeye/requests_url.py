@@ -78,14 +78,18 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		super().__init__(url)
 		self.session = requests.Session()
 
-	def resolve(self: _R) -> _R:
+	def resolve(self: _R, timeout: Optional[int] = None) -> _R:
 		"""
 		Resolves the URL into its canonical form.
 
+		This is done by making a ``HEAD`` request and following HTTP 302 redirects.
+
 		.. versionadded:: 0.8.0
+
+		.. versionchanged:: 1.1.0  Added the ``timeout`` argument.
 		"""
 
-		response: requests.Response = self.head(allow_redirects=True)
+		response: requests.Response = self.head(allow_redirects=True, timeout=timeout)
 
 		if response.status_code != 200:
 			raise requests.HTTPError(f"Could not resolve {self!r}: HTTP Status {response.status_code}")

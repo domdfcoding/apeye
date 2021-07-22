@@ -952,12 +952,16 @@ class TestRequestsURL(_TestURL):
 
 	base = RequestsURL("https://raw.githubusercontent.com")
 
-	def test_resolve(self):
-		expected = "https://github.com/PyMassSpec/PyMassSpec"
-		assert str(RequestsURL("https://github.com/domdfcoding/PyMassSpec").resolve()) == expected
-
-		expected = "https://pypi.org/project/domdf-python-tools"
-		assert str(RequestsURL("http://pypi.io/p/domdf_python_tools").resolve()) == expected
+	@pytest.mark.parametrize(
+			"url, expected",
+			[
+					("https://github.com/domdfcoding/PyMassSpec", "https://github.com/PyMassSpec/PyMassSpec"),
+					("http://pypi.io/p/domdf_python_tools", "https://pypi.org/project/domdf-python-tools"),
+					]
+			)
+	def test_resolve(self, url: str, expected: str):
+		assert str(RequestsURL(url).resolve()) == expected
+		assert str(RequestsURL(url).resolve(timeout=10)) == expected
 
 	def test_get(self):
 		target_url = self.base / "domdfcoding" / "domdf_python_tools" / "v2.9.1" / "LICENSE"
