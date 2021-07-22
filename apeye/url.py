@@ -180,7 +180,7 @@ class URLPath(pathlib.PurePosixPath):
 			Instead, use:
 
 				>>> URL("https://github.com/domdfcoding").relative_to(URL("https://github.com"))
-				URLPath('/domdfcoding')
+				URLPath('domdfcoding')
 		"""
 
 		return super().relative_to(*other)

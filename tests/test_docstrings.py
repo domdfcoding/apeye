@@ -2,6 +2,7 @@
 import doctest
 import inspect
 import shutil
+from pathlib import PurePosixPath
 from textwrap import indent
 
 # 3rd party
@@ -44,7 +45,7 @@ def relative_to(self, *other):
 def test_docstrings(module, monkeypatch):
 
 	# Always use pre-Python 3.9 implementation
-	monkeypatch.setattr(apeye.url.URLPath, "relative_to", relative_to)
+	monkeypatch.setattr(PurePosixPath, "relative_to", relative_to)
 
 	# Check that we were actually given a module.
 	if inspect.ismodule(module):
