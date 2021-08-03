@@ -14,7 +14,7 @@ import pytest
 import pytest_httpserver.pytest_plugin  # type: ignore
 import requests
 import werkzeug
-from coincidence import count
+from coincidence import count, not_pypy
 from pytest_httpserver.httpserver import QueryMatcher  # type: ignore
 
 # this package
@@ -775,6 +775,7 @@ class TestSlumberURL(_TestURL):
 		assert new_url.allow_redirects is False
 		assert new_url.verify == "verify"
 
+	@not_pypy("Method never called")
 	def test_garbage_collection(self, capsys):
 		# Deleting a child should not close the session while a reference to it is still held
 
@@ -951,6 +952,7 @@ class TestRequestsURL(_TestURL):
 		new_url = l_url / "news"
 		assert new_url.session is not sess
 
+	@not_pypy("Method never called")
 	def test_garbage_collection(self, capsys):
 		# Deleting a child should not close the session while a reference to it is still held
 
