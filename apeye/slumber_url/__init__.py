@@ -123,8 +123,6 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		the underlying :class:`requests.Session` object it only closed if no objects hold references to the session.
 		This prevents the session object of a global object from being inadvertently closed
 		when one of its children is garbage collected.
-
-	.. latex:clearpage::
 	"""  # noqa: D400
 
 	serializer: SerializerRegistry
