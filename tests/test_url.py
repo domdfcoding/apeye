@@ -20,7 +20,7 @@ from pytest_httpserver.httpserver import QueryMatcher  # type: ignore
 # this package
 from apeye.requests_url import RequestsURL, TrailingRequestsURL
 from apeye.slumber_url import SlumberURL
-from apeye.url import URL, Domain, URLPath, URLType
+from apeye.url import URL, Domain, URLPath
 
 
 class MyPathLike(os.PathLike):
@@ -775,6 +775,43 @@ class TestSlumberURL(_TestURL):
 		assert new_url.allow_redirects is False
 		assert new_url.verify == "verify"
 
+	def test_garbage_collection(self, capsys):
+		# Deleting a child should not close the session while a reference to it is still held
+
+		class Sess(requests.Session):
+
+			def close(self):
+				print("Closing")
+				super().close()
+
+		u = self._class("https://github.com")
+		u.session = Sess()
+
+		u1 = u / "domdfcoding"
+		print(u1 / "apeye")
+
+		del u1
+		assert capsys.readouterr().out == "https://github.com/domdfcoding/apeye\n"
+
+		del u
+		assert capsys.readouterr().out == "Closing\n"
+
+		the_session = Sess()
+		u3 = self._class("https://github.com")
+		u3.session = the_session
+
+		u4 = u3 / "domdfcoding"
+		print(u4 / "apeye")
+
+		del u4
+		assert capsys.readouterr().out == "https://github.com/domdfcoding/apeye\n"
+
+		del u3
+		assert capsys.readouterr().out == ''
+
+		the_session.close()
+		assert capsys.readouterr().out == "Closing\n"
+
 
 class TestRequestsURL(_TestURL):
 
@@ -913,6 +950,43 @@ class TestRequestsURL(_TestURL):
 		l_url = RequestsURL("http://bbc.co.uk")
 		new_url = l_url / "news"
 		assert new_url.session is not sess
+
+	def test_garbage_collection(self, capsys):
+		# Deleting a child should not close the session while a reference to it is still held
+
+		class Sess(requests.Session):
+
+			def close(self):
+				print("Closing")
+				super().close()
+
+		u = RequestsURL("https://github.com")
+		u.session = Sess()
+
+		u1 = u / "domdfcoding"
+		print(u1 / "apeye")
+
+		del u1
+		assert capsys.readouterr().out == "https://github.com/domdfcoding/apeye\n"
+
+		del u
+		assert capsys.readouterr().out == "Closing\n"
+
+		the_session = Sess()
+		u3 = RequestsURL("https://github.com")
+		u3.session = the_session
+
+		u4 = u3 / "domdfcoding"
+		print(u4 / "apeye")
+
+		del u4
+		assert capsys.readouterr().out == "https://github.com/domdfcoding/apeye\n"
+
+		del u3
+		assert capsys.readouterr().out == ''
+
+		the_session.close()
+		assert capsys.readouterr().out == "Closing\n"
 
 
 def test_subclass__eq__():

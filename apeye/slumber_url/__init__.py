@@ -44,6 +44,7 @@ REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and
 
 # stdlib
 import copy
+import sys
 from typing import Callable, Dict, MutableMapping, Optional, Tuple, Union
 from urllib.parse import unquote
 
@@ -115,6 +116,14 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 
 	.. latex:vspace:: 10px
 	.. versionchanged:: 0.3.0  The ``url`` parameter can now be a string or a :class:`~.URL`.
+
+	.. versionchanged:: 1.1.0
+
+		When a :class:`~.RequestsURL` object is deleted or garbage collected,
+		the underlying :class:`requests.Session` object it only closed if no objects hold references to the session.
+		This prevents the session object of a global object from being inadvertently closed
+		when one of its children is garbage collected.
+
 	.. latex:clearpage::
 	"""  # noqa: D400
 
@@ -379,9 +388,14 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		# 	return False
 		return 200 <= resp.status_code <= 299
 
-	def __del__(self):
+	def __del__(self):  # pragma: no cover
+		"""
+		Attempt to close session when garbage collected to avoid leaving connections open.
+		"""
+
 		try:
-			self.session.close()
+			if sys.getrefcount(self.session) <= 2:
+				self.session.close()
 		except Exception:  # nosec: B110  # pylint: disable=bare-except
 			pass
 

@@ -29,6 +29,7 @@ Extension of :class:`~apeye.url.URL` with support for interacting with the websi
 #  Licensed under the Apache License, Version 2.0
 
 # stdlib
+import sys
 from typing import IO, Any, Iterable, Mapping, MutableMapping, Optional, Tuple, TypeVar, Union
 
 # 3rd party
@@ -66,13 +67,18 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 	.. versionchanged:: 0.3.0  The ``url`` parameter can now be a string or a :class:`~.URL`.
 
+	.. versionchanged:: 1.1.0
+
+		When a :class:`~.RequestsURL` object is deleted or garbage collected,
+		the underlying :class:`requests.Session` object it only closed if no objects hold references to the session.
+		This prevents the session object of a global object from being inadvertently closed
+		when one of its children is garbage collected.
+
 	.. latex:vspace:: -4px
 	"""
 
+	#: The underlying requests session.
 	session: requests.Session
-	"""
-	The underlying requests session.
-	"""
 
 	def __init__(self, url: Union[str, URL] = ''):
 		super().__init__(url)
@@ -202,8 +208,9 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		"""
 
 		try:
-			self.session.close()
-		except:  # nosec: B110  # pylint: disable=bare-except
+			if sys.getrefcount(self.session) <= 2:
+				self.session.close()
+		except Exception:  # nosec: B110  # pylint: disable=bare-except
 			pass
 
 	def __truediv__(self, other):
