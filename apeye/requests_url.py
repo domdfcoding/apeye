@@ -243,4 +243,4 @@ class TrailingRequestsURL(RequestsURL):
 		Returns the :class:`~.TrailingRequestsURL` as a string.
 		"""
 
-		return super().__str__() + '/'
+		return super().__str__().rstrip('/') + '/'

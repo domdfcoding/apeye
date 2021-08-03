@@ -1028,6 +1028,11 @@ class TestTrailingRequestsURL(TestRequestsURL):
 	def test_str(self, url, expects):
 		assert str(self._class(url)) == expects
 
+	def test_base_domain_already_trailing(self):
+		assert str(TrailingRequestsURL("https://bbc.co.uk/")) == "https://bbc.co.uk/"
+		assert str(TrailingRequestsURL("https://bbc.co.uk//")) == "https://bbc.co.uk/"
+		assert str(TrailingRequestsURL("https://bbc.co.uk")) == "https://bbc.co.uk/"
+
 
 def test_domain_class():
 	d = Domain("docs", "python", "org")
