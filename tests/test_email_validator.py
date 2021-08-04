@@ -1,9 +1,12 @@
 # stdlib
 import json
+import sys
 
 # 3rd party
 import pytest
 from coincidence import AdvancedFileRegressionFixture
+from coincidence.params import param
+from domdf_python_tools.compat import PYPY36
 
 # this package
 from apeye.email_validator import EmailSyntaxError, ValidatedEmail
@@ -228,7 +231,7 @@ from apeye.email_validator import validate_email
 								original_email="甲斐黒川日本@example.com",
 								),
 						),
-				(
+				param(
 						"чебурашкаящик-с-апельсинами.рф@example.com",
 						ValidatedEmail(
 								local_part="чебурашкаящик-с-апельсинами.рф",
@@ -238,6 +241,11 @@ from apeye.email_validator import validate_email
 								email="чебурашкаящик-с-апельсинами.рф@example.com",
 								original_email="чебурашкаящик-с-апельсинами.рф@example.com",
 								),
+						idx=0,
+						marks=pytest.mark.skipif(
+								sys.platform == "win32" and PYPY36,
+								reason="Fails due to unicode issue with filename",
+								)
 						),
 				(
 						"उदाहरण.परीक्ष@domain.with.idn.tld",
