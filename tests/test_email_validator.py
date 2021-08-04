@@ -241,7 +241,6 @@ from apeye.email_validator import validate_email
 								email="чебурашкаящик-с-апельсинами.рф@example.com",
 								original_email="чебурашкаящик-с-апельсинами.рф@example.com",
 								),
-						idx=0,
 						marks=pytest.mark.skipif(
 								sys.platform == "win32" and PYPY36,
 								reason="Fails due to unicode issue with filename",
