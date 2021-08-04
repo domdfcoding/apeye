@@ -592,6 +592,8 @@ class URL(os.PathLike):
 		Unlike ``.parts`` this includes the port.
 
 		To retrieve only the parts of the path, use :meth:`URL.path.parts <URLPath.parts>`.
+
+		.. versionadded:: 1.1.0  (private)
 		"""
 
 		return (
