@@ -11,6 +11,10 @@ short_desc: 'Handy tools for working with URLs and APIs.'
 preserve_custom_theme: true
 standalone_contrib_guide: true
 
+sphinx_html_theme: furo
+min_coverage: 85
+tox_testenv_extras: limiter
+
 conda_channels:
  - conda-forge
 
@@ -36,19 +40,13 @@ keywords:
  - cache
  - rest
 
-sphinx_html_theme: furo
-
 tox_unmanaged:
  - testenv
-
-min_coverage: 85
 
 extras_require:
  limiter:
   - cachecontrol[filecache]>=0.12.6
   - lockfile>=0.12.2
-
-tox_testenv_extras: limiter
 
 extra_sphinx_extensions:
  - local_extension
@@ -56,10 +54,20 @@ extra_sphinx_extensions:
  - sphinx_toolbox_experimental.autosummary_widths
  - sphinx_toolbox_experimental.needspace
  - sphinx_toolbox_experimental.peps
- - sphinx_toolbox_experimental.toml
+ - sphinx_toolbox_experimental.missing_xref
 
 conda_extras:
  - limiter
 
 manifest_additional:
  - include apeye/public_suffix_list.dat
+
+sphinx_conf_epilogue:
+ - nitpicky = True
+ - "ignore_missing_xrefs = ["
+ - "    '^requests.structures.CaseInsensitiveDict$',"
+ - "    '^cachecontrol.adapter.CacheControlAdapter',"
+ - "]"
+
+exclude_files:
+ - license_rst

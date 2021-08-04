@@ -14,7 +14,7 @@ import pytest
 import pytest_httpserver.pytest_plugin  # type: ignore
 import requests
 import werkzeug
-from coincidence import count
+from coincidence import count, not_pypy
 from pytest_httpserver.httpserver import QueryMatcher  # type: ignore
 
 # this package
@@ -946,6 +946,44 @@ class TestSlumberURL(_TestURL):
 		assert new_url.allow_redirects is False
 		assert new_url.verify == "verify"
 
+	@not_pypy("Method never called")
+	def test_garbage_collection(self, capsys):
+		# Deleting a child should not close the session while a reference to it is still held
+
+		class Sess(requests.Session):
+
+			def close(self):
+				print("Closing")
+				super().close()
+
+		u = self._class("https://github.com")
+		u.session = Sess()
+
+		u1 = u / "domdfcoding"
+		print(u1 / "apeye")
+
+		del u1
+		assert capsys.readouterr().out == "https://github.com/domdfcoding/apeye\n"
+
+		del u
+		assert capsys.readouterr().out == "Closing\n"
+
+		the_session = Sess()
+		u3 = self._class("https://github.com")
+		u3.session = the_session
+
+		u4 = u3 / "domdfcoding"
+		print(u4 / "apeye")
+
+		del u4
+		assert capsys.readouterr().out == "https://github.com/domdfcoding/apeye\n"
+
+		del u3
+		assert capsys.readouterr().out == ''
+
+		the_session.close()
+		assert capsys.readouterr().out == "Closing\n"
+
 
 class TestRequestsURL(_TestURL):
 
@@ -1085,6 +1123,44 @@ class TestRequestsURL(_TestURL):
 		new_url = l_url / "news"
 		assert new_url.session is not sess
 
+	@not_pypy("Method never called")
+	def test_garbage_collection(self, capsys):
+		# Deleting a child should not close the session while a reference to it is still held
+
+		class Sess(requests.Session):
+
+			def close(self):
+				print("Closing")
+				super().close()
+
+		u = RequestsURL("https://github.com")
+		u.session = Sess()
+
+		u1 = u / "domdfcoding"
+		print(u1 / "apeye")
+
+		del u1
+		assert capsys.readouterr().out == "https://github.com/domdfcoding/apeye\n"
+
+		del u
+		assert capsys.readouterr().out == "Closing\n"
+
+		the_session = Sess()
+		u3 = RequestsURL("https://github.com")
+		u3.session = the_session
+
+		u4 = u3 / "domdfcoding"
+		print(u4 / "apeye")
+
+		del u4
+		assert capsys.readouterr().out == "https://github.com/domdfcoding/apeye\n"
+
+		del u3
+		assert capsys.readouterr().out == ''
+
+		the_session.close()
+		assert capsys.readouterr().out == "Closing\n"
+
 
 def test_subclass__eq__():
 
@@ -1124,6 +1200,11 @@ class TestTrailingRequestsURL(TestRequestsURL):
 			)
 	def test_str(self, url, expects):
 		assert str(self._class(url)) == expects
+
+	def test_base_domain_already_trailing(self):
+		assert str(TrailingRequestsURL("https://bbc.co.uk/")) == "https://bbc.co.uk/"
+		assert str(TrailingRequestsURL("https://bbc.co.uk//")) == "https://bbc.co.uk/"
+		assert str(TrailingRequestsURL("https://bbc.co.uk")) == "https://bbc.co.uk/"
 
 
 def test_domain_class():

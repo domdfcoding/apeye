@@ -44,7 +44,6 @@
 #
 
 # stdlib
-import collections
 import ipaddress
 import os
 import pathlib
