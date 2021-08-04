@@ -182,6 +182,7 @@ API Reference
 
 	contributing
 	Source
+	license
 
 
 .. start links
