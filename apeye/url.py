@@ -48,8 +48,22 @@ import ipaddress
 import os
 import pathlib
 import re
-from typing import TYPE_CHECKING, Any, Dict, List, Mapping, NamedTuple, Optional, Tuple, Type, TypeVar, Union
-from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
+from operator import attrgetter
+from typing import (
+		TYPE_CHECKING,
+		Any,
+		Dict,
+		Iterable,
+		List,
+		Mapping,
+		NamedTuple,
+		Optional,
+		Tuple,
+		Type,
+		TypeVar,
+		Union
+		)
+from urllib.parse import ParseResult, parse_qs, urlencode, urlparse, urlunparse
 
 # 3rd party
 from domdf_python_tools.doctools import prettify_docstrings
@@ -62,10 +76,14 @@ if TYPE_CHECKING:
 	# stdlib
 	from typing import NoReturn
 
-__all__ = ["URL", "URLPath", "Domain", "URLType"]
+__all__ = ["URL", "URLPath", "Domain", "URLType", "URLPathType"]
 
-#: Type variable bound to :class:`~apeye.url.URL`.
 URLType = TypeVar("URLType", bound="URL")
+
+URLPathType = TypeVar("URLPathType", bound="URLPath")
+"""
+.. versionadded:: 1.1.0
+"""
 
 
 @prettify_docstrings
@@ -74,6 +92,13 @@ class URLPath(pathlib.PurePosixPath):
 	Represents the path part of a URL.
 
 	Subclass of :class:`pathlib.PurePosixPath` that provides a subset of its methods.
+
+	.. versionchanged:: 1.1.0
+
+		Implemented :meth:`~.URLPath.is_absolute`, :meth:`~.URLPath.joinpath`,
+		:meth:`~.URLPath.relative_to`, :meth:`~.pathlib.PurePath.match`,
+		``anchor``, ``drive``, and support for rich comparisons (``<``, ``<=``, ``>`` and ``>=``),
+		which previously raised :exc:`NotImplementedError`.
 	"""
 
 	def __str__(self) -> str:
@@ -87,6 +112,9 @@ class URLPath(pathlib.PurePosixPath):
 			self._str = self._format_parsed_parts(self._drv, self._root, self._parts) or ''  # type: ignore
 			return self._str
 
+	def __repr__(self):  # noqa: D102
+		return super().__repr__()
+
 	@classmethod
 	def _format_parsed_parts(cls, drv, root, parts):
 		if drv or root:
@@ -94,37 +122,67 @@ class URLPath(pathlib.PurePosixPath):
 		else:
 			return pathlib._posix_flavour.join(parts)  # type: ignore
 
-	def match(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
-		raise NotImplementedError
+	def is_absolute(self) -> bool:
+		"""
+		Returns whether the path is absolute (i.e. starts with ``/``).
 
-	def is_absolute(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
-		raise NotImplementedError
+		.. versionadded:: 1.1.0  previously raised :exc:`NotImplementedError`.
+		"""
 
-	def joinpath(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
-		raise NotImplementedError
+		return self.root == '/'
 
-	def relative_to(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
-		raise NotImplementedError
+	def joinpath(self: URLPathType, *args) -> URLPathType:
+		"""
+		Combine this :class:`~.URLPath` with one or several arguments.
 
-	@property
-	def anchor(self):  # noqa: D102
-		raise NotImplementedError
+		.. versionadded:: 1.1.0  previously raised :exc:`NotImplementedError`.
 
-	@property
-	def drive(self):  # noqa: D102
-		raise NotImplementedError
+		:returns: A new :class:`~.URLPath` representing either a subpath
+			(if all arguments are relative paths) or a totally different path
+			(if one of the arguments is absolute).
+		"""
 
-	def __lt__(self, *args, **kwargs) -> "NoReturn":
-		raise NotImplementedError
+		return super().joinpath(*args)
 
-	def __le__(self, *args, **kwargs) -> "NoReturn":
-		raise NotImplementedError
+	def relative_to(self: URLPathType, *other: PathLike) -> URLPathType:
+		r"""
+		Returns the relative path to another path identified by the passed arguments.
 
-	def __gt__(self, *args, **kwargs) -> "NoReturn":
-		raise NotImplementedError
+		The arguments are joined together to form a single path, and therefore the following behave identically:
 
-	def __ge__(self, *args, **kwargs) -> "NoReturn":
-		raise NotImplementedError
+		.. code-block:: pycon
+
+			>>> URLPath("/news/sport").relative_to("/", "news")
+			URLPath('sport')
+			>>> URLPath("/news/sport").relative_to("/news")
+			URLPath('sport')
+
+		.. versionadded:: 1.1.0  previously raised :exc:`NotImplementedError`.
+
+		:param \*other:
+
+		:raises ValueError: if the operation is not possible (because this is not a subpath of the other path)
+
+		.. seealso::
+
+			:meth:`~.URL.relative_to`, which is recommended when constructing a relative path from a :class:`~URL`.
+			This method cannot correctly handle some cases, such as:
+
+			.. code-block:: pycon
+
+				>>> URL("https://github.com/domdfcoding").path.relative_to(URL("https://github.com").path)
+				Traceback (most recent call last):
+				ValueError: '/domdfcoding' does not start with ''
+
+			Since ``URL("https://github.com").path`` is ``URLPath('')``.
+
+			Instead, use:
+
+				>>> URL("https://github.com/domdfcoding").relative_to(URL("https://github.com"))
+				URLPath('domdfcoding')
+		"""
+
+		return super().relative_to(*other)
 
 	def as_uri(self, *args, **kwargs) -> "NoReturn":  # noqa: D102
 		raise NotImplementedError
@@ -137,6 +195,10 @@ class URL(os.PathLike):
 	:param url: The URL to construct the :class:`~apeye.url.URL` object from.
 
 	.. versionchanged:: 0.3.0  The ``url`` parameter can now be a string or a :class:`~.URL`.
+
+	.. versionchanged:: 1.1.0
+
+		Added support for sorting and rich comparisons (``<``, ``<=``, ``>`` and ``>=``).
 
 	.. autoclasssumm:: URL
 		:autosummary-sections: Methods
@@ -270,38 +332,80 @@ class URL(os.PathLike):
 			* Added support for division by integers.
 
 			* Now officially supports the new path having a URL fragment and/or query parameters.
-			  Any URL fragment or query parameters from the parent URL is not inherited by its children.
+			  Any URL fragment or query parameters from the parent URL are not inherited by its children.
 		"""
 
-		_key = key
-
-		if isinstance(key, pathlib.PurePath):
-			key = key.as_posix()
-		elif isinstance(key, os.PathLike):
-			key = os.fspath(key)
-		elif isinstance(key, int):
-			key = str(key)
-
 		try:
-			parse_result = urlparse(key)
-		except AttributeError as e:
-			if str(e).endswith("'decode'"):
-				raise TypeError(
-						f"unsupported operand type(s) for /: "
-						f"'{type(self.path).__name__!r}' and {type(_key).__name__!r}",
-						) from None
-			else:
-				raise
-
-		try:
-			new_path = self.from_parts(self.scheme, self.netloc, self.path / parse_result.path)
+			return self._make_child((key, ))
 		except TypeError:
 			return NotImplemented
 
-		new_path.query = parse_qs(parse_result.query)
-		new_path.fragment = parse_result.fragment or None
+	def _make_child(self: URLType, args: Iterable[Union[PathLike, int]]) -> URLType:
+		"""
+		Construct a new :class:`~apeye.url.URL` object by combining the given arguments with this instance's path part.
+
+		.. versionadded:: 1.1.0  (private)
+
+		Except for the final path element any queries and fragments are ignored.
+
+		:returns: A new :class:`~.URL` representing either a subpath
+			(if all arguments are relative paths) or a totally different path
+			(if one of the arguments is absolute).
+		"""
+
+		parsed_args: List[ParseResult] = []
+
+		for arg in args:
+
+			raw_arg = arg
+
+			if isinstance(arg, pathlib.PurePath):
+				arg = arg.as_posix()
+			elif isinstance(arg, os.PathLike):
+				arg = os.fspath(arg)
+			elif isinstance(arg, int):
+				arg = str(arg)
+
+			try:
+				parse_result = urlparse(arg)
+			except AttributeError as e:
+				if str(e).endswith("'decode'"):
+					msg = f"Cannot join {type(raw_arg).__name__!r} to a {type(self.path).__name__!r}"
+					raise TypeError(msg) from None
+				else:
+					raise
+
+			parsed_args.append(parse_result)
+
+		try:
+			new_path = self.from_parts(
+					self.scheme,
+					self.netloc,
+					self.path.joinpath(*map(attrgetter("path"), parsed_args)),
+					)
+		except TypeError:
+			return NotImplemented
+
+		if parsed_args:
+			new_path.query = parse_qs(parsed_args[-1].query)
+			new_path.fragment = parsed_args[-1].fragment or None
 
 		return new_path
+
+	def joinurl(self: URLType, *args) -> URLType:
+		"""
+		Construct a new :class:`~apeye.url.URL` object by combining the given arguments with this instance's path part.
+
+		.. versionadded:: 1.1.0
+
+		Except for the final path element any queries and fragments are ignored.
+
+		:returns: A new :class:`~.URL` representing either a subpath
+			(if all arguments are relative paths) or a totally different path
+			(if one of the arguments is absolute).
+		"""
+
+		return self._make_child(args)
 
 	def __fspath__(self) -> str:
 		"""
@@ -327,6 +431,30 @@ class URL(os.PathLike):
 
 		if isinstance(other, URL):
 			return self.netloc == other.netloc and self.scheme == other.scheme and self.path == other.path
+		else:
+			return NotImplemented
+
+	def __lt__(self, other):
+		if isinstance(other, URL):
+			return self._parts_port < other._parts_port
+		else:
+			return NotImplemented
+
+	def __le__(self, other):
+		if isinstance(other, URL):
+			return self._parts_port <= other._parts_port
+		else:
+			return NotImplemented
+
+	def __gt__(self, other):
+		if isinstance(other, URL):
+			return self._parts_port > other._parts_port
+		else:
+			return NotImplemented
+
+	def __ge__(self, other):
+		if isinstance(other, URL):
+			return self._parts_port >= other._parts_port
 		else:
 			return NotImplemented
 
@@ -453,7 +581,28 @@ class URL(os.PathLike):
 				self.domain.subdomain,
 				self.domain.domain,
 				self.domain.suffix,
-				*self.path.parts[1:],
+				*('/' / self.path).parts[1:],
+				)
+
+	@property
+	def _parts_port(self) -> Tuple:
+		"""
+		An object providing sequence-like access to the components in the URL.
+
+		Unlike ``.parts`` this includes the port.
+
+		To retrieve only the parts of the path, use :meth:`URL.path.parts <URLPath.parts>`.
+
+		.. versionadded:: 1.1.0  (private)
+		"""
+
+		return (
+				self.scheme,
+				self.domain.subdomain,
+				self.domain.domain,
+				self.domain.suffix,
+				self.port or 0,
+				*('/' / self.path).parts[1:],
 				)
 
 	@property
@@ -501,6 +650,41 @@ class URL(os.PathLike):
 				self.netloc,
 				self.path,
 				)
+
+	def relative_to(self, other: Union[str, "URL", URLPath]) -> URLPath:
+		"""
+		Returns a version of this URL's path relative to ``other``.
+
+		.. versionadded:: 1.1.0
+
+		:param other: Either a :class:`~.URL`, or a string or :class:`~.URLPath` representing an *absolute* path.
+			If a :class:`~.URL`, the :attr:`~.URL.netloc` must match this URL's.
+
+		:raises ValueError: if the operation is not possible
+			(i.e. because this URL's path is not a subpath of the other path)
+		"""
+
+		if isinstance(other, URLPath):
+			if not other.is_absolute():
+				raise ValueError("'URL.relative_to' cannot be used with relative URLPath objects")
+			else:
+				other = URL('/') / other
+		elif not isinstance(other, URL):
+			# Parse other as a URL
+			other = URL(other)
+
+		# Compare netloc, if both have one
+		if self.netloc and other.netloc and self.netloc.lower() != other.netloc.lower():
+			raise ValueError(f"{self!r} does not start with {other!r}")
+
+		# Make the paths absolute
+		# If coming from a URL they must always be absolute
+		our_path = '/' / self.path
+		other_path = '/' / other.path
+
+		relative_path = our_path.relative_to(other_path)
+
+		return relative_path
 
 
 class Domain(NamedTuple):

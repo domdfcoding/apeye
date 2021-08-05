@@ -29,7 +29,43 @@ class MyPathLike(os.PathLike):
 		return "/python"
 
 
-class TestUrlPath:
+class TestURLPath:
+
+	@pytest.mark.parametrize(
+			"value, expected",
+			[
+					("/watch?v=NG21KWZSiok", '/'),
+					("watch?v=NG21KWZSiok", ''),
+					('', ''),
+					("/programmes/b006qtlx/episodes/player", '/'),
+					("/news", '/'),
+					("news", ''),
+					]
+			)
+	def test_drive_root_anchor(self, value: str, expected: str):
+		# These were originally NotImplemented, but they weren't doing any harm and might be useful
+		assert URLPath(value).drive == ''
+		assert URLPath(value).root == expected
+		assert URLPath(value).anchor == expected
+
+	@pytest.mark.parametrize(
+			"value, absolute",
+			[
+					(URLPath(), False),
+					(URLPath(''), False),
+					(URLPath('/'), True),
+					(URLPath("/news"), True),
+					(URLPath("news"), False),
+					(URLPath("/programmes/b006qtlx"), True),
+					(URLPath("programmes/b006qtlx"), False),
+					(URLPath("/programmes/b006qtlx/episodes/player"), True),
+					(URLPath("/watch?v=NG21KWZSiok"), True),
+					(URLPath("watch?v=NG21KWZSiok"), False),
+					]
+			)
+	def test_is_absolute(self, value: str, absolute: bool):
+		# Was originally NotImplemented, but it might be useful
+		assert URLPath(value).is_absolute() is absolute
 
 	@pytest.mark.parametrize(
 			"value", [
@@ -54,29 +90,10 @@ class TestUrlPath:
 	def test_repr(self, value, expects):
 		assert repr(URLPath(value)) == expects
 
-	@pytest.mark.parametrize(
-			"method",
-			[
-					URLPath().match,
-					URLPath().is_absolute,
-					URLPath().joinpath,
-					URLPath().relative_to,
-					URLPath().as_uri,
-					URLPath().__lt__,
-					URLPath().__le__,
-					URLPath().__gt__,
-					URLPath().__ge__,
-					]
-			)
+	@pytest.mark.parametrize("method", [URLPath().as_uri])
 	def test_notimplemented(self, method):
 		with pytest.raises(NotImplementedError):
 			method()
-
-	def test_notimplemented_properties(self):
-		with pytest.raises(NotImplementedError):
-			URLPath().anchor  # pylint: disable=expression-not-assigned
-		with pytest.raises(NotImplementedError):
-			URLPath().drive  # pylint: disable=expression-not-assigned
 
 	@pytest.mark.parametrize(
 			"value, expects",
@@ -112,6 +129,22 @@ class TestUrlPath:
 		assert value == expects
 		assert isinstance(value, URLPath)
 
+	@pytest.mark.parametrize(
+			"value, expects",
+			[
+					(URLPath().joinpath("news"), URLPath("news")),
+					(URLPath('/').joinpath("news"), URLPath("/news")),
+					(URLPath("/programmes").joinpath("b006qtlx"), URLPath("/programmes/b006qtlx")),
+					(
+							URLPath("/programmes").joinpath("b006qtlx", "details"),
+							URLPath("/programmes/b006qtlx/details")
+							),
+					]
+			)
+	def test_joinpath(self, value, expects):
+		assert value == expects
+		assert isinstance(value, URLPath)
+
 	@count(100)
 	def test_division_errors_number(self, count: int):
 		if sys.version_info < (3, 8):
@@ -142,6 +175,21 @@ class TestUrlPath:
 		else:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: .* and 'URLPath'"):
 				obj / URLPath()  # pylint: disable=expression-not-assigned
+
+	@pytest.mark.parametrize(
+			"base, other",
+			[
+					(URLPath("/news/sport"), "/news"),
+					(URLPath("/news/sport"), URLPath("/news")),
+					(URLPath("/news/sport"), pathlib.PurePosixPath("/news")),
+					(URLPath("news/sport"), "news"),
+					(URLPath("news/sport"), URLPath("news")),
+					(URLPath("news/sport"), pathlib.PurePosixPath("news")),
+					]
+			)
+	def test_relative_to(self, base: URLPath, other):
+		assert base.relative_to(other) == URLPath("sport")
+		assert isinstance(base.relative_to(other), URLPath)
 
 
 class _TestURL(ABC):
@@ -284,6 +332,24 @@ class _TestURL(ABC):
 	def test_rtruediv_typerror(self, obj):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: .* and '.*'"):
 			obj / self._class()  # pylint: disable=expression-not-assigned
+
+	def test_joinurl(self):
+		value = self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes").joinurl("player")
+		assert value == self._class("https://www.bbc.co.uk/programmes/b006qtlx/episodes/player")
+
+		value = self._class("/programmes/b006qtlx/episodes").joinurl("player")
+		assert value == self._class("/programmes/b006qtlx/episodes/player")
+
+		assert self._class("www.bbc.co.uk").joinurl("news") == self._class("www.bbc.co.uk/news")
+		assert self._class().joinurl("news") == self._class("/news")
+
+		assert self._class("www.bbc.co.uk").joinurl("news", "sport") == self._class("www.bbc.co.uk/news/sport")
+
+		expected = self._class("www.bbc.co.uk/news/sport?que=ry")
+		assert self._class("www.bbc.co.uk").joinurl("news#anchor", "sport?que=ry") == expected
+
+		expected = self._class("www.bbc.co.uk/news/sport#anchor")
+		assert self._class("www.bbc.co.uk").joinurl("news?que=ry", "sport#anchor") == expected
 
 	def test_empty_url_operations(self):
 		assert self._class().name == ''
@@ -601,6 +667,111 @@ class _TestURL(ABC):
 		url = self._class("https://api.github.com#footer")
 		assert url.fragment == "footer"
 		assert (url / "users").fragment is None
+
+	def test_relative_to(self):
+		expected = URLPath("domdfcoding")
+		assert self._class("https://github.com/domdfcoding").relative_to(URL("https://github.com")) == expected
+		assert self._class("https://github.com/domdfcoding").relative_to(
+				RequestsURL("https://github.com")
+				) == expected
+		assert self._class("https://github.com/domdfcoding").relative_to(
+				SlumberURL("https://github.com")
+				) == expected
+
+		expected = URLPath("football")
+		assert self._class("https://www.bbc.co.uk:443/news/sport/football").relative_to("/news/sport") == expected
+		assert self._class("https://www.bbc.co.uk:443/news/sport/football").relative_to(
+				URLPath("/news/sport")
+				) == expected
+
+		with pytest.raises(ValueError, match="'URL.relative_to' cannot be used with relative URLPath objects"):
+			self._class("https://www.bbc.co.uk:443/news/sport/football").relative_to(URLPath("news/sport"))
+
+		with pytest.raises(ValueError, match=".* does not start with .*"):
+			self._class("https://github.com/domdfcoding").relative_to(URL("https://bbc.co.uk/news"))
+
+		with pytest.raises(ValueError, match=".* does not start with .*"):
+			self._class("https://www.bbc.co.uk:443/news/sport").relative_to(URL("https://bbc.co.uk/news"))
+
+		# Perhaps not quite what was intended
+		match = r".*URL\('https://bbc.co.uk/news/sport/football(/)?'\) does not start with .*URL\('news/sport'\)"
+		with pytest.raises(ValueError, match=match):
+			self._class("https://bbc.co.uk/news/sport/football").relative_to("news/sport")
+
+		the_url = self._class("https://github.com/domdfcoding")
+		assert the_url.path == URLPath("/domdfcoding")
+		the_url.path = URLPath("domdfcoding")
+		assert the_url.path == URLPath("domdfcoding")
+		assert the_url.relative_to(URL("https://github.com")) == URLPath("domdfcoding")
+
+		# Should be case insensitive (NOT case folded) per RFC 4343
+		expected = URLPath("domdfcoding")
+		url = self._class("https://github.com/domdfcoding")
+		assert url.relative_to(self._class("https://GitHub.COM")) == expected
+
+	def test_ordering(self):
+		# f comes before t
+		football = self._class("https://bbc.co.uk:443/news/sport/football")
+		tennis = self._class("https://bbc.co.uk:443/news/sport/tennis")
+		assert football < tennis
+		assert football <= tennis
+		assert tennis > football
+		assert tennis >= football
+		assert sorted([tennis, football]) == [football, tennis]
+
+		# port number is sorted before path
+		tennis = self._class("https://bbc.co.uk:80/news/sport/tennis")
+		assert tennis < self._class("https://bbc.co.uk:443/news/sport/football")
+		assert tennis <= self._class("https://bbc.co.uk:443/news/sport/football")
+		assert football > tennis
+		assert football >= tennis
+
+		# scheme is sorted before path
+		tennis = self._class("http://bbc.co.uk/news/sport/tennis")
+		assert tennis < self._class("https://bbc.co.uk/news/sport/football")
+		assert tennis <= self._class("https://bbc.co.uk/news/sport/football")
+		assert self._class("https://bbc.co.uk/news/sport/football") > tennis
+		assert self._class("https://bbc.co.uk/news/sport/football") >= tennis
+
+		# Empty subdomain comes first
+		tennis = self._class("https://bbc.co.uk/news/sport/tennis")
+		assert tennis < self._class("https://news.bbc.co.uk/sport/tennis")
+		assert tennis <= self._class("https://news.bbc.co.uk/sport/tennis")
+		assert self._class("https://news.bbc.co.uk/sport/tennis") > tennis
+		assert self._class("https://news.bbc.co.uk/sport/tennis") >= tennis
+
+	@pytest.mark.parametrize("other_class", [URL, SlumberURL, RequestsURL, TrailingRequestsURL])
+	def test_ordering_other_classes(self, other_class):
+		# f comes before t
+		football = "https://bbc.co.uk:443/news/sport/football"
+		tennis = "https://bbc.co.uk:443/news/sport/tennis"
+		assert self._class(football) < other_class(tennis)
+		assert self._class(football) <= other_class(tennis)
+		assert self._class(tennis) > other_class(football)
+		assert self._class(tennis) >= other_class(football)
+		assert sorted([self._class(tennis), other_class(football)]) == [self._class(football), self._class(tennis)]
+
+		# port number is sorted before path
+		tennis = "https://bbc.co.uk:80/news/sport/tennis"
+		assert self._class(tennis) < other_class(football)
+		assert self._class(tennis) <= other_class(football)
+		assert self._class(football) > other_class(tennis)
+		assert self._class(football) >= other_class(tennis)
+
+		# scheme is sorted before path
+		tennis = "http://bbc.co.uk/news/sport/tennis"
+		assert self._class(tennis) < other_class("https://bbc.co.uk/news/sport/football")
+		assert self._class(tennis) <= other_class("https://bbc.co.uk/news/sport/football")
+		assert self._class("https://bbc.co.uk/news/sport/football") > other_class(tennis)
+		assert self._class("https://bbc.co.uk/news/sport/football") >= other_class(tennis)
+
+		# Empty subdomain comes first
+		tennis = "https://bbc.co.uk/news/sport/tennis"
+
+		assert self._class(tennis) < other_class("https://news.bbc.co.uk/sport/tennis")
+		assert self._class(tennis) <= other_class("https://news.bbc.co.uk/sport/tennis")
+		assert self._class("https://news.bbc.co.uk/sport/tennis") > other_class(tennis)
+		assert self._class("https://news.bbc.co.uk/sport/tennis") >= other_class(tennis)
 
 
 class TestURL(_TestURL):
