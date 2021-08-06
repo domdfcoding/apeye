@@ -410,6 +410,8 @@ class URL(os.PathLike):
 	def __fspath__(self) -> str:
 		"""
 		Returns the file system path representation of the :class:`~.URL`.
+
+		This is comprised of the ``netloc`` and ``path`` attributes.
 		"""
 
 		return f"{self.netloc}{self.path}"
