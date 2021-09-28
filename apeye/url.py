@@ -112,7 +112,7 @@ class URLPath(pathlib.PurePosixPath):
 			self._str = self._format_parsed_parts(self._drv, self._root, self._parts) or ''  # type: ignore
 			return self._str
 
-	def __repr__(self):  # noqa: D102
+	def __repr__(self):
 		return super().__repr__()
 
 	@classmethod
