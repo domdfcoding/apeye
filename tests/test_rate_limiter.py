@@ -17,7 +17,7 @@ from apeye.rate_limiter import HTTPCache, rate_limit
 
 if sys.version_info < (3, 7):
 	# 3rd party
-	from backports.datetime_fromisoformat import datetime_fromisoformat
+	from backports.datetime_fromisoformat import datetime_fromisoformat  # type: ignore[import]
 
 else:
 	datetime_fromisoformat = datetime.fromisoformat

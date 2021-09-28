@@ -49,7 +49,7 @@ from typing import Callable, Dict, MutableMapping, Optional, Tuple, Union
 from urllib.parse import unquote
 
 # 3rd party
-import requests
+from requests import PreparedRequest, Session
 from requests.auth import AuthBase
 from requests.structures import CaseInsensitiveDict
 from requests.utils import guess_json_utf
@@ -132,7 +132,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 	.. versionadded:: 0.6.0
 	"""
 
-	session: requests.Session
+	session: Session
 	"""
 	The underlying requests session.
 
@@ -161,7 +161,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 	def __init__(
 			self,
 			url: Union[str, URL] = '',
-			auth: Union[None, Tuple[str, str], AuthBase, Callable[[requests.Request], requests.Request]] = None,
+			auth: Union[None, Tuple[str, str], AuthBase, Callable[[PreparedRequest], PreparedRequest]] = None,
 			format: str = "json",  # noqa: A002  # pylint: disable=redefined-builtin
 			append_slash: bool = True,
 			session=None,
@@ -179,7 +179,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 			serializer = SerializerRegistry(default=format)
 
 		if session is None:
-			session = requests.session()
+			session = Session()
 
 		self.serializer = serializer
 		self.session = session
