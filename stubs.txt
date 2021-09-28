@@ -1,1 +1,3 @@
-git+https://github.com/repo-helper/appdirs-stubs
+appdirs-stubs
+types-requests
+types-PyYAML
