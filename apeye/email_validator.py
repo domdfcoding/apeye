@@ -249,7 +249,7 @@ def validate_email(
 
 	# If the email address has an ASCII form, add it.
 	if not ret.smtputf8:
-		ret.ascii_email = ret.ascii_local_part + '@' + ret.ascii_domain  # type: ignore
+		ret.ascii_email = ret.ascii_local_part + '@' + ret.ascii_domain  # type: ignore[operator]
 
 	# If the email address has an ASCII representation, then we assume it may be
 	# transmitted in ASCII (we can't assume SMTPUTF8 will be used on all hops to

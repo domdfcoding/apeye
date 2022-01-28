@@ -46,9 +46,9 @@ from typing import Any, Callable, Dict, Optional
 import appdirs
 # import codetiming
 import requests
-from cachecontrol import CacheControl, CacheControlAdapter  # type: ignore  # nodep
-from cachecontrol.caches.file_cache import FileCache  # type: ignore  # nodep
-from cachecontrol.heuristics import ExpiresAfter  # type: ignore  # nodep
+from cachecontrol import CacheControl, CacheControlAdapter  # type: ignore[import]
+from cachecontrol.caches.file_cache import FileCache  # type: ignore[import]
+from cachecontrol.heuristics import ExpiresAfter  # type: ignore[import]
 from domdf_python_tools.paths import PathPlus
 
 __all__ = [

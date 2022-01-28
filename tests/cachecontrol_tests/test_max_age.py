@@ -6,7 +6,7 @@
 
 # 3rd party
 import pytest
-from cachecontrol.cache import DictCache  # type: ignore
+from cachecontrol.cache import DictCache  # type: ignore[import]
 from requests import Session
 
 # this package

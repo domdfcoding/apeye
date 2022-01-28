@@ -131,8 +131,8 @@ class Cache:
 		self.load_cache(func)
 
 		@wraps(func)
-		def wrapper(*args, **kwargs):
-			kwargs: Dict[str, Any] = posargs2kwargs(args, posargs, kwargs)  # type: ignore
+		def wrapper(*args, **kwargs: Any):
+			kwargs = posargs2kwargs(args, posargs, kwargs)
 			key: str = json.dumps(kwargs)
 			response: Any
 

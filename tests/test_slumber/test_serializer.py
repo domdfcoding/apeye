@@ -56,7 +56,7 @@ class ResourceTestCase(unittest.TestCase):
 			try:
 
 				# 3rd party
-				import ruamel.yaml  # type: ignore
+				import ruamel.yaml  # type: ignore[import]
 
 				self._test_yaml_get_serializer()
 

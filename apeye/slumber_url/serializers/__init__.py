@@ -92,7 +92,7 @@ except ImportError:
 
 	except ImportError:
 
-		class YamlSerializer(Serializer):  # type: ignore
+		class YamlSerializer(Serializer):  # type: ignore[no-redef]
 			"""
 			Serializer for YAML data.
 

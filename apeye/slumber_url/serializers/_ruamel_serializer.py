@@ -34,7 +34,7 @@ from io import StringIO
 from typing import Any, Mapping, MutableMapping
 
 # 3rd party
-import ruamel.yaml as yaml  # type: ignore  # nodep
+import ruamel.yaml as yaml  # type: ignore[import]  # nodep
 
 # this package
 from apeye.slumber_url.serializers._abc import Serializer

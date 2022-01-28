@@ -43,7 +43,7 @@ def test_cache(testing_cache, capsys, run_number):
 
 	old_id = id(cached_function)
 
-	@testing_cache  # type: ignore
+	@testing_cache  # type: ignore[no-redef]
 	def cached_function(arg1: int, arg2: float, arg3: str):
 		print("Running 2nd function")
 		return (arg1**int(arg2)) * arg3

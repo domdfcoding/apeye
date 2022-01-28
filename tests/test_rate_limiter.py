@@ -9,7 +9,7 @@ from datetime import datetime
 # 3rd party
 import pytest
 import requests
-from pytest_httpserver import HTTPServer  # type: ignore
+from pytest_httpserver import HTTPServer
 from werkzeug import Request, Response
 
 # this package

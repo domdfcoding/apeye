@@ -11,11 +11,11 @@ from urllib.parse import parse_qs
 
 # 3rd party
 import pytest
-import pytest_httpserver.pytest_plugin  # type: ignore
+import pytest_httpserver.pytest_plugin
 import requests
 import werkzeug
 from coincidence import count, not_pypy
-from pytest_httpserver.httpserver import QueryMatcher  # type: ignore
+from pytest_httpserver.httpserver import QueryMatcher
 
 # this package
 from apeye.requests_url import RequestsURL, TrailingRequestsURL
@@ -149,32 +149,34 @@ class TestURLPath:
 	def test_division_errors_number(self, count: int):
 		if sys.version_info < (3, 8):
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not int"):
-				URLPath() / count  # type: ignore  # pylint: disable=expression-not-assigned
+				URLPath() / count  # type: ignore[operator]
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not float"):
-				URLPath() / float(count)  # type: ignore  # pylint: disable=expression-not-assigned
+				URLPath() / float(count)  # type: ignore[operator]
 		else:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and 'int'"):
-				URLPath() / count  # pylint: disable=expression-not-assigned
+				URLPath() / count
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and 'float'"):
-				URLPath() / float(count)  # pylint: disable=expression-not-assigned
+				URLPath() / float(count)
 
 	@pytest.mark.parametrize("obj", [[], (), {}, set(), pytest.raises, ABC])
 	def test_division_errors(self, obj):
 		if sys.version_info < (3, 8):
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not .*"):
-				URLPath() / obj  # pylint: disable=expression-not-assigned
+				URLPath() / obj
 		else:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and .*"):
-				URLPath() / obj  # pylint: disable=expression-not-assigned
+				URLPath() / obj
 
 	@pytest.mark.parametrize("obj", [1234, 12.34, [], (), {}, set(), pytest.raises, ABC])
 	def test_rtruediv_typerror(self, obj):
 		if sys.version_info < (3, 8):
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not .*"):
-				obj / URLPath()  # pylint: disable=expression-not-assigned
+				obj / URLPath()
 		else:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: .* and 'URLPath'"):
-				obj / URLPath()  # pylint: disable=expression-not-assigned
+				obj / URLPath()
+
+	# pylint: enable=expression-not-assigned
 
 	@pytest.mark.parametrize(
 			"base, other",
@@ -932,7 +934,7 @@ class TestSlumberURL(_TestURL):
 				)
 		l_url.timeout = 42
 		l_url.cert = "cert"
-		l_url.proxies = "proxies"  # type: ignore
+		l_url.proxies = "proxies"  # type: ignore[assignment]
 		l_url.allow_redirects = False
 		l_url.verify = "verify"
 		new_url = l_url / "news"

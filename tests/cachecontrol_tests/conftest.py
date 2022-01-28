@@ -11,7 +11,7 @@ from contextlib import suppress
 from pprint import pformat
 
 # 3rd party
-import cherrypy  # type: ignore
+import cherrypy  # type: ignore[import]
 import pytest
 
 
