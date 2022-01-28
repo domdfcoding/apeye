@@ -69,7 +69,8 @@ class YamlSerializer(Serializer):
 		:param data:
 		"""
 
-		return yaml.safe_load(str(data))
+		y = yaml.YAML(typ="safe", pure=True)
+		return y.load(str(data))
 
 	def dumps(self, data: Mapping[str, Any]) -> str:
 		"""
