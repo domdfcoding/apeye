@@ -875,7 +875,8 @@ class TestSlumberURL(_TestURL):
 		assert "Date" in headers
 		assert headers["Content-Type"] == "application/json; charset=utf-8"
 		assert headers["Server"] == "cloudflare"
-		assert headers["Content-Encoding"] == "gzip"
+		# TODO: On conda brotli is used -- is the required package installed there?
+		assert headers["Content-Encoding"] in {"gzip", "br"}
 
 	def test_options(self):
 		options = SlumberURL("https://readthedocs.org").options()
