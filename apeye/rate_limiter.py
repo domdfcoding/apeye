@@ -43,13 +43,14 @@ from functools import wraps
 from typing import Any, Callable, Dict, Optional
 
 # 3rd party
-import appdirs
-# import codetiming
+import platformdirs
 import requests
-from cachecontrol import CacheControl, CacheControlAdapter  # type: ignore[import]
-from cachecontrol.caches.file_cache import FileCache  # type: ignore[import]
-from cachecontrol.heuristics import ExpiresAfter  # type: ignore[import]
+from cachecontrol import CacheControl, CacheControlAdapter  # type: ignore[import]  # nodep
+from cachecontrol.caches.file_cache import FileCache  # type: ignore[import]  # nodep
+from cachecontrol.heuristics import ExpiresAfter  # type: ignore[import]  # nodep
 from domdf_python_tools.paths import PathPlus
+
+# import codetiming
 
 __all__ = [
 		"rate_limit",
@@ -176,7 +177,7 @@ class HTTPCache:
 
 	def __init__(self, app_name: str, expires_after: datetime.timedelta = datetime.timedelta(days=28)):
 		self.app_name: str = str(app_name)
-		self.cache_dir = PathPlus(appdirs.user_cache_dir(self.app_name))
+		self.cache_dir = PathPlus(platformdirs.user_cache_dir(self.app_name))
 		self.cache_dir.maybe_make(parents=True)
 
 		self.session: requests.Session = CacheControl(

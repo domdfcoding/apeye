@@ -42,7 +42,7 @@ from functools import wraps
 from typing import Any, Callable, Dict, Iterable, Optional
 
 # 3rd party
-import appdirs
+import platformdirs
 from domdf_python_tools.paths import PathPlus
 from domdf_python_tools.utils import posargs2kwargs
 
@@ -62,7 +62,7 @@ class Cache:
 
 	def __init__(self, app_name: str):
 		self.app_name: str = str(app_name)
-		self.cache_dir = PathPlus(appdirs.user_cache_dir(f"{self.app_name}_cache"))
+		self.cache_dir = PathPlus(platformdirs.user_cache_dir(f"{self.app_name}_cache"))
 		self.cache_dir.maybe_make(parents=True)
 
 		# Mapping of function names to their caches

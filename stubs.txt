@@ -1,3 +1,2 @@
-appdirs-stubs
 types-requests
 types-PyYAML
