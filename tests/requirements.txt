@@ -1,4 +1,4 @@
-git+https://github.com/domdfcoding/cherrypy@getargspec
+git+https://github.com/cherrypy/cherrypy
 backports-datetime-fromisoformat==1.0.0; python_version == "3.6"
 coincidence>=0.2.0
 coverage>=5.1
