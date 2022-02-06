@@ -1,6 +1,6 @@
 [build-system]
-requires = [ "setuptools>=40.6.0", "wheel>=0.34.2",]
-build-backend = "setuptools.build_meta"
+requires = [ "flit-core<4,>=3.2",]
+build-backend = "flit_core.buildapi"
 
 [project]
 name = "apeye"
@@ -8,7 +8,27 @@ version = "1.1.0"
 description = "Handy tools for working with URLs and APIs."
 readme = "README.rst"
 keywords = [ "api", "cache", "requests", "rest", "url",]
-dynamic = [ "requires-python", "classifiers", "dependencies",]
+dynamic = []
+requires-python = ">=3.6.1"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [ "domdf-python-tools>=2.6.0", "idna>=2.5", "platformdirs>=2.3.0", "requests>=2.24.0",]
 
 [[project.authors]]
 name = "Dominic Davis-Foster"
