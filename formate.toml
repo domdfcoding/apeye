@@ -44,6 +44,7 @@ known_third_party = [
     "idna",
     "importlib_metadata",
     "lockfile",
+    "platformdirs",
     "pytest",
     "pytest_cov",
     "pytest_httpserver",
