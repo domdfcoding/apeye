@@ -145,6 +145,8 @@ class TestURLPath:
 		assert value == expects
 		assert isinstance(value, URLPath)
 
+	# pylint: disable=expression-not-assigned
+
 	@count(100)
 	def test_division_errors_number(self, count: int):
 		if sys.version_info < (3, 8):
