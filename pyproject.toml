@@ -4,12 +4,11 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "apeye"
-version = "1.1.0"
+version = "1.2.0"
 description = "Handy tools for working with URLs and APIs."
 readme = "README.rst"
-keywords = [ "api", "cache", "requests", "rest", "url",]
-dynamic = []
 requires-python = ">=3.6.1"
+keywords = [ "api", "cache", "requests", "rest", "url",]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -29,6 +28,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [ "domdf-python-tools>=2.6.0", "idna>=2.5", "platformdirs>=2.3.0", "requests>=2.24.0",]
+dynamic = []
 
 [[project.authors]]
 name = "Dominic Davis-Foster"
