@@ -61,7 +61,8 @@ from typing import (
 		Tuple,
 		Type,
 		TypeVar,
-		Union
+		Union,
+		cast
 		)
 from urllib.parse import ParseResult, parse_qs, urlencode, urlparse, urlunparse
 
@@ -745,7 +746,7 @@ class Domain(NamedTuple):
 		"""
 
 		if not (self.suffix or self.subdomain) and _tld.IP_RE.match(self.domain):
-			return ipaddress.ip_address(self.domain)
+			return cast(ipaddress.IPv4Address, ipaddress.ip_address(self.domain))
 		return None
 
 	def __repr__(self) -> str:
