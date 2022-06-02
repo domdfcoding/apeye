@@ -244,7 +244,8 @@ from apeye.email_validator import validate_email
 						marks=pytest.mark.skipif(
 								sys.platform == "win32" and PYPY36,
 								reason="Fails due to unicode issue with filename",
-								)
+								),
+						id="unicode_1",
 						),
 				(
 						"उदाहरण.परीक्ष@domain.with.idn.tld",
