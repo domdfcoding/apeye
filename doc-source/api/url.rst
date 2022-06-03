@@ -2,8 +2,13 @@
 :mod:`apeye.url`
 ===================
 
+.. rst-class:: source-link
+
+	**Source code:** :source:`apeye_core/__init__.py`
+
+--------------------
+
 .. autosummary-widths:: 35/100
-	:html: 38/100
 
 .. automodule:: apeye.url
 	:no-members:
@@ -13,19 +18,17 @@
 .. autotypevar:: apeye.url.URLPathType
 
 .. latex:clearpage::
-.. autosummary-widths:: 1/2
 
 .. autoclass:: apeye.url.URL
-	:inherited-members:
+	:autoclass-alias: apeye_core.URL
 	:exclude-members: __lt__,__le__,__gt__,__ge__
-	:autosummary-exclude-members: __lt__,__le__,__gt__,__ge__
+	:inherited-members:
 
 .. latex:vspace:: 20px
-
 .. autosummary-widths:: 1/4
-	:html: 30/100
 
 .. autoclass:: apeye.url.URLPath
+	:autoclass-alias: apeye_core.URLPath
 	:exclude-members: match,as_posix,anchor,drive,__lt__,__le__,__gt__,__ge__,as_uri,__reduce__
 	:autosummary-exclude-members: match,as_posix,anchor,drive,__lt__,__le__,__gt__,__ge__,as_uri,__hash__,__new__,__weakref__,__reduce__
 	:inherited-members:

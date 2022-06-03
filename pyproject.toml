@@ -27,7 +27,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
-dependencies = [ "domdf-python-tools>=2.6.0", "idna>=2.5", "platformdirs>=2.3.0", "requests>=2.24.0",]
+dependencies = [ "apeye-core>=1.0.0b2", "domdf-python-tools>=2.6.0", "platformdirs>=2.3.0", "requests>=2.24.0",]
 dynamic = []
 
 [[project.authors]]
@@ -58,7 +58,7 @@ github_username = "domdfcoding"
 github_repository = "apeye"
 author = "Dominic Davis-Foster"
 project = "apeye"
-copyright = "2020-2021 Dominic Davis-Foster"
+copyright = "2020-2022 Dominic Davis-Foster"
 language = "en"
 package_root = "apeye"
 extensions = [
@@ -83,11 +83,9 @@ extensions = [
     "seed_intersphinx_mapping",
     "html_section",
     "local_extension",
-    "sphinx_toolbox_experimental.html_section",
-    "sphinx_toolbox_experimental.autosummary_widths",
-    "sphinx_toolbox_experimental.needspace",
-    "sphinx_toolbox_experimental.peps",
+    "sphinx_toolbox.more_autosummary.column_widths",
     "sphinx_toolbox_experimental.missing_xref",
+    "autoclass_alias",
 ]
 sphinxemoji_style = "twemoji"
 gitstamp_fmt = "%d %b %Y"

@@ -121,7 +121,6 @@ class SerializerRegistry:
 	:param serializers: List of :class:`~.Serializer` objects to use.
 
 	.. versionchanged:: 0.6.0  Moved to :mod:`apeye.slumber_url.serializers`
-	.. latex:clearpage::
 	"""
 
 	def __init__(self, default: str = "json", serializers: Optional[List[Serializer]] = None):

@@ -1,7 +1,7 @@
 # Configuration for 'repo_helper' (https://github.com/domdfcoding/repo_helper)
 ---
 modname: 'apeye'
-copyright_years: 2020-2021
+copyright_years: 2020-2022
 author: 'Dominic Davis-Foster'
 email: 'dominic@davis-foster.co.uk'
 username: 'domdfcoding'
@@ -53,11 +53,9 @@ extras_require:
 
 extra_sphinx_extensions:
  - local_extension
- - sphinx_toolbox_experimental.html_section
- - sphinx_toolbox_experimental.autosummary_widths
- - sphinx_toolbox_experimental.needspace
- - sphinx_toolbox_experimental.peps
+ - sphinx_toolbox.more_autosummary.column_widths
  - sphinx_toolbox_experimental.missing_xref
+ - autoclass_alias
 
 conda_extras:
  - limiter
@@ -67,6 +65,7 @@ manifest_additional:
 
 sphinx_conf_epilogue:
  - nitpicky = True
+ - needspace_amount = r"5\baselineskip"
  - "ignore_missing_xrefs = ["
  - "    '^requests.structures.CaseInsensitiveDict$',"
  - "    '^cachecontrol.adapter.CacheControlAdapter',"

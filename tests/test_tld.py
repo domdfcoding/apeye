@@ -33,9 +33,11 @@
 # stdlib
 from ipaddress import IPv4Address
 
+# 3rd party
+from apeye_core._tld import extract_tld
+
 # this package
 from apeye import Domain
-from apeye._tld import extract_tld
 
 
 def assert_extract(url, expected_domain_data, expected_ip_data=None):

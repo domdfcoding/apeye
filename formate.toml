@@ -32,6 +32,7 @@ use_parentheses = true
 remove_redundant_aliases = true
 default_section = "THIRDPARTY"
 known_third_party = [
+    "apeye_core",
     "appdirs",
     "backports_datetime_fromisoformat",
     "cachecontrol",
@@ -52,6 +53,7 @@ known_third_party = [
     "pytest_timeout",
     "pyyaml",
     "requests",
+    "setuptools",
     "tldextract",
 ]
 known_first_party = "apeye"

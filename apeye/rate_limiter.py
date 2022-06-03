@@ -7,6 +7,7 @@ Rate limiters for making calls to external APIs in a polite manner.
 .. extras-require:: limiter
 	:pyproject:
 
+.. latex:vspace:: -15px
 """
 #
 #  Copyright (c) 2020-2021 Dominic Davis-Foster <dominic@davis-foster.co.uk>
@@ -123,7 +124,7 @@ class RateLimitAdapter(CacheControlAdapter):
 	:param cacheable_methods:
 
 	.. autosummary-widths:: 7/16
-		:html: 4/10
+	.. latex:clearpage::
 	"""
 
 	def send(self, request: requests.PreparedRequest, cacheable_methods=None, **kwargs) -> requests.Response:
