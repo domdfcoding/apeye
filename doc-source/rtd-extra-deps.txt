@@ -1,0 +1,2 @@
+sphinx==4.0.3
+cachecontrol[filecache]>=0.12.6
