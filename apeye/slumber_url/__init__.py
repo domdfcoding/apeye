@@ -231,7 +231,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 				files=files,
 				headers=headers,
 				timeout=self.timeout,
-				allow_redirects=self.allow_redirects,
+				allow_redirects=self.allow_redirects,  # type: ignore[arg-type]
 				proxies=self.proxies,
 				verify=self.verify,
 				cert=self.cert,

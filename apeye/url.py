@@ -54,7 +54,7 @@ if TYPE_CHECKING:
 	pass
 elif "_APEYE_DOCS" in os.environ:
 
-	class URL(apeye_core.URL):
+	class URL(apeye_core.URL):  # noqa: D101
 		#: URL scheme specifier
 		scheme: str
 
