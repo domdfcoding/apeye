@@ -51,15 +51,18 @@ class AliasedClassDocumenter(generic_bases.GenericBasesClassDocumenter):
 
 		# one signature per line, indented by column
 		prefix = f'.. {domain}:{directive}:: '
-		for i, alias in enumerate(self.options["autoclass-alias"]):
-			self.add_line(f'{prefix}{alias}{sig}', sourcename)
+		for i, sig_line in enumerate(sig.split('\n')):
+			self.add_line(f'{prefix}{name}{sig_line}', sourcename)
 			if i == 0:
 				prefix = ' ' * len(prefix)
 
-		if self.objpath:
-			self.add_line(f'{prefix}{name}{sig}', sourcename)
-		else:
-			self.add_line(f'{prefix}{name}{sig}', sourcename)
+		# for i, alias in enumerate(self.options["autoclass-alias"]):
+		# 	self.add_line(f'{prefix}{alias}{sig}', sourcename)
+		# 	if i == 0:
+		# 		prefix = ' ' * len(prefix)
+		#
+		# if self.objpath:
+		# 	self.add_line(f'{prefix}{name}{sig}', sourcename)
 
 		if self.options.noindex:
 			self.add_line("   :noindex:", sourcename)
@@ -68,6 +71,8 @@ class AliasedClassDocumenter(generic_bases.GenericBasesClassDocumenter):
 			# Be explicit about the module, this is necessary since .. class::
 			# etc. don't support a prepended module name
 			self.add_line(f"   :module: {self.modname}", sourcename)
+
+		self.add_line(f"   :canonical: {self.options['autoclass-alias'][0]}", sourcename)
 
 		if self.analyzer and '.'.join(self.objpath) in self.analyzer.finals:
 			self.add_line("   :final:", sourcename)
@@ -103,16 +108,19 @@ class AliasedFunctionDocumenter(FunctionDocumenter):
 			raise NotImplementedError(sig)
 
 		# one signature per line, indented by column
-		prefix = f'.. {domain}:{directive}:: '
-		for i, alias in enumerate(self.options["autofunction-alias"]):
-			self.add_line(f'{prefix}{alias}{sig}', sourcename)
+		prefix = f".. {domain}:{directive}:: "
+		for i, sig_line in enumerate(sig.split('\n')):
+			self.add_line(f'{prefix}{name}{sig_line}', sourcename)
 			if i == 0:
 				prefix = ' ' * len(prefix)
 
-		if self.objpath:
-			self.add_line(f'{prefix}{name}{sig}', sourcename)
-		else:
-			self.add_line(f'{prefix}{name}{sig}', sourcename)
+		# for i, alias in enumerate(self.options["autofunction-alias"]):
+		# 	self.add_line(f'{prefix}{alias}{sig}', sourcename)
+		# 	if i == 0:
+		# 		prefix = ' ' * len(prefix)
+		#
+		# if self.objpath:
+		# 	self.add_line(f'{prefix}{name}{sig}', sourcename)
 
 		if self.options.noindex:
 			self.add_line("   :noindex:", sourcename)
@@ -121,6 +129,8 @@ class AliasedFunctionDocumenter(FunctionDocumenter):
 			# Be explicit about the module, this is necessary since .. class::
 			# etc. don't support a prepended module name
 			self.add_line(f"   :module: {self.modname}", sourcename)
+
+		self.add_line(f"   :canonical: {self.options['autofunction-alias'][0]}", sourcename)
 
 		if inspect.iscoroutinefunction(self.object):
 			self.add_line("   :async:", sourcename)

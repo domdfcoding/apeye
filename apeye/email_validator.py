@@ -51,19 +51,12 @@ __all__ = [
 		]
 
 EmailSyntaxError = email_validator.EmailSyntaxError
-EmailSyntaxError.__module__ = "apeye.email_validator"
-
 ValidatedEmail = email_validator.ValidatedEmail
 ValidatedEmail.__module__ = "apeye.email_validator"
 
 validate_email = email_validator.validate_email
-validate_email.__module__ = "apeye.email_validator"
-
 validate_email_local_part = email_validator.validate_email_local_part
-validate_email_local_part.__module__ = "apeye.email_validator"
-
 validate_email_domain_part = email_validator.validate_email_domain_part
-validate_email_domain_part.__module__ = "apeye.email_validator"
 
 main = email_validator.main
 

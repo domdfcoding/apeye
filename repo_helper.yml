@@ -45,6 +45,7 @@ keywords:
 
 tox_unmanaged:
  - testenv
+ - testenv:docs
 
 extras_require:
  limiter:
