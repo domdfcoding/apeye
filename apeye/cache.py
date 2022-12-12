@@ -132,7 +132,7 @@ class Cache:
 
 		@wraps(func)
 		def wrapper(*args, **kwargs: Any):
-			kwargs = posargs2kwargs(args, posargs, kwargs)
+			kwargs: Dict[str, Any] = posargs2kwargs(args, posargs, kwargs)  # type: ignore
 			key: str = json.dumps(kwargs)
 			response: Any
 

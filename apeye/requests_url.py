@@ -30,7 +30,7 @@ Extension of :class:`~apeye.url.URL` with support for interacting with the websi
 
 # stdlib
 import sys
-from typing import IO, Any, Iterable, Mapping, MutableMapping, Optional, Tuple, TypeVar, Union
+from typing import IO, Any, Iterable, List, Mapping, MutableMapping, Optional, Tuple, TypeVar, Union
 
 # 3rd party
 import requests
@@ -41,7 +41,8 @@ from apeye.url import URL
 __all__ = ["RequestsURL", "TrailingRequestsURL", "_R"]
 
 _ParamsMappingValueType = Union[str, bytes, int, float, Iterable[Union[str, bytes, int, float]]]
-_Data = Union[None, str, bytes, MutableMapping[str, Any], Iterable[Tuple[str, Optional[str]]], IO]
+# _Data = Union[None, str, bytes, MutableMapping[str, Any], Iterable[Tuple[str, Optional[str]]], IO]
+_Data = Union[None, str, bytes, MutableMapping[str, Any], List[Tuple[str, Optional[str]]], Tuple[Tuple[str, Optional[str]]], IO]
 _ParamsType = Union[
 	Mapping[Union[str, bytes, int, float], _ParamsMappingValueType],
 	Union[str, bytes],
