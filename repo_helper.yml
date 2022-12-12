@@ -1,4 +1,4 @@
-# Configuration for 'repo_helper' (https://github.com/domdfcoding/repo_helper)
+# Configuration for 'repo_helper' (https://github.com/repo-helper/repo_helper)
 ---
 modname: 'apeye'
 copyright_years: 2020-2022
@@ -33,10 +33,10 @@ python_versions:
  - pypy39
 
 classifiers:
- - 'Development Status :: 4 - Beta'
+ - 'Development Status :: 5 - Production/Stable'
  - 'Intended Audience :: Developers'
- - 'Topic :: Software Development :: Libraries :: Python Modules'
  - "Topic :: Internet :: WWW/HTTP"
+ - 'Topic :: Software Development :: Libraries :: Python Modules'
 
 keywords:
  - api
@@ -50,9 +50,9 @@ tox_unmanaged:
  - testenv:docs
 
 extras_require:
- limiter:
-  - cachecontrol[filecache]>=0.12.6
-  - lockfile>=0.12.2
+  limiter:
+   - cachecontrol[filecache]>=0.12.6
+   - lockfile>=0.12.2
 
 extra_sphinx_extensions:
  - local_extension

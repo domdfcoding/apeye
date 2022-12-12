@@ -10,7 +10,7 @@ readme = "README.rst"
 requires-python = ">=3.6.1"
 keywords = [ "api", "cache", "requests", "rest", "url",]
 classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)",
     "Operating System :: OS Independent",
@@ -139,7 +139,7 @@ autodoc_exclude_members = [
 
 [tool.whey]
 base-classifiers = [
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Topic :: Internet :: WWW/HTTP",
     "Topic :: Software Development :: Libraries :: Python Modules",
