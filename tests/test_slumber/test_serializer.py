@@ -48,7 +48,7 @@ class ResourceTestCase(unittest.TestCase):
 	def test_yaml_get_serializer(self):
 		try:
 			# 3rd party
-			import yaml
+			import yaml  # noqa: F401
 
 			self._test_yaml_get_serializer()
 
@@ -56,7 +56,7 @@ class ResourceTestCase(unittest.TestCase):
 			try:
 
 				# 3rd party
-				import ruamel.yaml  # type: ignore[import]
+				import ruamel.yaml  # type: ignore[import]  # noqa: F401
 
 				self._test_yaml_get_serializer()
 

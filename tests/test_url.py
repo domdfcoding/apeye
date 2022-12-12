@@ -151,14 +151,14 @@ class TestURLPath:
 	def test_division_errors_number(self, count: int):
 		if sys.version_info < (3, 8):
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not int"):
-				URLPath() / count  # type: ignore[operator]
+				URLPath() / count
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not float"):
-				URLPath() / float(count)  # type: ignore[operator]
+				URLPath() / float(count)
 		else:
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and 'int'"):
-				URLPath() / count
+				URLPath() / count  # type: ignore[operator]
 			with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: 'URLPath' and 'float'"):
-				URLPath() / float(count)
+				URLPath() / float(count)  # type: ignore[operator]
 
 	@pytest.mark.parametrize("obj", [[], (), {}, set(), pytest.raises, ABC])
 	def test_division_errors(self, obj):
