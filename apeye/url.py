@@ -4,7 +4,7 @@
 """
 :mod:`pathlib`-like approach to URLs.
 
-.. versionchanged:: 1.0.0
+.. versionchanged:: 0.2.0
 
 	:class:`~apeye.slumber_url.SlumberURL` and :class:`~apeye.requests_url.RequestsURL`
 	moved to :mod:`apeye.slumber_url` and :mod:`apeye.requests_url` respectively.
@@ -13,8 +13,6 @@
 
 	The classes in this module can instead be imported from the
 	`apeye_core <https://pypi.org/project/apeye-core/>`_ module instead.
-
-.. TODO:: Foo
 """
 #
 #  Copyright © 2020-2021 Dominic Davis-Foster <dominic@davis-foster.co.uk>
