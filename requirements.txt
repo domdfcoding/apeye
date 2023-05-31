@@ -1,5 +1,6 @@
 # TODO: remove requests cap once new CacheControl released
 apeye-core>=1.0.0b2
+cryptography<40; implementation_name == "pypy" and python_version <= "3.7"
 domdf-python-tools>=2.6.0
 platformdirs>=2.3.0
 requests<2.30.0,>=2.24.0
