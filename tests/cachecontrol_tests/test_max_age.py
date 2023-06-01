@@ -6,7 +6,7 @@
 
 # 3rd party
 import pytest
-from cachecontrol.cache import DictCache  # type: ignore[import]
+from cachecontrol.cache import DictCache
 from requests import Session
 
 # this package
@@ -31,7 +31,11 @@ class TestMaxAge:
 		self.url = url
 		self.cache = DictCache()
 		sess = Session()
-		sess.mount("http://", RateLimitAdapter(self.cache, serializer=NullSerializer()))
+		adapter = RateLimitAdapter(
+				self.cache,
+				serializer=NullSerializer()  # type: ignore[arg-type]  # NullSerializer is not the right type
+				)
+		sess.mount("http://", adapter)
 		return sess
 
 	def test_client_max_age_0(self, sess):
@@ -65,6 +69,8 @@ class TestMaxAge:
 		# now lets grab one that forces a new request b/c the cache
 		# has expired. To do that we'll inject a new time value.
 		resp = self.cache.get(self.url)
-		resp.headers["date"] = "Tue, 15 Nov 1994 08:12:31 GMT"
+		assert resp is not None
+		resp.headers[  # type: ignore[attr-defined]  # something is wrong in CacheControl's new type hints
+				"date"] = "Tue, 15 Nov 1994 08:12:31 GMT"
 		r = sess.get(self.url)
 		assert not r.from_cache

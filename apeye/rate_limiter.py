@@ -36,19 +36,20 @@ Rate limiters for making calls to external APIs in a polite manner.
 # stdlib
 import datetime
 import logging
+import os
 import shutil
 import time
 import warnings
 import zlib
 from functools import wraps
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Collection, Dict, Optional
 
 # 3rd party
 import platformdirs
 import requests
-from cachecontrol import CacheControl, CacheControlAdapter  # type: ignore[import]  # nodep
-from cachecontrol.caches.file_cache import FileCache  # type: ignore[import]  # nodep
-from cachecontrol.heuristics import ExpiresAfter  # type: ignore[import]  # nodep
+from cachecontrol import CacheControl, CacheControlAdapter  # nodep
+from cachecontrol.caches.file_cache import FileCache  # nodep
+from cachecontrol.heuristics import ExpiresAfter  # nodep
 from domdf_python_tools.paths import PathPlus
 
 # import codetiming
@@ -127,7 +128,12 @@ class RateLimitAdapter(CacheControlAdapter):
 	.. latex:clearpage::
 	"""
 
-	def send(self, request: requests.PreparedRequest, cacheable_methods=None, **kwargs) -> requests.Response:
+	def send(  # type: ignore[override]  # Latest cachecontrol has changed the signature to put cacheable_methods last
+		self,
+		request: requests.PreparedRequest,
+		cacheable_methods: Optional[Collection[str]] = None,
+		**kwargs,
+		) -> requests.Response:
 		r"""
 		Send a request.
 
@@ -135,7 +141,7 @@ class RateLimitAdapter(CacheControlAdapter):
 
 		:param request: The :class:`requests.PreparedRequest` being sent.
 		:param cacheable_methods:
-		:param \*\*kwargs: Additional arguments take by :meth:`requests.adapters.HTTPAdapter.send`.
+		:param \*\*kwargs: Additional arguments taken by :meth:`requests.adapters.HTTPAdapter.send` (e.g. ``timeout``).
 		"""
 
 		cacheable = cacheable_methods or self.cacheable_methods
@@ -183,7 +189,7 @@ class HTTPCache:
 
 		self.session: requests.Session = CacheControl(
 				sess=requests.Session(),
-				cache=FileCache(self.cache_dir),
+				cache=FileCache(os.fspath(self.cache_dir)),
 				heuristic=ExpiresAfter(
 						days=expires_after.days,
 						seconds=expires_after.seconds,
