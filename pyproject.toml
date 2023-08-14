@@ -28,13 +28,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
-dependencies = [
-    "apeye-core>=1.0.0b2",
-    'cryptography<40; implementation_name == "pypy" and python_version <= "3.7"',
-    "domdf-python-tools>=2.6.0",
-    "platformdirs>=2.3.0",
-    "requests>=2.24.0",
-]
+dependencies = [ "apeye-core>=1.0.0b2", "domdf-python-tools>=2.6.0", "platformdirs>=2.3.0", "requests>=2.24.0",]
 dynamic = []
 
 [[project.authors]]
@@ -167,9 +161,6 @@ show_error_codes = true
 
 [tool.snippet-fmt]
 directives = [ "code-block",]
-
-[tool.dep_checker]
-allowed_unused = [ "cryptography",]
 
 [tool.dependency-dash."requirements.txt"]
 order = 10
