@@ -28,7 +28,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
-dependencies = [ "apeye-core>=1.0.0b2", "domdf-python-tools>=2.6.0", "platformdirs>=2.3.0", "requests>=2.24.0",]
+dependencies = [ "apeye-core>=1.1.4", "domdf-python-tools>=2.6.0", "platformdirs>=2.3.0", "requests>=2.24.0",]
 dynamic = []
 
 [[project.authors]]
@@ -46,8 +46,16 @@ Homepage = "https://github.com/domdfcoding/apeye"
 Documentation = "https://apeye.readthedocs.io/en/latest"
 
 [project.optional-dependencies]
-limiter = [ "cachecontrol[filecache]>=0.12.6", "lockfile>=0.12.2",]
-all = [ "cachecontrol[filecache]>=0.12.6", "lockfile>=0.12.2",]
+limiter = [
+    "cachecontrol[filecache]>=0.12.6",
+    'filelock>=3.8.0; python_version >= "3.7"',
+    'lockfile>=0.12.2; python_version < "3.7"',
+]
+all = [
+    "cachecontrol[filecache]>=0.12.6",
+    'filelock>=3.8.0; python_version >= "3.7"',
+    'lockfile>=0.12.2; python_version < "3.7"',
+]
 
 [tool.mkrecipe]
 conda-channels = [ "conda-forge", "domdfcoding",]
