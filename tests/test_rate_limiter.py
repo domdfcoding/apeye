@@ -1,10 +1,10 @@
 # stdlib
+import datetime
 import json
 import logging
 import re
 import sys
 import time
-from datetime import datetime
 
 # 3rd party
 import pytest
@@ -20,7 +20,7 @@ if sys.version_info < (3, 7):
 	from backports.datetime_fromisoformat import datetime_fromisoformat
 
 else:
-	datetime_fromisoformat = datetime.fromisoformat
+	datetime_fromisoformat = datetime.datetime.fromisoformat
 
 logging.basicConfig()
 
@@ -71,7 +71,7 @@ def timeserver(httpserver: HTTPServer):
 	def time_handler(request: Request):
 		time.sleep(1)
 
-		now = datetime.utcnow()
+		now = datetime.datetime.now(tz=datetime.UTC)
 		headers = {
 				"Cache-Control": "max-age=0, private, must-revalidate",
 				"Date": now.strftime("%a, %d %B %Y %H:%M:%S GMT"),
