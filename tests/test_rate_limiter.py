@@ -71,7 +71,11 @@ def timeserver(httpserver: HTTPServer):
 	def time_handler(request: Request):
 		time.sleep(1)
 
-		now = datetime.datetime.now(tz=datetime.UTC)
+		if sys.version_info >= (3, 11):
+			now = datetime.datetime.now(tz=datetime.UTC)
+		else:
+			now = datetime.datetime.utcnow()
+
 		headers = {
 				"Cache-Control": "max-age=0, private, must-revalidate",
 				"Date": now.strftime("%a, %d %B %Y %H:%M:%S GMT"),
