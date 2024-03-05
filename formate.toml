@@ -56,4 +56,4 @@ known_third_party = [
     "setuptools",
     "tldextract",
 ]
-known_first_party = "apeye"
+known_first_party = [ "apeye",]
