@@ -68,4 +68,4 @@ def test_docstrings(module, monkeypatch):
 	print(indent(stdout.getvalue(), "  "))
 
 	if runner.failures:
-		pytest.fail(msg=f"{runner.failures} tests failed")
+		pytest.fail(f"{runner.failures} tests failed")
