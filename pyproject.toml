@@ -32,12 +32,12 @@ classifiers = [
 dependencies = [ "apeye-core>=1.1.4", "domdf-python-tools>=2.6.0", "platformdirs>=2.3.0", "requests>=2.24.0",]
 dynamic = []
 
+[project.license]
+file = "LICENSE"
+
 [[project.authors]]
 name = "Dominic Davis-Foster"
 email = "dominic@davis-foster.co.uk"
-
-[project.license]
-file = "LICENSE"
 
 [project.urls]
 Homepage = "https://github.com/domdfcoding/apeye"
