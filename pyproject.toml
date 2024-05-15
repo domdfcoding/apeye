@@ -29,8 +29,8 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Typing :: Typed",
 ]
-dependencies = [ "apeye-core>=1.1.4", "domdf-python-tools>=2.6.0", "platformdirs>=2.3.0", "requests>=2.24.0",]
 dynamic = []
+dependencies = [ "apeye-core>=1.1.4", "domdf-python-tools>=2.6.0", "platformdirs>=2.3.0", "requests>=2.24.0",]
 
 [project.license]
 file = "LICENSE"
