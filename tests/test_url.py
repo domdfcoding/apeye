@@ -1005,7 +1005,7 @@ class TestRequestsURL(_TestURL):
 			"url, expected",
 			[
 					("https://github.com/domdfcoding/PyMassSpec", "https://github.com/PyMassSpec/PyMassSpec"),
-					("http://pypi.io/p/domdf_python_tools", "https://pypi.org/project/domdf-python-tools"),
+					("https://pypi.org/simple/domdf_python_tools", "https://pypi.org/simple/domdf-python-tools"),
 					]
 			)
 	def test_resolve(self, url: str, expected: str):
