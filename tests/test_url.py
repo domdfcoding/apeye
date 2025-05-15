@@ -878,11 +878,11 @@ class TestSlumberURL(_TestURL):
 		assert headers["Content-Type"] == "application/json; charset=utf-8"
 		assert headers["Server"] == "cloudflare"
 		# TODO: On conda brotli is used -- is the required package installed there?
-		assert headers["Content-Encoding"] in {"gzip", "br"}
+		assert headers["Content-Encoding"] in {"zstd", "gzip", "br"}
 
 	def test_options(self):
-		options = SlumberURL("https://readthedocs.org").options()
-		assert options == "GET, HEAD, OPTIONS"
+		options = SlumberURL("https://bot.repo-helper.uk").options()
+		assert options == "OPTIONS, HEAD, POST, GET"
 
 	def test_post(self):
 		assert self.base / "posts" == URL("https://jsonplaceholder.typicode.com/posts")
