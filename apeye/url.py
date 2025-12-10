@@ -81,6 +81,5 @@ URLPath.__module__ = "apeye.url"
 URL.__module__ = "apeye.url"
 Domain.__module__ = "apeye.url"
 
-if sys.version_info >= (3, 7):
-	URLType.__module__ = "apeye.url"
-	URLPathType.__module__ = "apeye.url"
+URLType.__module__ = "apeye.url"
+URLPathType.__module__ = "apeye.url"
