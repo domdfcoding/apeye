@@ -56,7 +56,7 @@ class ResourceTestCase(unittest.TestCase):
 			try:
 
 				# 3rd party
-				import ruamel.yaml  # type: ignore[import]  # noqa: F401
+				import ruamel.yaml  # type: ignore[import-not-found]  # noqa: F401
 
 				self._test_yaml_get_serializer()
 

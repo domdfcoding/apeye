@@ -38,25 +38,25 @@ def sess(url, request):
 
 class TestSessionActions:
 
-	def test_get_caches(self, url, sess):
+	def test_get_caches(self, url: str, sess: Session):
 		r2 = sess.get(url)
-		assert r2.from_cache is True
+		assert r2.from_cache is True  # type: ignore[attr-defined]
 
-	def test_get_with_no_cache_does_not_cache(self, url, sess):
+	def test_get_with_no_cache_does_not_cache(self, url: str, sess: Session):
 		r2 = sess.get(url, headers={"Cache-Control": "no-cache"})
-		assert not r2.from_cache
+		assert not r2.from_cache  # type: ignore[attr-defined]
 
-	def test_put_invalidates_cache(self, url, sess):
+	def test_put_invalidates_cache(self, url: str, sess: Session):
 		r2 = sess.put(url, data={"foo": "bar"})
 		sess.get(url)
-		assert not r2.from_cache
+		assert not r2.from_cache  # type: ignore[attr-defined]
 
-	def test_patch_invalidates_cache(self, url, sess):
+	def test_patch_invalidates_cache(self, url: str, sess: Session):
 		r2 = sess.patch(url, data={"foo": "bar"})
 		sess.get(url)
-		assert not r2.from_cache
+		assert not r2.from_cache  # type: ignore[attr-defined]
 
-	def test_delete_invalidates_cache(self, url, sess):
+	def test_delete_invalidates_cache(self, url: str, sess: Session):
 		r2 = sess.delete(url)
 		sess.get(url)
-		assert not r2.from_cache
+		assert not r2.from_cache  # type: ignore[attr-defined]
