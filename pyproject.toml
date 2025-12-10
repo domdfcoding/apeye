@@ -158,7 +158,7 @@ license-key = "LGPL-3.0-or-later"
 additional-files = [ "include apeye/public_suffix_list.dat",]
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 namespace_packages = true
 check_untyped_defs = true
 warn_unused_ignores = true
