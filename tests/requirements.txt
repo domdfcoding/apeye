@@ -1,4 +1,3 @@
-backports-datetime-fromisoformat==1.0.0; python_version == "3.6"
 cherrypy>=18.8.0
 coincidence>=0.2.0
 coverage>=5.1

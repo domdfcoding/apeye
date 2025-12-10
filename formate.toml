@@ -29,7 +29,6 @@ remove_redundant_aliases = true
 default_section = "THIRDPARTY"
 known_third_party = [
     "apeye_core",
-    "backports_datetime_fromisoformat",
     "cachecontrol",
     "cherrypy",
     "coincidence",
