@@ -35,7 +35,6 @@
 
 # stdlib
 import os
-import sys
 from typing import TYPE_CHECKING, Dict, List, Optional
 
 # 3rd party

@@ -91,10 +91,11 @@ def rate_limit(min_time: float = 0.2, logger: Optional[logging.Logger] = None) -
 		waiting_message = f"{function_name}: Waiting %.2f seconds."
 
 		@wraps(func)
-		def rate_limit_wrapper(*args, **kwargs):
+		def rate_limit_wrapper(*args, **kwargs) -> Any:
 			now = datetime.datetime.now()
 
-			time_since_last_run = (now - rate_limit_wrapper.last_run_time).total_seconds()  # type: ignore
+			last_run_time = rate_limit_wrapper.last_run_time  # type: ignore[attr-defined]
+			time_since_last_run = (now - last_run_time).total_seconds()
 			logger_.debug(last_ran_message % time_since_last_run)
 
 			if time_since_last_run < min_time:
@@ -102,11 +103,11 @@ def rate_limit(min_time: float = 0.2, logger: Optional[logging.Logger] = None) -
 				logger_.debug(waiting_message % wait_time)
 				time.sleep(wait_time)
 
-			rate_limit_wrapper.last_run_time = now  # type: ignore
+			rate_limit_wrapper.last_run_time = now  # type: ignore[attr-defined]
 			res = func(*args, **kwargs)
 			return res
 
-		rate_limit_wrapper.last_run_time = datetime.datetime.fromtimestamp(0)  # type: ignore
+		rate_limit_wrapper.last_run_time = datetime.datetime.fromtimestamp(0)  # type: ignore[attr-defined]
 
 		return rate_limit_wrapper
 

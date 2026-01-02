@@ -45,11 +45,11 @@ REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and
 # stdlib
 import copy
 import sys
-from typing import Callable, Dict, MutableMapping, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, MutableMapping, Optional, Set, Tuple, Union, cast
 from urllib.parse import unquote
 
 # 3rd party
-from requests import PreparedRequest, Session
+from requests import PreparedRequest, Response, Session
 from requests.auth import AuthBase
 from requests.structures import CaseInsensitiveDict
 from requests.utils import guess_json_utf
@@ -164,7 +164,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 			auth: Union[None, Tuple[str, str], AuthBase, Callable[[PreparedRequest], PreparedRequest]] = None,
 			format: str = "json",  # noqa: A002  # pylint: disable=redefined-builtin
 			append_slash: bool = True,
-			session=None,
+			session: Optional[Session] = None,
 			serializer: Optional[SerializerRegistry] = None,
 			*,
 			timeout: Union[None, float, Tuple[float, float], Tuple[float, None]] = None,
@@ -212,7 +212,13 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 
 		return url
 
-	def _request(self, method, data=None, files=None, params=None):
+	def _request(  # noqa: MAN001
+		self,
+		method: str,
+		data=None,
+		files=None,
+		params: Optional[Dict[str, Any]] = None,
+		) -> Response:
 		serializer = self.serializer
 		url = self.url()
 
@@ -256,13 +262,13 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 
 		return resp
 
-	def _try_to_serialize_response(self, resp):
+	def _try_to_serialize_response(self, resp: Response) -> Union[Dict[str, Any], bytes, None]:
 		s = self.serializer
 		if resp.status_code in [204, 205]:
-			return
+			return None
 
 		if resp.headers.get("content-type", None) and resp.content:
-			content_type = resp.headers.get("content-type").split(';')[0].strip()
+			content_type = resp.headers.get("content-type", '').split(';')[0].strip()
 
 			try:
 				stype = s.get_serializer(content_type=content_type)
@@ -272,20 +278,22 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 			if isinstance(resp.content, bytes):
 				try:
 					encoding = guess_json_utf(resp.content)
-					return stype.loads(resp.content.decode(encoding))
+					return cast(Dict[str, Any], stype.loads(resp.content.decode(encoding)))
 				except Exception:
 					return resp.content
-			return stype.loads(resp.content)
+			return cast(Dict[str, Any], stype.loads(resp.content))
 		else:
 			return resp.content
 
-	def _process_response(self, resp):
+	def _process_response(self, resp: Response) -> Dict[str, Any]:
 		# TODO: something to expose headers and status
 
 		if 200 <= resp.status_code <= 299:
-			return self._try_to_serialize_response(resp)
+			serialised_response = self._try_to_serialize_response(resp)
+			# TODO: handle invalid responses
+			return cast(Dict[str, Any], serialised_response)
 		else:
-			return  # @@@ We should probably do some sort of error here? (Is this even possible?)
+			return None  # type: ignore[return-value]  # TODO: We should probably do some sort of error here? (Is this even possible?)
 
 	def get(self, **params) -> Dict:
 		"""
@@ -299,7 +307,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		resp = self._request("GET", params=params)
 		return self._process_response(resp)
 
-	def post(self, data: _Data = None, files=None, **params) -> Dict:
+	def post(self, data: _Data = None, files=None, **params) -> Dict:  # noqa: MAN001
 		"""
 		Perform a POST request using `Slumber <https://slumber.readthedocs.io>`__.
 
@@ -321,7 +329,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		resp = self._request("POST", data=data, files=files, params=params)
 		return self._process_response(resp)
 
-	def patch(self, data=None, files=None, **params) -> Dict:
+	def patch(self, data=None, files=None, **params) -> Dict:  # noqa: MAN001
 		"""
 		Perform a PATCH request using `Slumber <https://slumber.readthedocs.io>`__.
 
@@ -343,7 +351,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		resp = self._request("PATCH", data=data, files=files, params=params)
 		return self._process_response(resp)
 
-	def put(self, data=None, files=None, **params) -> Dict:
+	def put(self, data=None, files=None, **params) -> Dict:  # noqa: MAN001
 		"""
 		Perform a PUT request using `Slumber <https://slumber.readthedocs.io>`__.
 
@@ -386,7 +394,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		# 	return False
 		return 200 <= resp.status_code <= 299
 
-	def __del__(self):  # pragma: no cover
+	def __del__(self) -> None:  # pragma: no cover
 		"""
 		Attempt to close session when garbage collected to avoid leaving connections open.
 		"""
@@ -410,7 +418,10 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		.. versionchanged:: 2.0.0  Now returns a set of strings, rather than a string with values separated by commas.
 		"""
 
-		return set(v.strip().upper() for v in self.session.options(str(self.base_url), **kwargs).headers.get("Allow", '').split(","))
+		return {
+				v.strip().upper()
+				for v in self.session.options(str(self.base_url), **kwargs).headers.get("Allow", '').split(',')
+				}
 
 	def head(self, **kwargs) -> CaseInsensitiveDict:
 		"""
@@ -425,7 +436,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 
 		return self.session.head(str(self.base_url), **kwargs).headers
 
-	def __truediv__(self, other):
+	def __truediv__(self, other) -> "SlumberURL":  # noqa: MAN001
 		"""
 		Construct a new :class:`~apeye.url.URL` object for the given child of this :class:`~apeye.url.URL`.
 		"""

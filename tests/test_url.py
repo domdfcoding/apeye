@@ -6,7 +6,7 @@ import sys
 from abc import ABC, abstractmethod
 from ipaddress import IPv4Address
 from textwrap import dedent
-from typing import Type
+from typing import Any, Callable, Optional, Sequence, Tuple, Type, Union
 from urllib.parse import parse_qs
 
 # 3rd party
@@ -25,7 +25,7 @@ from apeye.url import URL, Domain, URLPath
 
 class MyPathLike(os.PathLike):
 
-	def __fspath__(self):
+	def __fspath__(self) -> str:
 		return "/python"
 
 
@@ -75,7 +75,7 @@ class TestURLPath:
 					"/programmes/b006qtlx/episodes/player",
 					]
 			)
-	def test_str(self, value):
+	def test_str(self, value: str):
 		assert str(URLPath(value)) == value
 
 	@pytest.mark.parametrize(
@@ -87,11 +87,11 @@ class TestURLPath:
 					("/programmes/b006qtlx/episodes/player", "URLPath('/programmes/b006qtlx/episodes/player')"),
 					]
 			)
-	def test_repr(self, value, expects):
+	def test_repr(self, value: str, expects: str):
 		assert repr(URLPath(value)) == expects
 
 	@pytest.mark.parametrize("method", [URLPath().as_uri])
-	def test_notimplemented(self, method):
+	def test_notimplemented(self, method: Callable):
 		with pytest.raises(NotImplementedError):
 			method()
 
@@ -104,7 +104,7 @@ class TestURLPath:
 					("/programmes" / URLPath("b006qtlx"), URLPath("/programmes/b006qtlx")),
 					]
 			)
-	def test_division(self, value, expects):
+	def test_division(self, value: Union[str, URLPath], expects: URLPath):
 		assert value == expects
 		assert isinstance(value, URLPath)
 
@@ -125,7 +125,7 @@ class TestURLPath:
 							),
 					]
 			)
-	def test_division_pathlike(self, value, expects):
+	def test_division_pathlike(self, value: pathlib.PurePath, expects: pathlib.PurePath):
 		assert value == expects
 		assert isinstance(value, URLPath)
 
@@ -141,7 +141,7 @@ class TestURLPath:
 							),
 					]
 			)
-	def test_joinpath(self, value, expects):
+	def test_joinpath(self, value: URLPath, expects: URLPath):
 		assert value == expects
 		assert isinstance(value, URLPath)
 
@@ -161,7 +161,7 @@ class TestURLPath:
 				URLPath() / float(count)  # type: ignore[operator]
 
 	@pytest.mark.parametrize("obj", [[], (), {}, set(), pytest.raises, ABC])
-	def test_division_errors(self, obj):
+	def test_division_errors(self, obj: Any):
 		if sys.version_info < (3, 8):
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not .*"):
 				URLPath() / obj
@@ -170,7 +170,7 @@ class TestURLPath:
 				URLPath() / obj
 
 	@pytest.mark.parametrize("obj", [1234, 12.34, [], (), {}, set(), pytest.raises, ABC])
-	def test_rtruediv_typerror(self, obj):
+	def test_rtruediv_typerror(self, obj: Any):
 		if sys.version_info < (3, 8):
 			with pytest.raises(TypeError, match=r"expected str, bytes or os.PathLike object, not .*"):
 				obj / URLPath()
@@ -191,7 +191,7 @@ class TestURLPath:
 					(URLPath("news/sport"), pathlib.PurePosixPath("news")),
 					]
 			)
-	def test_relative_to(self, base: URLPath, other):
+	def test_relative_to(self, base: URLPath, other: Union[str, pathlib.PurePosixPath]):
 		assert base.relative_to(other) == URLPath("sport")
 		assert isinstance(base.relative_to(other), URLPath)
 
@@ -232,11 +232,11 @@ class _TestURL(ABC):
 							),
 					]
 			)
-	def test_creation(self, url, scheme, netloc, path):
-		url = self._class(url)
-		assert url.scheme == scheme
-		assert url.netloc == netloc
-		assert url.path == path
+	def test_creation(self, url: str, scheme: str, netloc: str, path: URLPath):
+		url_p = self._class(url)
+		assert url_p.scheme == scheme
+		assert url_p.netloc == netloc
+		assert url_p.path == path
 
 	@pytest.mark.parametrize(
 			"url",
@@ -250,7 +250,7 @@ class _TestURL(ABC):
 					"ftp://127.0.0.1/programmes/b006qtlx/episodes/player",
 					]
 			)
-	def test_str(self, url):
+	def test_str(self, url: str):
 		assert str(self._class(url)) == url
 
 	def test_division(self):
@@ -328,12 +328,12 @@ class _TestURL(ABC):
 			self._class() / float(count)  # pylint: disable=expression-not-assigned
 
 	@pytest.mark.parametrize("obj", [[], (), {}, set(), pytest.raises, ABC])
-	def test_division_errors(self, obj):
+	def test_division_errors(self, obj: Any):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: '.*' and .*"):
 			self._class() / obj  # pylint: disable=expression-not-assigned
 
 	@pytest.mark.parametrize("obj", [1234, 12.34, "abcdefg", [], (), {}, set(), pytest.raises, ABC])
-	def test_rtruediv_typerror(self, obj):
+	def test_rtruediv_typerror(self, obj: Any):
 		with pytest.raises(TypeError, match=r"unsupported operand type\(s\) for /: .* and '.*'"):
 			obj / self._class()  # pylint: disable=expression-not-assigned
 
@@ -371,7 +371,7 @@ class _TestURL(ABC):
 					("/programmes/b006qtlx/episodes", "episodes"),
 					]
 			)
-	def test_name(self, url, name):
+	def test_name(self, url: str, name: str):
 		assert self._class(url).name == name
 
 	@pytest.mark.parametrize(
@@ -383,7 +383,7 @@ class _TestURL(ABC):
 					("https://imgs.xkcd.com/comics/workflow.png", ".png"),
 					]
 			)
-	def test_suffix(self, url, suffix):
+	def test_suffix(self, url: str, suffix: str):
 		assert self._class(url).suffix == suffix
 
 	@pytest.mark.parametrize(
@@ -399,7 +399,7 @@ class _TestURL(ABC):
 							),
 					]
 			)
-	def test_suffixes(self, url, suffixes):
+	def test_suffixes(self, url: str, suffixes: str):
 		assert self._class(url).suffixes == suffixes
 
 	@pytest.mark.parametrize(
@@ -415,7 +415,7 @@ class _TestURL(ABC):
 							),
 					]
 			)
-	def test_stem(self, url, stem):
+	def test_stem(self, url: str, stem: str):
 		assert self._class(url).stem == stem
 
 	def test_with_name_errors(self):
@@ -538,7 +538,7 @@ class _TestURL(ABC):
 					("https://imgs.xkcd.com/comics/workflow.png", "https://imgs.xkcd.com/comics"),
 					]
 			)
-	def test_parent(self, url, parent):
+	def test_parent(self, url: str, parent: str):
 		assert self._class(url).parent == self._class(parent)
 
 	@pytest.mark.parametrize(
@@ -550,7 +550,7 @@ class _TestURL(ABC):
 					("https://imgs.xkcd.com/comics/workflow.png", "imgs.xkcd.com"),
 					]
 			)
-	def test_fqdn(self, url, fqdn):
+	def test_fqdn(self, url: str, fqdn: str):
 		assert self._class(url).fqdn == fqdn
 
 	@pytest.mark.parametrize(
@@ -562,7 +562,7 @@ class _TestURL(ABC):
 					("ftp://127.0.0.1/download.zip", '', "127.0.0.1", '', IPv4Address("127.0.0.1")),
 					]
 			)
-	def test_domain(self, url, subdomain, domain, suffix, ipv4):
+	def test_domain(self, url: str, subdomain: str, domain: str, suffix: str, ipv4: IPv4Address):
 		assert isinstance(self._class(url).domain, Domain)
 		assert self._class(url).domain.subdomain == subdomain
 		assert self._class(url).domain.domain == domain
@@ -583,7 +583,7 @@ class _TestURL(ABC):
 					("/programmes/b006qtlx/episodes", None),
 					]
 			)
-	def test_port(self, url, port):
+	def test_port(self, url: str, port: Optional[int]):
 		assert self._class(url).port == port
 
 	@pytest.mark.parametrize(
@@ -594,7 +594,7 @@ class _TestURL(ABC):
 					("https://www.bbc.co.uk/news", "www.bbc.co.uk/news"),
 					]
 			)
-	def test_cast_to_pathlib(self, url, expects):
+	def test_cast_to_pathlib(self, url: str, expects: str):
 		assert pathlib.Path(self._class(url)) == pathlib.Path(expects)
 
 	@pytest.mark.parametrize(
@@ -605,7 +605,7 @@ class _TestURL(ABC):
 					("https://www.bbc.co.uk/news", "www.bbc.co.uk/news"),
 					]
 			)
-	def test_fspath(self, url, expects):
+	def test_fspath(self, url: str, expects: str):
 		assert self._class(url).__fspath__() == expects
 		assert os.fspath(self._class(url)) == expects
 
@@ -623,7 +623,7 @@ class _TestURL(ABC):
 							),
 					]
 			)
-	def test_parts(self, url, parts):
+	def test_parts(self, url: str, parts: Sequence[str]):
 		assert self._class(url).parts == parts
 
 	def test_parents(self):
@@ -745,7 +745,7 @@ class _TestURL(ABC):
 		assert self._class("https://news.bbc.co.uk/sport/tennis") >= tennis
 
 	@pytest.mark.parametrize("other_class", [URL, SlumberURL, RequestsURL, TrailingRequestsURL])
-	def test_ordering_other_classes(self, other_class):
+	def test_ordering_other_classes(self, other_class: Type[URL]):
 		# f comes before t
 		football = "https://bbc.co.uk:443/news/sport/football"
 		tennis = "https://bbc.co.uk:443/news/sport/tennis"
@@ -806,7 +806,7 @@ class TestURL(_TestURL):
 							),
 					]
 			)
-	def test_repr(self, url, expects):
+	def test_repr(self, url: str, expects: str):
 		assert repr(url) == expects
 
 	def test_isinstance(self):
@@ -957,7 +957,7 @@ class TestSlumberURL(_TestURL):
 
 		class Sess(requests.Session):
 
-			def close(self):
+			def close(self) -> None:
 				print("Closing")
 				super().close()
 
@@ -1040,7 +1040,7 @@ class TestRequestsURL(_TestURL):
 			def match(self, request_query_string: bytes) -> bool:
 				return True
 
-		def handler(request: werkzeug.Request):
+		def handler(request: werkzeug.Request) -> werkzeug.Response:
 			headers = {"Content-Type": "application/json"}
 			body = json.dumps(parse_qs(request.query_string.decode("UTF-8")))
 			return werkzeug.Response(body, 200, headers, None, None)
@@ -1059,7 +1059,7 @@ class TestRequestsURL(_TestURL):
 		httpserver.expect_request("/testing_get", method="GET").respond_with_json("GET request succeeded")
 		assert RequestsURL(httpserver.url_for("/testing_get")).get().json() == "GET request succeeded"
 
-		def setup_response(method):
+		def setup_response(method: str) -> Tuple[str, str, str]:
 			route = f"/testing_{method.lower()}"
 			data = f"This is a {method} request"
 			response = f"{method} request succeeded"
@@ -1134,7 +1134,7 @@ class TestRequestsURL(_TestURL):
 
 		class Sess(requests.Session):
 
-			def close(self):
+			def close(self) -> None:
 				print("Closing")
 				super().close()
 
@@ -1203,7 +1203,7 @@ class TestTrailingRequestsURL(TestRequestsURL):
 							),
 					]
 			)
-	def test_str(self, url, expects):
+	def test_str(self, url: str, expects: str):
 		assert str(self._class(url)) == expects
 
 	def test_base_domain_already_trailing(self):

@@ -15,10 +15,10 @@ from apeye.rate_limiter import RateLimitAdapter
 
 class NullSerializer:
 
-	def dumps(self, request, response, body=None):
+	def dumps(self, request, response, body=None):  # noqa: MAN001,MAN002
 		return response
 
-	def loads(self, request, data, body_file=None):
+	def loads(self, request, data, body_file=None):  # noqa: MAN001,MAN002
 		if data and getattr(data, "chunked", False):
 			data.chunked = False
 		return data
@@ -27,7 +27,7 @@ class NullSerializer:
 class TestMaxAge:
 
 	@pytest.fixture()
-	def sess(self, url):
+	def sess(self, url: str) -> Session:
 		self.url = url
 		self.cache = DictCache()
 		sess = Session()
@@ -38,7 +38,7 @@ class TestMaxAge:
 		sess.mount("http://", adapter)
 		return sess
 
-	def test_client_max_age_0(self, sess):
+	def test_client_max_age_0(self, sess: Session):
 		"""
 		Making sure when the client uses max-age=0 we don't get a
 		cached copy even though we're still fresh.
@@ -52,9 +52,9 @@ class TestMaxAge:
 
 		# don't remove from the cache
 		assert self.cache.get(self.url)
-		assert not r.from_cache
+		assert not r.from_cache  # type: ignore[attr-defined]
 
-	def test_client_max_age_3600(self, sess):
+	def test_client_max_age_3600(self, sess: Session):
 		"""
 		Verify we get a cached value when the client has a
 		reasonable max-age value.
@@ -64,7 +64,7 @@ class TestMaxAge:
 
 		# request that we don't want a new one unless
 		r = sess.get(self.url, headers={"Cache-Control": "max-age=3600"})
-		assert r.from_cache is True
+		assert r.from_cache is True  # type: ignore[attr-defined]
 
 		# now lets grab one that forces a new request b/c the cache
 		# has expired. To do that we'll inject a new time value.
@@ -73,4 +73,4 @@ class TestMaxAge:
 		resp.headers[  # type: ignore[attr-defined]  # something is wrong in CacheControl's new type hints
 				"date"] = "Tue, 15 Nov 1994 08:12:31 GMT"
 		r = sess.get(self.url)
-		assert not r.from_cache
+		assert not r.from_cache  # type: ignore[attr-defined]

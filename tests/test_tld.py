@@ -32,6 +32,7 @@
 
 # stdlib
 from ipaddress import IPv4Address
+from typing import Optional, Tuple
 
 # 3rd party
 from apeye_core._tld import extract_tld
@@ -40,7 +41,11 @@ from apeye_core._tld import extract_tld
 from apeye import Domain
 
 
-def assert_extract(url, expected_domain_data, expected_ip_data=None):
+def assert_extract(
+		url: str,
+		expected_domain_data: Tuple[str, str, str, str],
+		expected_ip_data: Optional[IPv4Address] = None,
+		) -> None:
 	(expected_fqdn, expected_subdomain, expected_domain, expected_tld) = expected_domain_data
 	ext = Domain._make(extract_tld(url))
 	assert expected_fqdn == ext.fqdn

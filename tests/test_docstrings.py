@@ -4,6 +4,8 @@ import inspect
 import shutil
 from pathlib import PurePosixPath
 from textwrap import indent
+from types import ModuleType
+from typing import no_type_check
 
 # 3rd party
 import pytest
@@ -17,7 +19,8 @@ VERBOSE = 1
 ret = 0
 
 
-def relative_to(self, *other):
+@no_type_check
+def relative_to(self: PurePosixPath, *other) -> PurePosixPath:
 	# From Python 3.8, pathlib.py
 	if not other:
 		raise TypeError("need at least one argument")
@@ -42,7 +45,7 @@ def relative_to(self, *other):
 
 
 @pytest.mark.parametrize("module", [apeye.url])
-def test_docstrings(module, monkeypatch):
+def test_docstrings(module: ModuleType, monkeypatch):
 
 	# Always use pre-Python 3.9 implementation
 	monkeypatch.setattr(PurePosixPath, "relative_to", relative_to)

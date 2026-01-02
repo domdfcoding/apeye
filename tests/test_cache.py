@@ -1,3 +1,6 @@
+# stdlib
+from typing import Iterator
+
 # 3rd party
 import pytest
 
@@ -6,7 +9,7 @@ from apeye.cache import Cache
 
 
 @pytest.fixture(scope="session")
-def testing_cache():
+def testing_cache() -> Iterator[Cache]:
 	cache = Cache("testing_apeye")
 	assert cache.clear()
 	yield cache
@@ -14,10 +17,10 @@ def testing_cache():
 
 
 @pytest.mark.parametrize("run_number", [1, 2])
-def test_cache(testing_cache, capsys, run_number):
+def test_cache(testing_cache: Cache, capsys, run_number: int):
 
 	@testing_cache
-	def cached_function(arg1: int, arg2: float, arg3: str):
+	def cached_function(arg1: int, arg2: float, arg3: str) -> float:
 		print("Running")
 		return (arg1**int(arg2)) * arg3
 
@@ -44,7 +47,7 @@ def test_cache(testing_cache, capsys, run_number):
 	old_id = id(cached_function)
 
 	@testing_cache  # type: ignore[no-redef]
-	def cached_function(arg1: int, arg2: float, arg3: str):
+	def cached_function(arg1: int, arg2: float, arg3: str) -> float:
 		print("Running 2nd function")
 		return (arg1**int(arg2)) * arg3
 

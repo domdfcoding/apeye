@@ -118,7 +118,7 @@ class Cache:
 		self.caches[func.__name__] = cache
 		return cache
 
-	def __call__(self, func: Callable):
+	def __call__(self, func: Callable) -> Callable:
 		"""
 		Decorator to cache the return values of a function based on its inputs.
 
@@ -131,8 +131,8 @@ class Cache:
 		self.load_cache(func)
 
 		@wraps(func)
-		def wrapper(*args, **kwargs: Any):
-			kwargs: Dict[str, Any] = posargs2kwargs(args, posargs, kwargs)  # type: ignore
+		def wrapper(*args, **kwargs: Any) -> Any:
+			kwargs = posargs2kwargs(args, posargs, kwargs)
 			key: str = json.dumps(kwargs)
 			response: Any
 

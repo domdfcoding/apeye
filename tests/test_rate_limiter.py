@@ -5,6 +5,7 @@ import logging
 import re
 import sys
 import time
+from typing import Iterator
 
 # 3rd party
 import pytest
@@ -21,12 +22,12 @@ logging.basicConfig()
 
 
 @rate_limit(3)
-def rate_limited_function():
+def rate_limited_function() -> int:
 	print("Inside function")
 	return 42
 
 
-def test_rate_limit(capsys, caplog):
+def test_rate_limit(capsys, caplog):  # noqa: MAN001
 	assert rate_limited_function() == 42
 	assert rate_limited_function() == 42
 	assert rate_limited_function() == 42
@@ -52,7 +53,7 @@ def test_rate_limit(capsys, caplog):
 
 
 @pytest.fixture(scope="session")
-def testing_http_cache():
+def testing_http_cache() -> Iterator[HTTPCache]:
 	cache = HTTPCache("testing_apeye_http")
 	assert cache.clear()
 	yield cache
@@ -61,9 +62,9 @@ def testing_http_cache():
 
 
 @pytest.fixture()
-def timeserver(httpserver: HTTPServer):
+def timeserver(httpserver: HTTPServer) -> HTTPServer:
 
-	def time_handler(request: Request):
+	def time_handler(request: Request) -> Response:
 		time.sleep(1)
 
 		if sys.version_info >= (3, 11):
@@ -109,7 +110,12 @@ def test_cache_canary(timeserver: HTTPServer):
 
 
 @pytest.mark.parametrize("run_number", [1, 2])
-def test_http_cache(testing_http_cache, capsys, run_number: int, timeserver: HTTPServer):
+def test_http_cache(
+		testing_http_cache: HTTPCache,
+		capsys,
+		run_number: int,
+		timeserver: HTTPServer,
+		):
 	session = testing_http_cache.session
 
 	# target_url = "http://worldtimeapi.org/api/ip"
@@ -117,12 +123,12 @@ def test_http_cache(testing_http_cache, capsys, run_number: int, timeserver: HTT
 
 	response = session.get(target_url)
 	assert response.status_code == 200
-	assert not response.from_cache
+	assert not response.from_cache  # type: ignore[attr-defined]
 	original_time = datetime_fromisoformat(response.json()["datetime"])
 
 	response = session.get(target_url)
 	assert response.status_code == 200
-	assert response.from_cache
+	assert response.from_cache  # type: ignore[attr-defined]
 	current_time = datetime_fromisoformat(response.json()["datetime"])
 
 	# If the times have changed the cache has failed.
@@ -135,7 +141,7 @@ def test_http_cache(testing_http_cache, capsys, run_number: int, timeserver: HTT
 	# make a new request
 	response = session.get(target_url)
 	assert response.status_code == 200
-	assert not response.from_cache
+	assert not response.from_cache  # type: ignore[attr-defined]
 	current_time = datetime_fromisoformat(response.json()["datetime"])
 
 	assert current_time > original_time

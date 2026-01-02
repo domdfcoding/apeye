@@ -134,7 +134,11 @@ class SerializerRegistry:
 		#: The default serializer to use if none is specified.
 		self.default: str = default
 
-	def get_serializer(self, name: Optional[str] = None, content_type: Optional[str] = None):
+	def get_serializer(
+			self,
+			name: Optional[str] = None,
+			content_type: Optional[str] = None,
+			) -> Serializer:
 		"""
 		Returns the first :class:`~.Serializer` that supports either the given
 		format or the given content type.
@@ -191,7 +195,7 @@ class SerializerRegistry:
 	def get_content_type(
 			self,
 			format: Optional[str] = None,  # noqa: A002  # pylint: disable=redefined-builtin
-			):
+			) -> str:
 		"""
 		Returns the content type for the serializer that supports the given format.
 

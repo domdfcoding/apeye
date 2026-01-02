@@ -378,7 +378,7 @@ def test_email_valid(
 				("dom@example.com.", "An email address cannot end with a period."),
 				],
 		)
-def test_email_invalid(email_input, error_msg):
+def test_email_invalid(email_input: str, error_msg: str):
 	with pytest.raises(EmailSyntaxError) as exc_info:
 		validate_email(email_input)
 	# print(f'({email_input!r}, {str(exc_info.value)!r}),')

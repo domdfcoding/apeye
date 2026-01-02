@@ -10,7 +10,7 @@ from apeye.slumber_url import JsonSerializer, SerializerNotAvailable, Serializer
 
 class ResourceTestCase(unittest.TestCase):
 
-	def setUp(self):
+	def setUp(self) -> None:
 		self.data = {"foo": "bar"}
 
 	def test_json_get_serializer(self):
@@ -32,7 +32,7 @@ class ResourceTestCase(unittest.TestCase):
 		assert result == '{"foo": "bar"}'
 		assert self.data == serializer.loads(result)
 
-	def _test_yaml_get_serializer(self):
+	def _test_yaml_get_serializer(self) -> None:
 		s = SerializerRegistry()
 
 		for content_type in ["text/yaml"]:

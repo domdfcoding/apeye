@@ -130,7 +130,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		"""
 
 		if params is None and self.query:
-			params = self.query  # type: ignore
+			params = self.query  # type: ignore[assignment]
 
 		return self.session.get(str(self.base_url), params=params, **kwargs)
 
@@ -158,7 +158,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 		return self.session.head(str(self.base_url), **kwargs)
 
-	def post(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
+	def post(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:  # noqa: MAN001
 		r"""
 		Send a POST request using :requests:`.`.
 
@@ -172,7 +172,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 		return self.session.post(str(self.base_url), data=data, json=json, **kwargs)
 
-	def put(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
+	def put(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:  # noqa: MAN001
 		r"""
 		Send a PUT request using :requests:`.`.
 
@@ -186,7 +186,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 		return self.session.put(str(self.base_url), data=data, json=json, **kwargs)
 
-	def patch(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:
+	def patch(self, data: "_Data" = None, json=None, **kwargs) -> requests.Response:  # noqa: MAN001
 		r"""
 		Send a PATCH request using :requests:`.`.
 
@@ -211,7 +211,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 		return self.session.delete(str(self.base_url), **kwargs)
 
-	def __del__(self):  # pragma: no cover
+	def __del__(self) -> None:  # pragma: no cover
 		"""
 		Attempt to close session when garbage collected to avoid leaving connections open.
 		"""
@@ -222,7 +222,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		except Exception:  # nosec: B110  # pylint: disable=bare-except
 			pass
 
-	def __truediv__(self, other):
+	def __truediv__(self, other) -> "RequestsURL":  # noqa: MAN001
 		"""
 		Construct a new :class:`~apeye.url.URL` object for the given child of this :class:`~apeye.url.URL`.
 		"""

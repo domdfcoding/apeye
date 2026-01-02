@@ -4,6 +4,9 @@
 #
 # From https://github.com/ionrock/cachecontrol
 
+# stdlib
+from typing import Iterator
+
 # 3rd party
 import pytest
 from cachecontrol.wrapper import CacheControl
@@ -13,13 +16,13 @@ from requests import Session
 from apeye.rate_limiter import RateLimitAdapter
 
 
-def use_wrapper():
+def use_wrapper() -> Session:
 	print("Using helper")
 	sess = CacheControl(Session())
 	return sess
 
 
-def use_adapter():
+def use_adapter() -> Session:
 	print("Using adapter")
 	sess = Session()
 	sess.mount("http://", RateLimitAdapter())
@@ -27,7 +30,7 @@ def use_adapter():
 
 
 @pytest.fixture(params=[use_adapter, use_wrapper])
-def sess(url, request):
+def sess(url: str, request) -> Iterator[Session]:
 	sess = request.param()
 	sess.get(url)
 	yield sess
