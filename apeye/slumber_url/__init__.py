@@ -45,7 +45,7 @@ REST APIs with `Slumber <https://slumber.readthedocs.io>`__ and
 # stdlib
 import copy
 import sys
-from typing import Callable, Dict, MutableMapping, Optional, Tuple, Union
+from typing import Callable, Dict, MutableMapping, Optional, Set, Tuple, Union
 from urllib.parse import unquote
 
 # 3rd party
@@ -397,16 +397,20 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		except Exception:  # nosec: B110  # pylint: disable=bare-except
 			pass
 
-	def options(self, **kwargs) -> str:
+	def options(self, **kwargs) -> Set[str]:
 		"""
 		Send an OPTIONS request using `Requests <https://requests.readthedocs.io>`__.
 
 		https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/OPTIONS
 
 		:param kwargs: Optional arguments that :func:`requests.request` takes.
+
+		:rtype:
+
+		.. versionchanged:: 2.0.0  Now returns a set of strings, rather than a string with values separated by commas.
 		"""
 
-		return self.session.options(str(self.base_url), **kwargs).headers.get("Allow", '')
+		return set(v.strip().upper() for v in self.session.options(str(self.base_url), **kwargs).headers.get("Allow", '').split(","))
 
 	def head(self, **kwargs) -> CaseInsensitiveDict:
 		"""

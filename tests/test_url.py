@@ -882,7 +882,7 @@ class TestSlumberURL(_TestURL):
 
 	def test_options(self):
 		options = SlumberURL("https://bot.repo-helper.uk").options()
-		assert options == "POST, HEAD, OPTIONS, GET"
+		assert options == {"POST", "HEAD", "OPTIONS", "GET"}
 
 	def test_post(self):
 		assert self.base / "posts" == URL("https://jsonplaceholder.typicode.com/posts")
