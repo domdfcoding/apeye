@@ -34,7 +34,7 @@ __all__ = [
 		"HttpNotFoundError",
 		"HttpServerError",
 		"SlumberBaseException",
-		"SlumberHttpBaseException"
+		"SlumberHttpBaseException",
 		]
 
 
@@ -46,7 +46,7 @@ class SlumberBaseException(Exception):
 	"""
 
 
-class SlumberHttpBaseException(SlumberBaseException):
+class SlumberHttpBaseException(SlumberBaseException):  # noqa: PRM002
 	"""
 	All Slumber HTTP Exceptions inherit from this exception.
 

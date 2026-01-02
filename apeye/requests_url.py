@@ -99,6 +99,10 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 
 		This is done by making a ``HEAD`` request and following HTTP 302 redirects.
 
+		:param timeout:
+
+		:rtype:
+
 		.. versionadded:: 0.8.0
 
 		.. versionchanged:: 1.1.0  Added the ``timeout`` argument.
@@ -222,7 +226,7 @@ class RequestsURL(URL):  # lgtm [py/missing-equals]
 		except Exception:  # nosec: B110  # pylint: disable=bare-except
 			pass
 
-	def __truediv__(self, other) -> "RequestsURL":  # noqa: MAN001
+	def __truediv__(self, other) -> "RequestsURL":  # noqa: MAN001,PRM002
 		"""
 		Construct a new :class:`~apeye.url.URL` object for the given child of this :class:`~apeye.url.URL`.
 		"""

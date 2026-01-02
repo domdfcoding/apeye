@@ -33,7 +33,7 @@ class TestMaxAge:
 		sess = Session()
 		adapter = RateLimitAdapter(
 				self.cache,
-				serializer=NullSerializer()  # type: ignore[arg-type]  # NullSerializer is not the right type
+				serializer=NullSerializer(),  # type: ignore[arg-type]  # NullSerializer is not the right type
 				)
 		sess.mount("http://", adapter)
 		return sess

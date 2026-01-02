@@ -70,7 +70,7 @@ def test_no_subdomain():
 def test_nested_subdomain():
 	assert_extract(
 			"https://media.forums.theregister.co.uk",
-			("media.forums.theregister.co.uk", "media.forums", "theregister", "co.uk")
+			("media.forums.theregister.co.uk", "media.forums", "theregister", "co.uk"),
 			)
 
 
@@ -92,10 +92,11 @@ def test_local_host():
 def test_qualified_local_host():
 	assert_extract(
 			"https://internalunlikelyhostname.info/",
-			("internalunlikelyhostname.info", '', "internalunlikelyhostname", "info")
+			("internalunlikelyhostname.info", '', "internalunlikelyhostname", "info"),
 			)
 	assert_extract(
-			"https://internalunlikelyhostname.information/", ('', "internalunlikelyhostname", "information", '')
+			"https://internalunlikelyhostname.information/",
+			('', "internalunlikelyhostname", "information", ''),
 			)
 
 
@@ -124,7 +125,7 @@ def test_punycode():
 					"xn--tub-1m9d15sfkkhsifsbqygyujjrw602gk4li5qqk98aca0w.google.com",
 					"xn--tub-1m9d15sfkkhsifsbqygyujjrw602gk4li5qqk98aca0w",
 					"google",
-					"com"
+					"com",
 					)
 			)
 	# This subdomain generates UnicodeError 'incomplete punicode string'
@@ -134,7 +135,7 @@ def test_punycode():
 					"xn--tub-1m9d15sfkkhsifsbqygyujjrw60.google.com",
 					"xn--tub-1m9d15sfkkhsifsbqygyujjrw60",
 					"google",
-					"com"
+					"com",
 					)
 			)
 
@@ -146,7 +147,7 @@ def test_invalid_puny_with_puny():
 					"xn--zckzap6140b352by.blog.so-net.xn--wcvs22d.hk",
 					"xn--zckzap6140b352by.blog",
 					"so-net",
-					"xn--wcvs22d.hk"
+					"xn--wcvs22d.hk",
 					)
 			)
 	assert_extract("https://xn--&.so-net.com", ("xn--&.so-net.com", "xn--&", "so-net", "com"))
@@ -155,7 +156,7 @@ def test_invalid_puny_with_puny():
 def test_puny_with_non_puny():
 	assert_extract(
 			"https://xn--zckzap6140b352by.blog.so-net.教育.hk",
-			("xn--zckzap6140b352by.blog.so-net.教育.hk", "xn--zckzap6140b352by.blog", "so-net", "教育.hk")
+			("xn--zckzap6140b352by.blog.so-net.教育.hk", "xn--zckzap6140b352by.blog", "so-net", "教育.hk"),
 			)
 
 
@@ -219,7 +220,9 @@ def test_private_domains():
 
 def test_ipv4():
 	assert_extract(
-			"https://127.0.0.1/foo/bar", ('', '', "127.0.0.1", ''), expected_ip_data=IPv4Address("127.0.0.1")
+			"https://127.0.0.1/foo/bar",
+			('', '', "127.0.0.1", ''),
+			expected_ip_data=IPv4Address("127.0.0.1"),
 			)
 
 

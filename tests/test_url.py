@@ -121,7 +121,7 @@ class TestURLPath:
 					pytest.param(
 							pathlib.PurePosixPath("/programmes") / URLPath("b006qtlx"),
 							URLPath("/programmes/b006qtlx"),
-							marks=pytest.mark.xfail(reason="The type is taken from the left object.")
+							marks=pytest.mark.xfail(reason="The type is taken from the left object."),
 							),
 					]
 			)
@@ -137,7 +137,7 @@ class TestURLPath:
 					(URLPath("/programmes").joinpath("b006qtlx"), URLPath("/programmes/b006qtlx")),
 					(
 							URLPath("/programmes").joinpath("b006qtlx", "details"),
-							URLPath("/programmes/b006qtlx/details")
+							URLPath("/programmes/b006qtlx/details"),
 							),
 					]
 			)
@@ -395,7 +395,8 @@ class _TestURL(ABC):
 					("https://imgs.xkcd.com/comics/workflow.png", [".png"]),
 					(
 							"https://github.com/domdfcoding/domdf_python_tools/releases/download/"
-							"v0.4.8/domdf_python_tools-0.4.8.tar.gz", [".4", ".8", ".tar", ".gz"]
+							"v0.4.8/domdf_python_tools-0.4.8.tar.gz",
+							[".4", ".8", ".tar", ".gz"],
 							),
 					]
 			)
@@ -411,7 +412,7 @@ class _TestURL(ABC):
 					("https://imgs.xkcd.com/comics/workflow.png", "workflow"),
 					(
 							"https://github.com/domdfcoding/domdf_python_tools/releases/download/v0.4.8/domdf_python_tools-0.4.8.tar.gz",
-							"domdf_python_tools-0.4.8.tar"
+							"domdf_python_tools-0.4.8.tar",
 							),
 					]
 			)
@@ -427,27 +428,30 @@ class _TestURL(ABC):
 
 	@pytest.mark.parametrize(
 			"url, expected, name",
-			[(
-					"https://www.bbc.co.uk/programmes/b006qtlx/episodes",
-					"https://www.bbc.co.uk/programmes/b006qtlx/foo",
-					"foo"
-					),
-				(
-						"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry",
-						"https://www.bbc.co.uk/programmes/b006qtlx/foo",
-						"foo"
-						),
-				(
-						"https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment",
-						"https://www.bbc.co.uk/programmes/b006qtlx/foo",
-						"foo"
-						),
-				(
-						"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment",
-						"https://www.bbc.co.uk/programmes/b006qtlx/foo",
-						"foo"
-						), ("/programmes/b006qtlx/episodes", "/programmes/b006qtlx/foo", "foo"),
-				("https://imgs.xkcd.com/comics/workflow.png", "https://imgs.xkcd.com/comics/baz", "baz")]
+			[
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes",
+							"https://www.bbc.co.uk/programmes/b006qtlx/foo",
+							"foo",
+							),
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry",
+							"https://www.bbc.co.uk/programmes/b006qtlx/foo",
+							"foo",
+							),
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment",
+							"https://www.bbc.co.uk/programmes/b006qtlx/foo",
+							"foo",
+							),
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment",
+							"https://www.bbc.co.uk/programmes/b006qtlx/foo",
+							"foo",
+							),
+					("/programmes/b006qtlx/episodes", "/programmes/b006qtlx/foo", "foo"),
+					("https://imgs.xkcd.com/comics/workflow.png", "https://imgs.xkcd.com/comics/baz", "baz"),
+					]
 			)
 	def test_with_name(self, url: str, expected: str, name: str):
 		assert self._class(url).with_name(name) == self._class(expected)
@@ -478,27 +482,34 @@ class _TestURL(ABC):
 
 	@pytest.mark.parametrize(
 			"url, expected, suffix",
-			[(
-					"https://www.bbc.co.uk/programmes/b006qtlx/episodes",
-					"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
-					".foo"
-					),
-				(
-						"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry",
-						"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
-						".foo"
-						),
-				(
-						"https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment",
-						"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
-						".foo"
-						),
-				(
-						"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment",
-						"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
-						".foo"
-						), ("/programmes/b006qtlx/episodes", "/programmes/b006qtlx/episodes.foo", ".foo"),
-				("https://imgs.xkcd.com/comics/workflow.png", "https://imgs.xkcd.com/comics/workflow.baz", ".baz")]
+			[
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes",
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
+							".foo",
+							),
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry",
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
+							".foo",
+							),
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes#fragment",
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
+							".foo",
+							),
+					(
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment",
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo",
+							".foo",
+							),
+					("/programmes/b006qtlx/episodes", "/programmes/b006qtlx/episodes.foo", ".foo"),
+					(
+							"https://imgs.xkcd.com/comics/workflow.png",
+							"https://imgs.xkcd.com/comics/workflow.baz",
+							".baz"
+							),
+					]
 			)
 	def test_with_suffix(self, url: str, expected: str, suffix: str):
 		assert self._class(url).with_suffix(suffix) == self._class(expected)
@@ -532,7 +543,7 @@ class _TestURL(ABC):
 			[
 					(
 							"https://www.bbc.co.uk/programmes/b006qtlx/episodes",
-							"https://www.bbc.co.uk/programmes/b006qtlx"
+							"https://www.bbc.co.uk/programmes/b006qtlx",
 							),
 					("/programmes/b006qtlx/episodes", "/programmes/b006qtlx"),
 					("https://imgs.xkcd.com/comics/workflow.png", "https://imgs.xkcd.com/comics"),
@@ -619,7 +630,7 @@ class _TestURL(ABC):
 			[
 					(
 							"https://hub.docker.com/r/tobix/pywine/dockerfile",
-							("https", "hub", "docker", "com", 'r', "tobix", "pywine", "dockerfile")
+							("https", "hub", "docker", "com", 'r', "tobix", "pywine", "dockerfile"),
 							),
 					]
 			)
@@ -787,22 +798,22 @@ class TestURL(_TestURL):
 			[
 					(
 							URL("https://www.bbc.co.uk/programmes/b006qtlx/episodes/player"),
-							"URL('https://www.bbc.co.uk/programmes/b006qtlx/episodes/player')"
+							"URL('https://www.bbc.co.uk/programmes/b006qtlx/episodes/player')",
 							),
 					(
 							URL("www.bbc.co.uk/programmes/b006qtlx/episodes/player"),
-							"URL('www.bbc.co.uk/programmes/b006qtlx/episodes/player')"
+							"URL('www.bbc.co.uk/programmes/b006qtlx/episodes/player')",
 							),
 					(URL("www.bbc.co.uk"), "URL('www.bbc.co.uk')"),
 					(URL("/programmes/b006qtlx/episodes/player"), "URL('/programmes/b006qtlx/episodes/player')"),
 					(URL("programmes/b006qtlx/episodes/player"), "URL('programmes/b006qtlx/episodes/player')"),
 					(
 							URL("https://127.0.0.1/programmes/b006qtlx/episodes/player"),
-							"URL('https://127.0.0.1/programmes/b006qtlx/episodes/player')"
+							"URL('https://127.0.0.1/programmes/b006qtlx/episodes/player')",
 							),
 					(
 							URL("ftp://127.0.0.1/programmes/b006qtlx/episodes/player"),
-							"URL('ftp://127.0.0.1/programmes/b006qtlx/episodes/player')"
+							"URL('ftp://127.0.0.1/programmes/b006qtlx/episodes/player')",
 							),
 					]
 			)
@@ -1184,22 +1195,22 @@ class TestTrailingRequestsURL(TestRequestsURL):
 			[
 					(
 							"https://www.bbc.co.uk/programmes/b006qtlx/episodes/player/",
-							"https://www.bbc.co.uk/programmes/b006qtlx/episodes/player/"
+							"https://www.bbc.co.uk/programmes/b006qtlx/episodes/player/",
 							),
 					(
 							"www.bbc.co.uk/programmes/b006qtlx/episodes/player/",
-							"www.bbc.co.uk/programmes/b006qtlx/episodes/player/"
+							"www.bbc.co.uk/programmes/b006qtlx/episodes/player/",
 							),
 					("www.bbc.co.uk", "www.bbc.co.uk/"),
 					("/programmes/b006qtlx/episodes/player", "/programmes/b006qtlx/episodes/player/"),
 					("programmes/b006qtlx/episodes/player", "programmes/b006qtlx/episodes/player/"),
 					(
 							"https://127.0.0.1/programmes/b006qtlx/episodes/player",
-							"https://127.0.0.1/programmes/b006qtlx/episodes/player/"
+							"https://127.0.0.1/programmes/b006qtlx/episodes/player/",
 							),
 					(
 							"ftp://127.0.0.1/programmes/b006qtlx/episodes/player",
-							"ftp://127.0.0.1/programmes/b006qtlx/episodes/player/"
+							"ftp://127.0.0.1/programmes/b006qtlx/episodes/player/",
 							),
 					]
 			)

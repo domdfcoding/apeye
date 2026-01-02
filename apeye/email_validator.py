@@ -47,7 +47,7 @@ __all__ = [
 		"main",
 		"validate_email",
 		"validate_email_domain_part",
-		"validate_email_local_part"
+		"validate_email_local_part",
 		]
 
 EmailSyntaxError = email_validator.EmailSyntaxError

@@ -206,7 +206,7 @@ class SerializerRegistry:
 		return s.get_content_type()
 
 
-class SerializerNotAvailable(SlumberBaseException):
+class SerializerNotAvailable(SlumberBaseException):  # noqa: PRM002
 	"""
 	The chosen :class:`Serializer` is not available.
 

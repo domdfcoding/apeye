@@ -162,7 +162,7 @@ class RateLimitAdapter(CacheControlAdapter):
 		return resp
 
 	@rate_limit(0.2)
-	def rate_limited_send(self, *args, **kwargs) -> requests.Response:
+	def rate_limited_send(self, *args, **kwargs) -> requests.Response:  # noqa: PRM002
 		"""
 		Wrapper around :meth:`CacheControlAdapter.send <cachecontrol.adapter.CacheControlAdapter.send>`
 		to limit the rate of requests.
@@ -196,7 +196,7 @@ class HTTPCache:
 						seconds=expires_after.seconds,
 						microseconds=expires_after.microseconds,
 						),
-				adapter_class=RateLimitAdapter
+				adapter_class=RateLimitAdapter,
 				)
 
 	def clear(self) -> bool:

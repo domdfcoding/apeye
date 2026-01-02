@@ -295,7 +295,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		else:
 			return None  # type: ignore[return-value]  # TODO: We should probably do some sort of error here? (Is this even possible?)
 
-	def get(self, **params) -> Dict:
+	def get(self, **params) -> Dict:  # noqa: PRM002
 		"""
 		Perform a GET request using `Slumber <https://slumber.readthedocs.io>`__.
 
@@ -307,7 +307,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		resp = self._request("GET", params=params)
 		return self._process_response(resp)
 
-	def post(self, data: _Data = None, files=None, **params) -> Dict:  # noqa: MAN001
+	def post(self, data: _Data = None, files=None, **params) -> Dict:  # noqa: MAN001,PRM002
 		"""
 		Perform a POST request using `Slumber <https://slumber.readthedocs.io>`__.
 
@@ -329,7 +329,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		resp = self._request("POST", data=data, files=files, params=params)
 		return self._process_response(resp)
 
-	def patch(self, data=None, files=None, **params) -> Dict:  # noqa: MAN001
+	def patch(self, data=None, files=None, **params) -> Dict:  # noqa: MAN001,PRM002
 		"""
 		Perform a PATCH request using `Slumber <https://slumber.readthedocs.io>`__.
 
@@ -351,7 +351,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		resp = self._request("PATCH", data=data, files=files, params=params)
 		return self._process_response(resp)
 
-	def put(self, data=None, files=None, **params) -> Dict:  # noqa: MAN001
+	def put(self, data=None, files=None, **params) -> Dict:  # noqa: MAN001,PRM002
 		"""
 		Perform a PUT request using `Slumber <https://slumber.readthedocs.io>`__.
 
@@ -373,7 +373,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		resp = self._request("PUT", data=data, files=files, params=params)
 		return self._process_response(resp)
 
-	def delete(self, **params) -> bool:
+	def delete(self, **params) -> bool:  # noqa: PRM002
 		"""
 		Perform a DELETE request using `Slumber <https://slumber.readthedocs.io>`__.
 
@@ -405,7 +405,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		except Exception:  # nosec: B110  # pylint: disable=bare-except
 			pass
 
-	def options(self, **kwargs) -> Set[str]:
+	def options(self, **kwargs) -> Set[str]:  # noqa: PRM002
 		"""
 		Send an OPTIONS request using `Requests <https://requests.readthedocs.io>`__.
 
@@ -423,7 +423,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 				for v in self.session.options(str(self.base_url), **kwargs).headers.get("Allow", '').split(',')
 				}
 
-	def head(self, **kwargs) -> CaseInsensitiveDict:
+	def head(self, **kwargs) -> CaseInsensitiveDict:  # noqa: PRM002
 		"""
 		Send a HEAD request using `Requests <https://requests.readthedocs.io>`__.
 
@@ -436,7 +436,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 
 		return self.session.head(str(self.base_url), **kwargs).headers
 
-	def __truediv__(self, other) -> "SlumberURL":  # noqa: MAN001
+	def __truediv__(self, other) -> "SlumberURL":  # noqa: MAN001,PRM002
 		"""
 		Construct a new :class:`~apeye.url.URL` object for the given child of this :class:`~apeye.url.URL`.
 		"""
