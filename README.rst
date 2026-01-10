@@ -113,7 +113,7 @@ apeye
 	:alt: Maintenance
 
 .. |pypi-downloads| image:: https://img.shields.io/pypi/dm/apeye
-	:target: https://pypi.org/project/apeye/
+	:target: https://pypistats.org/packages/apeye
 	:alt: PyPI - Downloads
 
 .. end shields
