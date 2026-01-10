@@ -218,7 +218,7 @@ class SlumberURL(URL):  # lgtm [py/missing-equals]
 		data=None,
 		files=None,
 		params: Optional[Dict[str, Any]] = None,
-		) -> Response:
+	) -> Response:
 		serializer = self.serializer
 		url = self.url()
 
