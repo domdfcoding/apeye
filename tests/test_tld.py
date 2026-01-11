@@ -126,7 +126,7 @@ def test_punycode():
 					"xn--tub-1m9d15sfkkhsifsbqygyujjrw602gk4li5qqk98aca0w",
 					"google",
 					"com",
-					)
+					),
 			)
 	# This subdomain generates UnicodeError 'incomplete punicode string'
 	assert_extract(
@@ -136,7 +136,7 @@ def test_punycode():
 					"xn--tub-1m9d15sfkkhsifsbqygyujjrw60",
 					"google",
 					"com",
-					)
+					),
 			)
 
 
@@ -148,7 +148,7 @@ def test_invalid_puny_with_puny():
 					"xn--zckzap6140b352by.blog",
 					"so-net",
 					"xn--wcvs22d.hk",
-					)
+					),
 			)
 	assert_extract("https://xn--&.so-net.com", ("xn--&.so-net.com", "xn--&", "so-net", "com"))
 
@@ -236,7 +236,7 @@ def test_ipv4_lookalike():
 
 def test_result_as_dict():
 	result = Domain._make(
-			extract_tld("https://admin:password1@www.google.com:666/secret/admin/interface?param1=42")
+			extract_tld("https://admin:password1@www.google.com:666/secret/admin/interface?param1=42"),
 			)
 	expected_dict = {"subdomain": "www", "domain": "google", "suffix": "com"}
 	assert result._asdict() == expected_dict

@@ -64,8 +64,8 @@ class ResourceTestCase(unittest.TestCase):
 
 				s = SerializerRegistry()
 
-				with pytest.raises(SerializerNotAvailable, match=f"No serializer available for 'yaml'."):
+				with pytest.raises(SerializerNotAvailable, match="No serializer available for 'yaml'."):
 					s.get_serializer("yaml")
 
-				with pytest.raises(SerializerNotAvailable, match=f"No serializer available for 'text/yaml'."):
+				with pytest.raises(SerializerNotAvailable, match="No serializer available for 'text/yaml'."):
 					s.get_serializer(content_type="text/yaml")

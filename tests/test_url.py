@@ -40,7 +40,7 @@ class TestURLPath:
 					("/programmes/b006qtlx/episodes/player", '/'),
 					("/news", '/'),
 					("news", ''),
-					]
+					],
 			)
 	def test_drive_root_anchor(self, value: str, expected: str):
 		# These were originally NotImplemented, but they weren't doing any harm and might be useful
@@ -61,19 +61,20 @@ class TestURLPath:
 					(URLPath("/programmes/b006qtlx/episodes/player"), True),
 					(URLPath("/watch?v=NG21KWZSiok"), True),
 					(URLPath("watch?v=NG21KWZSiok"), False),
-					]
+					],
 			)
 	def test_is_absolute(self, value: str, absolute: bool):
 		# Was originally NotImplemented, but it might be useful
 		assert URLPath(value).is_absolute() is absolute
 
 	@pytest.mark.parametrize(
-			"value", [
+			"value",
+			[
 					"/watch?v=NG21KWZSiok",
 					"watch?v=NG21KWZSiok",
 					'',
 					"/programmes/b006qtlx/episodes/player",
-					]
+					],
 			)
 	def test_str(self, value: str):
 		assert str(URLPath(value)) == value
@@ -85,7 +86,7 @@ class TestURLPath:
 					("watch?v=NG21KWZSiok", "URLPath('watch?v=NG21KWZSiok')"),
 					('', "URLPath('')"),
 					("/programmes/b006qtlx/episodes/player", "URLPath('/programmes/b006qtlx/episodes/player')"),
-					]
+					],
 			)
 	def test_repr(self, value: str, expects: str):
 		assert repr(URLPath(value)) == expects
@@ -102,7 +103,7 @@ class TestURLPath:
 					(URLPath('/') / "news", URLPath("/news")),
 					(URLPath("/programmes") / "b006qtlx", URLPath("/programmes/b006qtlx")),
 					("/programmes" / URLPath("b006qtlx"), URLPath("/programmes/b006qtlx")),
-					]
+					],
 			)
 	def test_division(self, value: Union[str, URLPath], expects: URLPath):
 		assert value == expects
@@ -123,7 +124,7 @@ class TestURLPath:
 							URLPath("/programmes/b006qtlx"),
 							marks=pytest.mark.xfail(reason="The type is taken from the left object."),
 							),
-					]
+					],
 			)
 	def test_division_pathlike(self, value: pathlib.PurePath, expects: pathlib.PurePath):
 		assert value == expects
@@ -139,7 +140,7 @@ class TestURLPath:
 							URLPath("/programmes").joinpath("b006qtlx", "details"),
 							URLPath("/programmes/b006qtlx/details"),
 							),
-					]
+					],
 			)
 	def test_joinpath(self, value: URLPath, expects: URLPath):
 		assert value == expects
@@ -189,7 +190,7 @@ class TestURLPath:
 					(URLPath("news/sport"), "news"),
 					(URLPath("news/sport"), URLPath("news")),
 					(URLPath("news/sport"), pathlib.PurePosixPath("news")),
-					]
+					],
 			)
 	def test_relative_to(self, base: URLPath, other: Union[str, pathlib.PurePosixPath]):
 		assert base.relative_to(other) == URLPath("sport")
@@ -230,7 +231,7 @@ class _TestURL(ABC):
 							"www.bbc.co.uk",
 							URLPath("/programmes/b006qtlx/episodes/player"),
 							),
-					]
+					],
 			)
 	def test_creation(self, url: str, scheme: str, netloc: str, path: URLPath):
 		url_p = self._class(url)
@@ -248,7 +249,7 @@ class _TestURL(ABC):
 					"programmes/b006qtlx/episodes/player",
 					"https://127.0.0.1/programmes/b006qtlx/episodes/player",
 					"ftp://127.0.0.1/programmes/b006qtlx/episodes/player",
-					]
+					],
 			)
 	def test_str(self, url: str):
 		assert str(self._class(url)) == url
@@ -369,7 +370,7 @@ class _TestURL(ABC):
 					("https://www.bbc.co.uk/programmes/b006qtlx/episodes", "episodes"),
 					("www.bbc.co.uk", ''),
 					("/programmes/b006qtlx/episodes", "episodes"),
-					]
+					],
 			)
 	def test_name(self, url: str, name: str):
 		assert self._class(url).name == name
@@ -381,7 +382,7 @@ class _TestURL(ABC):
 					("www.bbc.co.uk", ''),
 					("/programmes/b006qtlx/episodes", ''),
 					("https://imgs.xkcd.com/comics/workflow.png", ".png"),
-					]
+					],
 			)
 	def test_suffix(self, url: str, suffix: str):
 		assert self._class(url).suffix == suffix
@@ -398,7 +399,7 @@ class _TestURL(ABC):
 							"v0.4.8/domdf_python_tools-0.4.8.tar.gz",
 							[".4", ".8", ".tar", ".gz"],
 							),
-					]
+					],
 			)
 	def test_suffixes(self, url: str, suffixes: str):
 		assert self._class(url).suffixes == suffixes
@@ -414,7 +415,7 @@ class _TestURL(ABC):
 							"https://github.com/domdfcoding/domdf_python_tools/releases/download/v0.4.8/domdf_python_tools-0.4.8.tar.gz",
 							"domdf_python_tools-0.4.8.tar",
 							),
-					]
+					],
 			)
 	def test_stem(self, url: str, stem: str):
 		assert self._class(url).stem == stem
@@ -451,7 +452,7 @@ class _TestURL(ABC):
 							),
 					("/programmes/b006qtlx/episodes", "/programmes/b006qtlx/foo", "foo"),
 					("https://imgs.xkcd.com/comics/workflow.png", "https://imgs.xkcd.com/comics/baz", "baz"),
-					]
+					],
 			)
 	def test_with_name(self, url: str, expected: str, name: str):
 		assert self._class(url).with_name(name) == self._class(expected)
@@ -475,7 +476,7 @@ class _TestURL(ABC):
 							"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment",
 							"https://www.bbc.co.uk/programmes/b006qtlx/foo?que=ry#fragment",
 							),
-					]
+					],
 			)
 	def test_with_name_inherit(self, url: str, expected: str):
 		assert self._class(url).with_name("foo", inherit=True) == self._class(expected)
@@ -507,9 +508,9 @@ class _TestURL(ABC):
 					(
 							"https://imgs.xkcd.com/comics/workflow.png",
 							"https://imgs.xkcd.com/comics/workflow.baz",
-							".baz"
+							".baz",
 							),
-					]
+					],
 			)
 	def test_with_suffix(self, url: str, expected: str, suffix: str):
 		assert self._class(url).with_suffix(suffix) == self._class(expected)
@@ -533,7 +534,7 @@ class _TestURL(ABC):
 							"https://www.bbc.co.uk/programmes/b006qtlx/episodes?que=ry#fragment",
 							"https://www.bbc.co.uk/programmes/b006qtlx/episodes.foo?que=ry#fragment",
 							),
-					]
+					],
 			)
 	def test_with_suffix_inherit(self, url: str, expected: str):
 		assert self._class(url).with_suffix(".foo", inherit=True) == self._class(expected)
@@ -547,7 +548,7 @@ class _TestURL(ABC):
 							),
 					("/programmes/b006qtlx/episodes", "/programmes/b006qtlx"),
 					("https://imgs.xkcd.com/comics/workflow.png", "https://imgs.xkcd.com/comics"),
-					]
+					],
 			)
 	def test_parent(self, url: str, parent: str):
 		assert self._class(url).parent == self._class(parent)
@@ -559,7 +560,7 @@ class _TestURL(ABC):
 					("www.bbc.co.uk", "www.bbc.co.uk"),
 					("/programmes/b006qtlx/episodes", ''),
 					("https://imgs.xkcd.com/comics/workflow.png", "imgs.xkcd.com"),
-					]
+					],
 			)
 	def test_fqdn(self, url: str, fqdn: str):
 		assert self._class(url).fqdn == fqdn
@@ -571,7 +572,7 @@ class _TestURL(ABC):
 					("/programmes/b006qtlx/episodes", '', '', '', None),
 					("https://www.bbc.co.uk", "www", "bbc", "co.uk", None),
 					("ftp://127.0.0.1/download.zip", '', "127.0.0.1", '', IPv4Address("127.0.0.1")),
-					]
+					],
 			)
 	def test_domain(self, url: str, subdomain: str, domain: str, suffix: str, ipv4: IPv4Address):
 		assert isinstance(self._class(url).domain, Domain)
@@ -592,7 +593,7 @@ class _TestURL(ABC):
 					("www.bbc.co.uk:8080", 8080),
 					("www.bbc.co.uk:443", 443),
 					("/programmes/b006qtlx/episodes", None),
-					]
+					],
 			)
 	def test_port(self, url: str, port: Optional[int]):
 		assert self._class(url).port == port
@@ -603,7 +604,7 @@ class _TestURL(ABC):
 					("bbc.co.uk/news", "bbc.co.uk/news"),
 					("https://bbc.co.uk/news", "bbc.co.uk/news"),
 					("https://www.bbc.co.uk/news", "www.bbc.co.uk/news"),
-					]
+					],
 			)
 	def test_cast_to_pathlib(self, url: str, expects: str):
 		assert pathlib.Path(self._class(url)) == pathlib.Path(expects)
@@ -614,7 +615,7 @@ class _TestURL(ABC):
 					("bbc.co.uk/news", "bbc.co.uk/news"),
 					("https://bbc.co.uk/news", "bbc.co.uk/news"),
 					("https://www.bbc.co.uk/news", "www.bbc.co.uk/news"),
-					]
+					],
 			)
 	def test_fspath(self, url: str, expects: str):
 		assert self._class(url).__fspath__() == expects
@@ -632,7 +633,7 @@ class _TestURL(ABC):
 							"https://hub.docker.com/r/tobix/pywine/dockerfile",
 							("https", "hub", "docker", "com", 'r', "tobix", "pywine", "dockerfile"),
 							),
-					]
+					],
 			)
 	def test_parts(self, url: str, parts: Sequence[str]):
 		assert self._class(url).parts == parts
@@ -685,25 +686,21 @@ class _TestURL(ABC):
 
 	def test_relative_to(self):
 		expected = URLPath("domdfcoding")
-		assert self._class("https://github.com/domdfcoding").relative_to(URL("https://github.com")) == expected
-		assert self._class("https://github.com/domdfcoding").relative_to(
-				RequestsURL("https://github.com")
-				) == expected
-		assert self._class("https://github.com/domdfcoding").relative_to(
-				SlumberURL("https://github.com")
-				) == expected
+		github_domdfcoding = "https://github.com/domdfcoding"
+		assert self._class(github_domdfcoding).relative_to(URL("https://github.com")) == expected
+		assert self._class(github_domdfcoding).relative_to(RequestsURL("https://github.com")) == expected
+		assert self._class(github_domdfcoding).relative_to(SlumberURL("https://github.com")) == expected
 
 		expected = URLPath("football")
-		assert self._class("https://www.bbc.co.uk:443/news/sport/football").relative_to("/news/sport") == expected
-		assert self._class("https://www.bbc.co.uk:443/news/sport/football").relative_to(
-				URLPath("/news/sport")
-				) == expected
+		bbc_sport_football = "https://www.bbc.co.uk:443/news/sport/football"
+		assert self._class(bbc_sport_football).relative_to("/news/sport") == expected
+		assert self._class(bbc_sport_football).relative_to(URLPath("/news/sport")) == expected
 
 		with pytest.raises(ValueError, match="'URL.relative_to' cannot be used with relative URLPath objects"):
-			self._class("https://www.bbc.co.uk:443/news/sport/football").relative_to(URLPath("news/sport"))
+			self._class(bbc_sport_football).relative_to(URLPath("news/sport"))
 
 		with pytest.raises(ValueError, match=".* does not start with .*"):
-			self._class("https://github.com/domdfcoding").relative_to(URL("https://bbc.co.uk/news"))
+			self._class(github_domdfcoding).relative_to(URL("https://bbc.co.uk/news"))
 
 		with pytest.raises(ValueError, match=".* does not start with .*"):
 			self._class("https://www.bbc.co.uk:443/news/sport").relative_to(URL("https://bbc.co.uk/news"))
@@ -815,7 +812,7 @@ class TestURL(_TestURL):
 							URL("ftp://127.0.0.1/programmes/b006qtlx/episodes/player"),
 							"URL('ftp://127.0.0.1/programmes/b006qtlx/episodes/player')",
 							),
-					]
+					],
 			)
 	def test_repr(self, url: str, expects: str):
 		assert repr(url) == expects
@@ -911,7 +908,7 @@ class TestSlumberURL(_TestURL):
 		quia et suscipit
 		suscipit recusandae consequuntur expedita et cum
 		reprehenderit molestiae ut ut quas totam
-		nostrum rerum est autem sunt rem eveniet architecto"""
+		nostrum rerum est autem sunt rem eveniet architecto""",
 				)
 
 		expected = {"body": body, "userId": 1, "id": 1, "title": "foo"}
@@ -1017,7 +1014,7 @@ class TestRequestsURL(_TestURL):
 			[
 					("https://github.com/domdfcoding/PyMassSpec", "https://github.com/PyMassSpec/PyMassSpec"),
 					("https://pypi.org/simple/domdf_python_tools", "https://pypi.org/simple/domdf-python-tools"),
-					]
+					],
 			)
 	def test_resolve(self, url: str, expected: str):
 		assert str(RequestsURL(url).resolve()) == expected
@@ -1212,7 +1209,7 @@ class TestTrailingRequestsURL(TestRequestsURL):
 							"ftp://127.0.0.1/programmes/b006qtlx/episodes/player",
 							"ftp://127.0.0.1/programmes/b006qtlx/episodes/player/",
 							),
-					]
+					],
 			)
 	def test_str(self, url: str, expects: str):
 		assert str(self._class(url)) == expects

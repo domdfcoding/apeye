@@ -53,8 +53,8 @@ class RequestsXRef(SphinxRole):
 				nodes.reference(
 						"`Requests <https://requests.readthedocs.io>`_",
 						"Requests",
-						refuri="https://requests.readthedocs.io"
-						)
+						refuri="https://requests.readthedocs.io",
+						),
 				], []
 
 

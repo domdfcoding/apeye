@@ -134,7 +134,7 @@ class RateLimitAdapter(CacheControlAdapter):
 		request: requests.PreparedRequest,
 		cacheable_methods: Optional[Collection[str]] = None,
 		**kwargs,
-		) -> requests.Response:
+	) -> requests.Response:
 		r"""
 		Send a request.
 
