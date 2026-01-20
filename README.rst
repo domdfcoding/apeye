@@ -86,12 +86,12 @@ apeye
 	:target: https://pypi.org/project/apeye/
 	:alt: PyPI - Wheel
 
-.. |conda-version| image:: https://img.shields.io/conda/v/domdfcoding/apeye?logo=anaconda
-	:target: https://anaconda.org/domdfcoding/apeye
+.. |conda-version| image:: https://img.shields.io/conda/v/conda-forge/apeye?logo=anaconda
+	:target: https://anaconda.org/conda-forge/apeye
 	:alt: Conda - Package Version
 
-.. |conda-platform| image:: https://img.shields.io/conda/pn/domdfcoding/apeye?label=conda%7Cplatform
-	:target: https://anaconda.org/domdfcoding/apeye
+.. |conda-platform| image:: https://img.shields.io/conda/pn/conda-forge/apeye?label=conda%7Cplatform
+	:target: https://anaconda.org/conda-forge/apeye
 	:alt: Conda - Platform
 
 .. |license| image:: https://img.shields.io/github/license/domdfcoding/apeye
@@ -144,18 +144,9 @@ To install with ``pip``:
 
 To install with ``conda``:
 
-	* First add the required channels
+.. code-block:: bash
 
-	.. code-block:: bash
-
-		$ conda config --add channels https://conda.anaconda.org/conda-forge
-		$ conda config --add channels https://conda.anaconda.org/domdfcoding
-
-	* Then install
-
-	.. code-block:: bash
-
-		$ conda install apeye
+	$ conda install -c conda-forge apeye
 
 .. end installation
 

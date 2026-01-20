@@ -16,8 +16,8 @@ min_coverage: 85
 tox_testenv_extras: limiter
 use_flit: true
 
-conda_channels:
- - conda-forge
+on_conda_forge: true
+enable_conda: false
 
 python_versions:
  3.7:
@@ -61,8 +61,8 @@ extra_sphinx_extensions:
  - sphinx_toolbox_experimental.missing_xref
  - autoclass_alias
 
-conda_extras:
- - limiter
+# conda_extras:
+#  - limiter
 
 manifest_additional:
  - include apeye/public_suffix_list.dat
