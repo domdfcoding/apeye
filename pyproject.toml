@@ -184,3 +184,6 @@ include = false
 [tool.dependency-dash."doc-source/requirements.txt"]
 order = 30
 include = false
+
+[tool.flit.sdist]
+include = [ "tests/", "tox.ini", "stubs.txt",]
