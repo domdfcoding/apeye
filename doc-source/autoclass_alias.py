@@ -140,7 +140,12 @@ class AliasedFunctionDocumenter(FunctionDocumenter):
 				self.add_line(f"{self.content_indent}{line}", self.get_sourcename())
 
 
-def setup(app: Sphinx) -> SphinxExtMetadata:
+def _after_config_inited(app: Sphinx, config: Any) -> None:
 	app.add_autodocumenter(AliasedClassDocumenter, override=True)
 	app.add_autodocumenter(AliasedFunctionDocumenter, override=True)
+
+
+def setup(app: Sphinx) -> SphinxExtMetadata:
+	app.connect("config-inited", _after_config_inited, priority=999)
+
 	return {"parallel_read_safe": True}
